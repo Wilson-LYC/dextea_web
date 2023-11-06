@@ -22,6 +22,7 @@ span {
 <template>
     <el-container class="container">
         <el-aside class="aside" :width="asideWidth">
+            <!-- 左侧菜单栏 -->
             <el-scrollbar>
                 <el-menu :collapse="isCollapse" class="nav" :unique-opened="true" :router="true" :default-active="nowurl">
                     <el-menu-item @click="CollapseMenu">
@@ -93,11 +94,13 @@ span {
                 </el-menu>
             </el-scrollbar>
         </el-aside>
-        <el-container>
+        <el-container style="background:  #eeeeee;">
             <el-scrollbar class="main-container">
+                <!-- 正文 -->
                 <el-main>
                     <router-view />
                 </el-main>
+                <!-- 页脚 -->
                 <el-footer style="margin: 0;height: 0;padding: 0;">
                     <WebFoo />
                 </el-footer>
