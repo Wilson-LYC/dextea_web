@@ -2,7 +2,7 @@
 </style>
 <template>
   <!-- 搜索栏 -->
-  <div class="search-container">
+  <div>
     <el-form :inline="true" :model="search.data" :rules="search.rules">
       <el-form-item label="门店ID" prop="id">
         <el-input v-model="search.data.id" clearable style="width: 150px;" />
