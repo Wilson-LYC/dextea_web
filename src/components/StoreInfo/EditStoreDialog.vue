@@ -1,11 +1,19 @@
-<style scoped></style>
+<style scoped>
+.my-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+</style>
+
 <template>
-    <el-dialog title="修改门店" width="500" v-model="see" :close-on-click-modal="false">
+    <el-dialog title="新增门店" width="500" v-model="see" :draggable="true" :close-on-click-modal="false"
+        :destroy-on-close="false" :before-close="closeDialog">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
             <el-form :model="data" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default">
-                <el-form-item label="门店ID" prop="id" class="required">
-                    <el-input v-model="data.id" :disabled="true" type="text" clearable></el-input>
+                <el-form-item label="门店ID" prop="name" class="required">
+                    <el-input v-model="data.id" type="text" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="门店名称" prop="name" class="required">
                     <el-input v-model="data.name" type="text" clearable></el-input>
@@ -25,13 +33,15 @@
                     <el-input v-model="data.openTime" type="text" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="营业状态" prop="openState" class="required">
-                    <el-select v-model="data.openState" class="full-width-input" clearable>
+                    <el-select v-model="data.openState" class="full-width-input" clearable placeholder="请选择">
                         <el-option v-for="(item, index) in openStateOptions" :key="index" :label="item.label"
                             :value="item.value" :disabled="item.disabled"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
         </el-scrollbar>
+
+        <!-- 操作按钮 -->
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="cancel">取消</el-button>
@@ -40,15 +50,27 @@
         </template>
     </el-dialog>
 </template>
+
 <script>
+import { ElMessage } from 'element-plus'
 export default {
+    props: {
+        visible: Boolean,
+        id: Number,
+    },
+    emits: ['update:visible'],
     data() {
         return {
+            data: {
+                "id": 1,
+                "name": "广州gogo新天地店",
+                "area": ["广东省", "广州市"],
+                "address": "小谷围街贝岗村贝岗村大街1号高高新天地商业广场一期一层第103、104、141、142号商铺",
+                "phone": "020-85202718",
+                "openTime": "周一至周日 10:00-22:00",
+                "openState": "1",
+            },
             rules: {
-                id: [{
-                    required: true,
-                    message: '字段值不可为空',
-                }],
                 name: [{
                     required: true,
                     message: '字段值不可为空',
@@ -102,11 +124,13 @@ export default {
                     "children": [{
                         "label": "长沙市",
                         "value": "长沙市"
-                    }, {
+                    },
+                    {
                         "label": "衡阳市",
                         "value": "衡阳市"
                     }]
-                }, {
+                },
+                {
                     "label": "北京市",
                     "value": "北京市"
                 }
@@ -114,31 +138,44 @@ export default {
         }
     },
     methods: {
+        //清空数据
+        dataReset() {
+            this.data = {
+                name: "",
+                area: "",
+                address: "",
+                phone: "",
+                openTime: "",
+                openState: "",
+            }
+        },
+        //关闭窗口
+        closeDialog(done) {
+            //重置数据
+            // this.dataReset()
+            //关闭窗口
+            this.see = false
+            // ElMessage("窗口关闭")
+            done()
+        },
         //确认
         confirm() {
             this.$refs["myform"].validate(valid => {
                 if (valid) {
-                    // console.log("success");
-                    console.log(this.data);
-                    this.$emit('update:isChange', !this.isChange)
-                    this.resetData()
-                    this.see = false
+                    //关闭窗口
+                    this.closeDialog()
                 } else {
-                    // console.log("error");
+                    //报错
+                    ElMessage.error("填写不符合要求")
                 }
             });
         },
         //取消
         cancel() {
-            this.see = false
-            this.resetData()
-        },
+            //关闭窗口
+            this.closeDialog()
+        }
     },
-    props: {
-        visible: Boolean,
-        data: Object
-    },
-    emits: ['update:visible'],
     computed: {
         see: {
             get() {
@@ -146,6 +183,13 @@ export default {
             },
             set(see) {
                 this.$emit('update:visible', see)
+            }
+        }
+    },
+    watch:{
+        see(val){
+            if(val){
+                ElMessage("请从服务器获取数据")
             }
         }
     }

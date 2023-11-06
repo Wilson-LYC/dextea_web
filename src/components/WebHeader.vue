@@ -14,6 +14,7 @@
     height: 40px;
     width: fit-content;
     margin-top: 10px;
+    margin-left: 12px;
 }
 
 .htitle {
