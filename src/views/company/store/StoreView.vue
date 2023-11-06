@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import StoreTable from '@/components/company/store/store/StoreTable.vue'
+import StoreTable from '@/components/ShopSheet/StoreTable.vue'
 export default {
   components: {
     StoreTable

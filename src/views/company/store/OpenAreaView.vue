@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import OpenAreaTable from '@/components/company/store/area/OpenAreaTable.vue'
+import OpenAreaTable from '@/components/OpenAreaSheet/OpenAreaTable.vue'
 export default {
   components: {
     OpenAreaTable

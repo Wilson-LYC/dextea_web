@@ -46,7 +46,7 @@
 }
 
 .user-ava {
-    margin-top: 10px;
+    margin-top: 15px;
     margin-right: 10px;
 }
 </style>
@@ -76,7 +76,7 @@
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
-                <el-avatar shape="square" :size="40"
+                <el-avatar shape="square" :size="30"
                     src="https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png" class="user-ava" />
             </el-col>
         </el-row>

@@ -35,7 +35,7 @@
         <div class="btn-container" style="margin-bottom: 15px;">
             <el-button type="primary" @click="add">新增</el-button>
             <el-button type="danger">批量删除</el-button>
-            <el-button type="primary">刷新</el-button>
+            <el-button type="default" @click="refresh">刷新</el-button>
         </div>
 
         <!-- 表格主体 -->
@@ -66,20 +66,25 @@
             <!-- 行内操作栏 -->
             <el-table-column fixed="right" label="操作" min-width="200" align="center">
                 <template #default="scope">
-                    <el-button type="primary" size="small" @click="">详情</el-button>
-                    <el-button type="danger" size="small" @click="del(scope.row, scope.$index)">删除</el-button>
+                    <el-button type="primary" size="small" @click="detail(scope.row)">详情</el-button>
+                    <el-popconfirm width="100" confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled"
+                        icon-color="#626AEF" title="确定删除?" @confirm="del(scope.row, scope.$index)">
+                        <template #reference>
+                            <el-button type="danger" size="small">删除</el-button>
+                        </template>
+                    </el-popconfirm>
                 </template>
             </el-table-column>
         </el-table>
 
         <!-- 对话框 -->
         <!-- 新增对话框 -->
-        <AddDialog v-model:visible="addDialogVisible"/>
+        <AddDialog v-model:visible="addDialogVisible" />
     </div>
 </template>
 
 <script>
-import AddDialog from '@/components/company/store/store/AddShopDialog.vue'
+import AddDialog from '@/components/ShopSheet/AddShopDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
@@ -259,20 +264,23 @@ export default {
         },
         //删除
         del(data, index) {
-            //console.log(data)
-            //console.log(index)
-            //this.tabledata.splice(index, 1);
+            ElMessage("删除"+index)
+        },
+        //详情
+        detail(data) {
+            this.$router.push({
+                path: '/company/store/detail/' + data.id,
+            })
         },
         //多选
         handleSelectionChange(val) {
             this.multipleSelection = val;
             // console.log(this.multipleSelection)
         },
-        //编辑
-        edit(data) {
-            this.dialog.edit.data = data
-            this.dialog.edit.see = true
-        },
+        //刷新
+        refresh() {
+            ElMessage("刷新")
+        }
     },
     watch: {
         addDialogVisible(val) {

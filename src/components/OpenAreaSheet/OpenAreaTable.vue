@@ -18,20 +18,31 @@
       <el-table-column fixed="right" label="操作" width="100" align="center">
         <template #default="scope">
           <!-- 没有子节点才能删除 -->
-          <el-button type="danger" size="small" @click="add(scope.row, scope.$index)"
-            v-if="scope.row.children.length == 0">删除</el-button>
+          <el-popconfirm 
+            v-if="scope.row.children.length == 0" 
+            width="220" confirm-button-text="确定" 
+            cancel-button-text="取消" 
+            :icon="InfoFilled"
+            icon-color="#626AEF" 
+            title="确定删除?"
+            @confirm="del(scope.row, scope.$index)"
+          >
+            <template #reference>
+              <el-button type="danger" size="small">删除</el-button>
+            </template>
+          </el-popconfirm>
           <p v-else disable style="margin: 0;"></p>
         </template>
       </el-table-column>
     </el-table>
     <!-- 新增对话框 -->
-    <AddDialog v-model:visible="addDialogVisible" :superior="tabledata"/>
+    <AddDialog v-model:visible="addDialogVisible" :superior="tabledata" />
   </div>
 </template>
 
 <script>
 import { ElMessage } from 'element-plus'
-import AddDialog from '@/components/company/store/area/AddOpenAreaDialog.vue'
+import AddDialog from '@/components/OpenAreaSheet/AddOpenAreaDialog.vue'
 export default {
   components: {
     AddDialog
@@ -114,9 +125,7 @@ export default {
     },
     //删除
     del(data, index) {
-      //console.log(data)
-      //console.log(index)
-      //this.tabledata.splice(index, 1);//删除当前索引指定的行
+      ElMessage("删除"+index)
     }
   },
   watch: {
