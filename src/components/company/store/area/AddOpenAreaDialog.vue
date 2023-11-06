@@ -1,5 +1,6 @@
 <template>
-    <el-dialog title="开设新区域" width="500" v-model="see" :draggable="true" :close-on-click-modal="false">
+    <el-dialog title="开设新区域" width="500" v-model="see" :draggable="true" :close-on-click-modal="false"
+        :before-close="closeDialog">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
             <el-form :model="data" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default"
@@ -10,7 +11,7 @@
                             :disabled="item.disabled" style="{display: inline}">{{ item.label }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="上级区域" prop="superior" class="required" v-if="data.type==2">
+                <el-form-item label="上级区域" prop="superior" class="required" v-if="data.type == 2">
                     <el-select v-model="data.superior" class="full-width-input" clearable placeholder="请选择">
                         <el-option v-for="(item, index) in superiorOptions" :key="index" :label="item.label"
                             :value="item.value" :disabled="item.disabled"></el-option>
@@ -36,7 +37,6 @@ export default {
     props: {
         visible: Boolean,
         superior: Object,
-        isChange:Boolean,
     },
     emits: ['update:visible', 'update:isChange'],
     data() {
@@ -70,36 +70,36 @@ export default {
         }
     },
     methods: {
-        //确认
-        confirm() {
-            this.$refs["myform"].validate(valid => {
-                if (valid) {
-                    // console.log("success");
-                    console.log(this.data);
-                    this.$emit('update:isChange', !this.isChange)
-                    this.resetData()
-                    this.see = false
-                } else {
-                    // console.log("error");
-                }
-            });
-        },
-        //取消
-        cancel() {
-            this.see = false
-            this.resetData()
-        },
         //清空数据
-        resetData() {
+        dataReset() {
             this.data = {
                 type: "",
                 superior: "",
                 name: "",
             }
         },
-        //告诉父组件数据更新
-        updateChange() {
-            this.change=!this.isChange
+        //关闭对话框
+        closeDialog(done) {
+            this.dataReset()
+            this.see = false
+            done()
+        },
+        //确认
+        confirm() {
+            this.$refs["myform"].validate(valid => {
+                if (valid) {
+                    //关闭窗口
+                    this.closeDialog()
+                } else {
+                    //报错
+                    ElMessage.error("填写不符合要求")
+                }
+            });
+        },
+        //取消
+        cancel() {
+            //关闭窗口
+            this.closeDialog()
         }
     },
     computed: {
@@ -109,19 +109,6 @@ export default {
             },
             set(see) {
                 this.$emit('update:visible', see)
-            }
-        },
-        superiorOptions:{
-            get(){
-                return this.superior
-            }
-        },
-        change:{
-            get() {
-                return this.isChange
-            },
-            set(change) {
-                this.$emit('update:isChange', change)
             }
         }
     }

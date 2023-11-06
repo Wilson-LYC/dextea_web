@@ -74,20 +74,16 @@
 
         <!-- 对话框 -->
         <!-- 新增对话框 -->
-        <AddDialog v-model:visible="dialog.add" v-model:isChange="isChange" />
-        <!-- 编辑对话框 -->
-        <EditDialog v-model:visible="dialog.edit.see" :data="dialog.edit.data" v-model:isChange="isChange" />
+        <AddDialog v-model:visible="addDialogVisible"/>
     </div>
 </template>
 
 <script>
 import AddDialog from '@/components/company/store/store/AddShopDialog.vue'
-import EditDialog from '@/components/company/store/store/editDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
-        AddDialog,
-        EditDialog
+        AddDialog
     },
     data() {
         return {
@@ -127,30 +123,11 @@ export default {
                     "password": "123456"
                 },
             ],
-            //对话框参数
-            dialog: {
-                add: false,
-                edit: {
-                    see: false,
-                    data: ""
-                }
-            },
-            //营业状态
-            openStateOptions: [{
-                "value": "0",
-                "label": "未开业"
-            },
-            {
-                "value": "1",
-                "label": "营业中"
-            },
-            {
-                "value": "2",
-                "label": "休息中"
-            }],
             //被选中的门店
             multipleSelection: [
             ],
+            //“新增”对话框可见性
+            addDialogVisible: false,
             //搜索栏
             search: {
                 data: {
@@ -171,7 +148,7 @@ export default {
                     }],
                 },
             },
-            isChange: false,
+            //选项
             areaOptions: [
                 {
                     "label": "浙江省",
@@ -242,6 +219,19 @@ export default {
                     ]
                 }
             ],
+            //营业状态
+            openStateOptions: [{
+                "value": "0",
+                "label": "未开业"
+            },
+            {
+                "value": "1",
+                "label": "营业中"
+            },
+            {
+                "value": "2",
+                "label": "休息中"
+            }],
         }
     },
     methods: {
@@ -263,16 +253,15 @@ export default {
         searchSubmit() {
             ElMessage("搜索")
         },
-
         //添加
         add() {
-            this.dialog.add = true
+            this.addDialogVisible = true
         },
         //删除
         del(data, index) {
             //console.log(data)
             //console.log(index)
-            this.tabledata.splice(index, 1);//删除当前索引指定的行
+            //this.tabledata.splice(index, 1);
         },
         //多选
         handleSelectionChange(val) {
@@ -286,8 +275,9 @@ export default {
         },
     },
     watch: {
-        isChange() {
-            ElMessage("数据更新")
+        addDialogVisible(val) {
+            if (!val)
+                ElMessage("请刷新数据")
         }
     }
 }

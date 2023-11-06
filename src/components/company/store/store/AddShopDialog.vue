@@ -1,20 +1,15 @@
-<style scoped></style>
+<style scoped>
+.my-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+</style>
 
 <template>
     <el-dialog title="新增门店" width="500" v-model="see" :draggable="true" :close-on-click-modal="false"
-        :destroy-on-close="false" :show-close="false">
+        :destroy-on-close="false" :before-close="closeDialog">
         <el-scrollbar max-height="400px">
-            <template #header="{ close, titleId, titleClass }">
-                <div class="my-header">
-                    <h4 :id="titleId" :class="titleClass">This is a custom header!</h4>
-                    <el-button type="danger" @click="close">
-                        <el-icon class="el-icon--left">
-                            <CircleCloseFilled />
-                        </el-icon>
-                        Close
-                    </el-button>
-                </div>
-            </template>
             <!-- 表单 -->
             <el-form :model="data" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default">
                 <el-form-item label="门店名称" prop="name" class="required">
@@ -150,12 +145,13 @@ export default {
             }
         },
         //关闭窗口
-        closeDialog() {
+        closeDialog(done) {
             //重置数据
             this.dataReset()
             //关闭窗口
             this.see = false
-            ElMessage("窗口关闭")
+            // ElMessage("窗口关闭")
+            done()
         },
         //确认
         confirm() {

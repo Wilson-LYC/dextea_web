@@ -30,7 +30,7 @@ span {
                             <Menu />
                         </el-icon>
                         <template #title>
-                            <span>菜单管理</span>
+                            <span>菜单</span>
                         </template>
                     </el-menu-item>
                     <el-sub-menu index="/company/store">
