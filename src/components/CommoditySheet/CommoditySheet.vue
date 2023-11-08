@@ -56,7 +56,8 @@
 
         <!-- 操作栏 -->
         <div class="btn-container" style="margin-bottom: 15px;">
-            <el-button type="success">可售</el-button>
+            <el-text>批量操作：</el-text>
+            <el-button type="success">在售</el-button>
             <el-button type="warning">售罄</el-button>
             <el-button type="danger">下架</el-button>
             <el-button type="default" @click="refresh">刷新数据</el-button>
@@ -88,7 +89,7 @@
             <!-- 行内操作栏 -->
             <el-table-column fixed="right" label="操作" min-width="200" align="center">
                 <template #default="scope">
-                    <el-button type="success" @click="add" size="small">可售</el-button>
+                    <el-button type="success" @click="add" size="small">在售</el-button>
                     <el-button type="warning" size="small">售罄</el-button>
                     <el-button type="danger" size="small">下架</el-button>
                 </template>
