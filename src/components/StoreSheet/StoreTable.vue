@@ -13,6 +13,9 @@
                 <el-form-item label="联系方式">
                     <el-input v-model="search.data.phone" clearable style="width: 150px;" />
                 </el-form-item>
+                <el-form-item label="登录帐号">
+                    <el-input v-model="search.data.account" clearable style="width: 150px;" />
+                </el-form-item>
                 <el-form-item label="状态">
                     <el-select v-model="search.data.openState" placeholder="请选择" clearable style="width: 150px;">
                         <el-option v-for="(item, index) in openStateOptions" :key="index" :label="item.label"
@@ -63,6 +66,7 @@
             <el-table-column prop="address" label="地址" min-width="300" :show-overflow-tooltip="true" />
             <el-table-column prop="phone" label="联系方式" min-width="100" :show-overflow-tooltip="true" />
             <el-table-column prop="openTime" label="营业时间" min-width="200" :show-overflow-tooltip="true" />
+            <el-table-column prop="account" label="登录帐号" min-width="100" :show-overflow-tooltip="true" />
             <!-- 行内操作栏 -->
             <el-table-column fixed="right" label="操作" min-width="200" align="center">
                 <template #default="scope">
@@ -84,7 +88,7 @@
 </template>
 
 <script>
-import AddDialog from '@/components/ShopSheet/AddShopDialog.vue'
+import AddDialog from './AddShopDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
@@ -102,8 +106,7 @@ export default {
                     "phone": "020-85202718",
                     "openTime": "周一至周日 10:00-22:00",
                     "openState": "1",
-                    "account": "00001",
-                    "password": "123456"
+                    "account": "gz00001"
                 },
                 {
                     "id": 2,
@@ -113,8 +116,7 @@ export default {
                     "phone": "020-80927484",
                     "openTime": "周一至周四 10:00-21:00，周五至周日 10:00-22:00",
                     "openState": "2",
-                    "account": "00002",
-                    "password": "123456"
+                    "account": "gz00002"
                 },
                 {
                     "id": 3,
@@ -124,8 +126,7 @@ export default {
                     "phone": "020-85208728",
                     "openTime": "周一至周日 10:00-23:00",
                     "openState": "0",
-                    "account": "00003",
-                    "password": "123456"
+                    "account": "gz00003"
                 },
             ],
             //被选中的门店
@@ -143,7 +144,8 @@ export default {
                     "phone": "",
                     "openState": "",
                     "openArea": [],
-                    "phone": ""
+                    "phone": "",
+                    "account": ""
                 },
                 rules: {
                     id: [{

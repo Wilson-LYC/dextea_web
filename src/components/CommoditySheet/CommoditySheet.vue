@@ -56,7 +56,7 @@
 
         <!-- 操作栏 -->
         <div class="btn-container" style="margin-bottom: 15px;">
-            <el-text>批量操作：</el-text>
+            <!-- <el-text>批量操作：</el-text> -->
             <el-button type="success">在售</el-button>
             <el-button type="danger">售罄</el-button>
             <el-button type="default" :icon="Refresh" round @click="refresh">刷新</el-button>
