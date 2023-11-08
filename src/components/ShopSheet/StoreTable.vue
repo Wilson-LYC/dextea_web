@@ -39,7 +39,7 @@
         </div>
 
         <!-- 表格主体 -->
-        <el-table :data="tabledata" style="width: 100%" border height="600px" table-layout="auto"
+        <el-table :data="tabledata" style="width: 100%" border height="550px" table-layout="auto"
             @selection-change="handleSelectionChange">
             <template #empty>无数据</template>
             <!-- 数据部分 -->
