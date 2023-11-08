@@ -58,9 +58,8 @@
         <div class="btn-container" style="margin-bottom: 15px;">
             <el-text>批量操作：</el-text>
             <el-button type="success">在售</el-button>
-            <el-button type="warning">售罄</el-button>
-            <el-button type="danger">下架</el-button>
-            <el-button type="default" @click="refresh">刷新数据</el-button>
+            <el-button type="danger">售罄</el-button>
+            <el-button type="default" :icon="Refresh" round @click="refresh">刷新</el-button>
         </div>
 
         <!-- 表格主体 -->
@@ -89,9 +88,8 @@
             <!-- 行内操作栏 -->
             <el-table-column fixed="right" label="操作" min-width="200" align="center">
                 <template #default="scope">
-                    <el-button type="success" @click="add" size="small">在售</el-button>
-                    <el-button type="warning" size="small">售罄</el-button>
-                    <el-button type="danger" size="small">下架</el-button>
+                    <el-button type="success" size="small">在售</el-button>
+                    <el-button type="danger" size="small">售罄</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -102,6 +100,7 @@
 
 <script>
 import { ElMessage } from 'element-plus'
+import { Refresh } from '@element-plus/icons-vue'
 export default {
     props: {
         flag: {
@@ -114,6 +113,7 @@ export default {
     },
     data() {
         return {
+            Refresh,
             //表格数据
             tabledata: [
                 {
@@ -133,7 +133,7 @@ export default {
                 {
                     "id": 3,
                     "name": "牛油果酸酪",
-                    "sellState": "0",
+                    "sellState": "2",
                     "daySell": "20",
                     "class": ['果茶']
                 }
@@ -157,20 +157,17 @@ export default {
                     }],
                 },
             },
-            //选项
+            //选项ß
             //销售状态
-            sellStateOptions: [{
-                "value": "0",
-                "label": "下架"
-            },
-            {
-                "value": "1",
-                "label": "在售"
-            },
-            {
-                "value": "2",
-                "label": "售罄"
-            }],
+            sellStateOptions: [
+                {
+                    "value": "1",
+                    "label": "在售"
+                },
+                {
+                    "value": "2",
+                    "label": "售罄"
+                }],
             //商品分类
             commClassOptions: [{
                 "value": "果茶",
