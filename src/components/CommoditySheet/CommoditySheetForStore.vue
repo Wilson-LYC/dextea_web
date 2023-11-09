@@ -1,47 +1,23 @@
 <style scoped>
-.header {
-    margin: 0;
-    padding: 0;
-    margin-bottom: 25px;
-    padding-bottom: 8px;
-    border-bottom: 1px #e0e0e0 solid;
-}
-
-.title {
-    margin: 0;
-    padding: 0;
-    font-size: 25px;
-    color: #409EFF;
-    font-weight: bold;
-}
 </style>
 <template>
     <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
-        <div class="header" v-if="flag">
-            <el-row>
-                <el-col :span="12">
-                    <p class="title">销售商品</p>
-                </el-col>
-                <el-col :span="12" style="text-align: right;">
-                </el-col>
-            </el-row>
-        </div>
         <!-- 搜索栏 -->
         <div>
             <el-form :inline="true" :model="search.data" :rules="search.rules">
-                <el-form-item label="ID" prop="id">
+                <el-form-item label="商品ID" prop="id">
                     <el-input v-model="search.data.id" clearable style="width: 150px;" />
                 </el-form-item>
-                <el-form-item label="名称">
+                <el-form-item label="商品名称">
                     <el-input v-model="search.data.name" clearable style="width: 150px;" />
                 </el-form-item>
-                <el-form-item label="类别">
+                <el-form-item label="商品类别">
                     <el-select v-model="search.data.class" placeholder="请选择" clearable style="width: 150px;">
                         <el-option v-for="(item, index) in commClassOptions" :key="index" :label="item.label"
                             :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="状态">
+                <el-form-item label="销售状态">
                     <el-select v-model="search.data.sellState" placeholder="请选择" clearable style="width: 150px;">
                         <el-option v-for="(item, index) in sellStateOptions" :key="index" :label="item.label"
                             :value="item.value"></el-option>
@@ -56,7 +32,6 @@
 
         <!-- 操作栏 -->
         <div class="btn-container" style="margin-bottom: 15px;">
-            <!-- <el-text>批量操作：</el-text> -->
             <el-button type="success">在售</el-button>
             <el-button type="danger">售罄</el-button>
             <el-button type="default" :icon="Refresh" round @click="refresh">刷新</el-button>
@@ -102,13 +77,6 @@
 import { ElMessage } from 'element-plus'
 import { Refresh } from '@element-plus/icons-vue'
 export default {
-    props: {
-        flag: {
-            //是否展示标题
-            type: Boolean,
-            default: false
-        }
-    },
     components: {
     },
     data() {

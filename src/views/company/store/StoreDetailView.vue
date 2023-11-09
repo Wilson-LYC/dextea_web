@@ -7,7 +7,7 @@
 </template>
 <script>
 import StoreInfoBoard from '@/components/StoreInfo/StoreInfoBoard.vue'
-import CommoditySheet from '@/components/CommoditySheet/CommoditySheet.vue'
+import CommoditySheet from '@/components/CommoditySheet/CommoditySheetForStore.vue'
 export default {
     components: {
         StoreInfoBoard,

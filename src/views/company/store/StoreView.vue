@@ -1,14 +1,14 @@
 <style scoped>
 </style>
 <template>
-  <StoreTable />
+  <StoreSheet />
 </template>
 
 <script>
-import StoreTable from '@/components/StoreSheet/StoreTable.vue'
+import StoreSheet from '@/components/StoreSheet/StoreSheet.vue'
 export default {
   components: {
-    StoreTable
+    StoreSheet
   }
 }
 </script>

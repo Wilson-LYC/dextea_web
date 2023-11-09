@@ -29,6 +29,19 @@ const router = createRouter({
                   component: () => import("@/views/company/store/StoreDetailView.vue"),
                 }
               ]
+            },
+            {
+              path: 'commodity',
+              children: [
+                {
+                  path: 'all',
+                  component: () => import("@/views/company/commodity/CommodityView.vue"),
+                },
+                {
+                  path: 'detail/:id',
+                  component: () => import("@/views/company/commodity/CommodityDetailView.vue"),
+                }
+              ]
             }
           ]
         },
