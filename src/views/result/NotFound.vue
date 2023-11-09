@@ -2,6 +2,7 @@
 * {
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 
 body {
@@ -35,7 +36,7 @@ body {
   width: 100vw;
   height: 80px;
   bottom: 0;
-  background: #f5f5f7;
+  /* background: #f5f5f7; */
 }
 
 .cr-p {
@@ -48,17 +49,24 @@ body {
     height:400px;
 }
 .tips{
-    font-size: 24px;
+    font-size: 22px;
     color: #000000;
     margin-bottom: 20px;
+}
+.backpic{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  height: 800px;
 }
 </style>
 
 <template>
+  <img src="@/assets/img/back.png" class="backpic">
   <div class="window">
     <div class="container">
       <div class="warp">
-        <img src="@/assets/img/404.png" class="tips-img">
+        <img src="@/assets/img/404-1.png" class="tips-img">
         <p class="tips">你访问的页面不存在</p>
         <p class="tips">{{ second }} 秒后跳转……</p>
       </div>

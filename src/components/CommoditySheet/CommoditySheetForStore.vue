@@ -1,7 +1,31 @@
 <style scoped>
+.header {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 25px;
+    padding-bottom: 8px;
+    border-bottom: 1px #e0e0e0 solid;
+}
+
+.title {
+    margin: 0;
+    padding: 0;
+    font-size: 25px;
+    color: #409EFF;
+    font-weight: bold;
+}
 </style>
 <template>
     <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
+        <div class="header" v-if="flag">
+            <el-row>
+                <el-col :span="12">
+                    <p class="title">销售商品</p>
+                </el-col>
+                <el-col :span="12" style="text-align: right;">
+                </el-col>
+            </el-row>
+        </div>
         <!-- 搜索栏 -->
         <div>
             <el-form :inline="true" :model="search.data" :rules="search.rules">
@@ -78,6 +102,13 @@ import { ElMessage } from 'element-plus'
 import { Refresh } from '@element-plus/icons-vue'
 export default {
     components: {
+    },
+    props: {
+        flag: {
+            //是否展示标题
+            type: Boolean,
+            default: false
+        }
     },
     data() {
         return {

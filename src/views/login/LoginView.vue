@@ -82,7 +82,7 @@ a {
   text-decoration: none;
 }
 .backpic{
-  position: absolute;
+  position: fixed;
   bottom: 0;
   right: 0;
   height: 800px;

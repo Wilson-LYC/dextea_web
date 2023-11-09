@@ -20,7 +20,7 @@
         <div class="header">
             <el-row>
                 <el-col :span="12">
-                    <p class="title">门店信息</p>
+                    <p class="title">商品信息</p>
                 </el-col>
                 <el-col :span="12" style="text-align: right;">
                 </el-col>
