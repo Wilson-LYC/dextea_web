@@ -1,13 +1,13 @@
 <style scoped></style>
 <template>
-  <OpenAreaTable />
+  <OpenAreaSheet />
 </template>
 
 <script>
-import OpenAreaTable from '@/components/OpenAreaSheet/OpenAreaTable.vue'
+import OpenAreaSheet from '@/components/OpenAreaSheet/OpenAreaSheet.vue'
 export default {
   components: {
-    OpenAreaTable
+    OpenAreaSheet
   }
 }
 </script>
