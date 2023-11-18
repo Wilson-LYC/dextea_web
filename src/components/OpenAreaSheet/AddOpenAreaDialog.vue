@@ -13,8 +13,7 @@
                 </el-form-item>
                 <el-form-item label="上级区域" prop="superior" class="required" v-if="data.type == 2">
                     <el-select v-model="data.superior" class="full-width-input" clearable placeholder="请选择">
-                        <el-option v-for="(item, index) in superiorOptions" :key="index" :label="item.label"
-                            :value="item.value" :disabled="item.disabled"></el-option>
+                        <el-option v-for="(item, index) in openArea" :label="item.value" :value="index"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="区域名称" prop="name" class="required">
@@ -33,19 +32,22 @@
 </template>
 
 <script>
+import { ElMessage } from 'element-plus'
 export default {
     props: {
         visible: Boolean,
-        superior: Object,
+        openArea: Object,
     },
-    emits: ['update:visible', 'update:isChange'],
+    emits: ['update:visible'],
     data() {
         return {
+            //表单数据
             data: {
-                type: "",
-                superior: "",
-                name: "",
+                type: "",//1:省/直辖市，2:市
+                superior: "",//上级区域
+                name: "",//区域名称
             },
+            //表单验证规则
             rules: {
                 type: [{
                     required: true,
@@ -60,13 +62,14 @@ export default {
                     message: '字段值不可为空',
                 }],
             },
+            //区域类型选项
             typeOptions: [{
                 "label": "省/直辖市",
                 "value": "1"
             }, {
                 "label": "市",
-                "value": 2
-            }],
+                "value": "2"
+            }]
         }
     },
     methods: {
@@ -88,10 +91,42 @@ export default {
         confirm() {
             this.$refs["myform"].validate(valid => {
                 if (valid) {
-                    //关闭窗口
-                    this.closeDialog()
+                    //符合要求，处理数据
+                    let newOpenArea = JSON.parse(JSON.stringify(this.openArea))//浅拷贝
+                    if (this.data.type == 1) {
+                        //省/直辖市
+                        newOpenArea.push({
+                            "value": this.data.name,
+                            "num": "0",
+                            "children": []
+                        })
+                    } else {
+                        //市
+                        newOpenArea[this.data.superior].children.push({
+                            "value": this.data.name,
+                            "num": "0"
+                        })
+                    }
+                    //提交数据
+                    this.$http.post("/company/openarea/update", {
+                        newOpenArea: newOpenArea
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(
+                        (response) => {
+                            //成功
+                            ElMessage.success("添加成功")
+                            //关闭窗口
+                            this.closeDialog()
+                        },
+                        (response) => {
+                            ElMessage.error("服务器连接失败")
+                        }
+                    )
                 } else {
-                    //报错
+                    //不符合要求，提示错误
                     ElMessage.error("填写不符合要求")
                 }
             });

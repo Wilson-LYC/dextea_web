@@ -1,11 +1,10 @@
 <style scoped></style>
 <template>
   <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
-
     <!-- 操作栏 -->
     <div class="btn-container" style="margin-bottom: 15px;">
       <el-button type="primary" @click="add">新增</el-button>
-      <el-button type="default" @click="getOpenArea">刷新</el-button>
+      <el-button type="default" @click="getOpenAreaData">刷新</el-button>
     </div>
 
     <!-- 表格主体 -->
@@ -21,7 +20,7 @@
           <!-- 没有子节点才能删除 -->
           <el-popconfirm v-if="scope.row.children == null || scope.row.children.length < 1" width="220"
             confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled" icon-color="#626AEF" title="确定删除?"
-            @confirm="del(scope.row, scope.$index)">
+            @confirm="del(scope.row)">
             <template #reference>
               <el-button type="danger" size="small">删除</el-button>
             </template>
@@ -31,7 +30,7 @@
       </el-table-column>
     </el-table>
     <!-- 新增对话框 -->
-    <AddDialog v-model:visible="addDialogVisible" :superior="tabledata" />
+    <AddDialog v-model:visible="addDialogVisible" :openArea="tabledata" />
   </div>
 </template>
 
@@ -48,19 +47,63 @@ export default {
       tabledata: [],
       //“新增”对话框可见性
       addDialogVisible: false,
-      loading: true
+      //加载动画
+      loading: false
     }
   },
   methods: {
     //添加
     add() {
+      //打开弹窗
       this.addDialogVisible = true
     },
     //删除
-    del(data, index) {
-      ElMessage("删除" + index)
+    del(data) {
+      //计算删除后的数据
+      let newData = JSON.parse(JSON.stringify(this.tabledata))
+      let target = data.value
+      for (let i = 0; i < newData.length; i++) {
+        //判断是否是本节点
+        if (newData[i].value == target) {
+          //是的，删除本节点
+          newData.splice(i, 1)
+          break
+        }
+        //判断是否有子节点
+        if (newData[i].children != null) {
+          //有子节点，遍历子节点
+          let child = newData[i].children
+          for (let j = 0; j < child.length; j++) {
+            //判断是否是本节点
+            if (child[j].value == target) {
+              //是的，删除本节点
+              child.splice(j, 1)
+              break
+            }
+          }
+        }
+      }
+      //提交数据
+      this.$http.post("/company/openarea/update", {
+        newOpenArea: newData
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(
+        (response) => {
+          //成功
+          ElMessage.success("删除成功")
+          //刷新数据
+          this.getOpenAreaData()
+        },
+        (response) => {
+          ElMessage.error("服务器连接失败")
+        }
+      )
     },
-    getOpenArea() {
+    //从服务器获取数据
+    getOpenAreaData() {
       this.loading = true
       this.$http.get("/company/openarea/get").then(
         (response) => {
@@ -68,10 +111,13 @@ export default {
             ElMessage.error(response.data.msg)
           }
           this.tabledata = response.data.data.openArea
-          this.loading = false
+          //500ms后关闭加载动画
+          setTimeout(() => {
+            this.loading = false
+          }, 500)
         },
         (response) => {
-          ElMessage.error(response.message)
+          ElMessage.error("服务器错误")
           this.tabledata = []
           this.loading = false
         }
@@ -80,12 +126,12 @@ export default {
   },
   watch: {
     addDialogVisible(val) {
-      if (!val)
-        ElMessage("请刷新数据")
+      if (val == false)
+        this.getOpenAreaData()
     }
   },
   mounted() {
-    this.getOpenArea()
+    this.getOpenAreaData()
   }
 }
 </script>
