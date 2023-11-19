@@ -117,8 +117,7 @@ export default {
           }, 500)
         },
         (response) => {
-          ElMessage.error("服务器错误")
-          this.tabledata = []
+          ElMessage.error("服务器连接异常")
           this.loading = false
         }
       )

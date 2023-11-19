@@ -13,9 +13,6 @@
                 <el-form-item label="联系方式">
                     <el-input v-model="search.data.phone" clearable style="width: 150px;" />
                 </el-form-item>
-                <el-form-item label="登录帐号">
-                    <el-input v-model="search.data.account" clearable style="width: 150px;" />
-                </el-form-item>
                 <el-form-item label="状态">
                     <el-select v-model="search.data.openState" placeholder="请选择" clearable style="width: 150px;">
                         <el-option v-for="(item, index) in openStateOptions" :key="index" :label="item.label"
@@ -38,12 +35,12 @@
         <div class="btn-container" style="margin-bottom: 15px;">
             <el-button type="primary" @click="add">新增</el-button>
             <el-button type="danger">批量删除</el-button>
-            <el-button type="default" @click="refresh">刷新</el-button>
+            <el-button type="default" @click="getData">刷新</el-button>
         </div>
 
         <!-- 表格主体 -->
         <el-table :data="tabledata" style="width: 100%" border height="550px" table-layout="auto"
-            @selection-change="handleSelectionChange">
+            @selection-change="handleSelectionChange" v-loading="loading">
             <template #empty>无数据</template>
             <!-- 数据部分 -->
             <el-table-column type="selection" width="50" fixed="left" />
@@ -62,7 +59,11 @@
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column prop="area" label="所在区域" min-width="100" :show-overflow-tooltip="true" />
+            <el-table-column label="所在区域" min-width="100" :show-overflow-tooltip="true">
+                <template #default="scope">
+                    <span>{{ scope.row.area }}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="address" label="地址" min-width="300" :show-overflow-tooltip="true" />
             <el-table-column prop="phone" label="联系方式" min-width="100" :show-overflow-tooltip="true" />
             <el-table-column prop="openTime" label="营业时间" min-width="200" :show-overflow-tooltip="true" />
@@ -97,41 +98,10 @@ export default {
     data() {
         return {
             //表格数据
-            tabledata: [
-                {
-                    "id": 1,
-                    "name": "广州gogo新天地店",
-                    "area": ["广东省", "广州市"],
-                    "address": "小谷围街贝岗村贝岗村大街1号高高新天地商业广场一期一层第103、104、141、142号商铺",
-                    "phone": "020-85202718",
-                    "openTime": "周一至周日 10:00-22:00",
-                    "openState": "1",
-                    "account": "gz00001"
-                },
-                {
-                    "id": 2,
-                    "name": "广州万胜广场店",
-                    "area": ["广东省", "广州市"],
-                    "address": "广东省广州市海珠区新港东路1236号101铺",
-                    "phone": "020-80927484",
-                    "openTime": "周一至周四 10:00-21:00，周五至周日 10:00-22:00",
-                    "openState": "2",
-                    "account": "gz00002"
-                },
-                {
-                    "id": 3,
-                    "name": "广州琶洲保利广场店",
-                    "area": ["广东省", "广州市"],
-                    "address": "琶洲蟠龙新街2号保利广场购物中心1层1005、1006商铺",
-                    "phone": "020-85208728",
-                    "openTime": "周一至周日 10:00-23:00",
-                    "openState": "0",
-                    "account": "gz00003"
-                },
-            ],
+            tabledata: [],
+            loading: false,
             //被选中的门店
-            multipleSelection: [
-            ],
+            multipleSelection: [],
             //“新增”对话框可见性
             addDialogVisible: false,
             //搜索栏
@@ -139,13 +109,10 @@ export default {
                 data: {
                     "id": "",
                     "name": "",
-                    "province": "",
-                    "city": "",
                     "phone": "",
                     "openState": "",
                     "openArea": [],
-                    "phone": "",
-                    "account": ""
+                    "phone": ""
                 },
                 rules: {
                     id: [{
@@ -156,76 +123,7 @@ export default {
                 },
             },
             //选项
-            areaOptions: [
-                {
-                    "label": "浙江省",
-                    "value": "浙江省",
-                    children: [
-                        {
-                            "label": "不限",
-                            "value": "$",
-                            children: []
-                        },
-                        {
-                            "label": "杭州市",
-                            "value": "杭州市",
-                            children: []
-                        },
-                        {
-                            "label": "宁波市",
-                            "value": "宁波市",
-                            children: []
-                        },
-                        {
-                            "label": "温州市",
-                            "value": "温州市",
-                            children: []
-                        }
-                    ]
-                },
-                {
-                    "label": "广东省",
-                    "value": "广东省",
-                    children: [
-                        {
-                            "label": "不限",
-                            "value": "$",
-                            children: []
-                        },
-                        {
-                            "label": "广州市",
-                            "value": "广州市",
-                            children: []
-                        },
-                        {
-                            "label": "深圳市",
-                            "value": "深圳市",
-                            children: []
-                        },
-                        {
-                            "label": "东莞市",
-                            "value": "东莞市",
-                            children: []
-                        },
-                        {
-                            "label": "韶关市",
-                            "value": "韶关市",
-                            children: []
-                        },
-                    ]
-                },
-                {
-                    "label": "北京市",
-                    "value": "北京市",
-                    children: [
-                        {
-                            "label": "不限",
-                            "value": "$",
-                            children: []
-                        },
-                    ]
-                }
-            ],
+            areaOptions: [],
             //营业状态
             openStateOptions: [{
                 "value": "0",
@@ -259,6 +157,7 @@ export default {
         //搜索
         searchSubmit() {
             ElMessage("搜索")
+            console.log(this.search.data)
         },
         //添加
         add() {
@@ -266,7 +165,7 @@ export default {
         },
         //删除
         del(data, index) {
-            ElMessage("删除"+index)
+            ElMessage("删除" + index)
         },
         //详情
         detail(data) {
@@ -279,9 +178,26 @@ export default {
             this.multipleSelection = val;
             // console.log(this.multipleSelection)
         },
-        //刷新
-        refresh() {
-            ElMessage("刷新")
+        //从服务器获取数据
+        getData() {
+            this.loading = true
+            this.$http.get("/company/store/get").then(
+                (response) => {
+                    if (response.data.code != 200) {
+                        ElMessage.error(response.data.msg)
+                    }
+                    this.tabledata = response.data.data.stores
+                    this.areaOptions = response.data.data.openArea
+                    //500ms后关闭加载动画
+                    setTimeout(() => {
+                        this.loading = false
+                    }, 500)
+                },
+                (response) => {
+                    ElMessage.error("服务器连接异常")
+                    this.loading = false
+                }
+            )
         }
     },
     watch: {
@@ -289,6 +205,9 @@ export default {
             if (!val)
                 ElMessage("请刷新数据")
         }
+    },
+    mounted() {
+        this.getData()
     }
 }
 </script>
