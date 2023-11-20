@@ -85,13 +85,17 @@ export default {
       }
       //提交数据
       this.$http.post("/company/openarea/update", {
-        newOpenArea: newData
+        data: newData
       }, {
         headers: {
           'Content-Type': 'application/json'
         }
       }).then(
         (response) => {
+          if (response.data.code != 200) {
+            ElMessage.error(response.data.msg)
+            return
+          }
           //成功
           ElMessage.success("删除成功")
           //刷新数据
@@ -114,7 +118,7 @@ export default {
           //500ms后关闭加载动画
           setTimeout(() => {
             this.loading = false
-          }, 500)
+          }, 0)
         },
         (response) => {
           ElMessage.error("服务器连接异常")

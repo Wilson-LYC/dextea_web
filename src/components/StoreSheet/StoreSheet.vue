@@ -34,7 +34,9 @@
         <!-- 操作栏 -->
         <div class="btn-container" style="margin-bottom: 15px;">
             <el-button type="primary" @click="add">新增</el-button>
-            <el-button type="danger">批量删除</el-button>
+            <el-button type="success" @click="updateOpenState('1')">营业</el-button>
+            <el-button type="warning" @click="updateOpenState('2')">闭店</el-button>
+            <el-button type="danger" @click="updateOpenState('0')">未营业</el-button>
             <el-button type="default" @click="getData">刷新</el-button>
         </div>
 
@@ -49,10 +51,10 @@
             <el-table-column label="状态" width="80" align="center">
                 <template #default="scope">
                     <el-tag type="success" effect="plain" round v-if="scope.row.openState === '1'">
-                        营业中
+                        营业
                     </el-tag>
                     <el-tag type="danger" effect="plain" round v-else-if="scope.row.openState === '2'">
-                        休息中
+                        闭店
                     </el-tag>
                     <el-tag type="info" effect="plain" round v-else>
                         未开业
@@ -84,7 +86,7 @@
 
         <!-- 对话框 -->
         <!-- 新增对话框 -->
-        <AddDialog v-model:visible="addDialogVisible" />
+        <AddDialog v-model:visible="addDialogVisible" :openArea="areaOptions" />
     </div>
 </template>
 
@@ -164,8 +166,23 @@ export default {
             this.addDialogVisible = true
         },
         //删除
-        del(data, index) {
-            ElMessage("删除" + index)
+        del(store, index) {
+            //get请求
+            this.$http.get("/company/store/delete?id=" + store.id).then(
+                (response) => {
+                    if (response.data.code != 200) {
+                        ElMessage.error(response.data.msg)
+                        return
+                    }
+                    //成功
+                    ElMessage.success("删除成功")
+                    //刷新
+                    this.getData()
+                },
+                (response) => {
+                    ElMessage.error("服务器连接失败")
+                }
+            )
         },
         //详情
         detail(data) {
@@ -176,7 +193,6 @@ export default {
         //多选
         handleSelectionChange(val) {
             this.multipleSelection = val;
-            // console.log(this.multipleSelection)
         },
         //从服务器获取数据
         getData() {
@@ -191,19 +207,52 @@ export default {
                     //500ms后关闭加载动画
                     setTimeout(() => {
                         this.loading = false
-                    }, 500)
+                    }, 0)
                 },
                 (response) => {
                     ElMessage.error("服务器连接异常")
                     this.loading = false
                 }
             )
+        },
+        //更新营业状态
+        updateOpenState(state) {
+            let idList = []
+            this.multipleSelection.forEach(element => {
+                idList.push(element.id)
+            });
+            let json = {
+                "storeIdList": idList,
+                "openState": state
+            }
+            //提交数据
+            this.$http.post("/company/store/openstate/v2", {
+                data: json
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(
+                (response) => {
+                    if (response.data.code !== 200) {
+                        ElMessage.error(response.data.msg)
+                        return
+                    }
+                    //成功
+                    ElMessage.success("修改成功")
+                    //刷新
+                    this.getData()
+                },
+                (response) => {
+                    ElMessage.error("服务器连接失败")
+                }
+            )
         }
     },
     watch: {
         addDialogVisible(val) {
-            if (!val)
-                ElMessage("请刷新数据")
+            if (val == false)
+                this.getData()
         }
     },
     mounted() {

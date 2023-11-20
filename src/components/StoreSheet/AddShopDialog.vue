@@ -53,6 +53,7 @@ import { ElMessage } from 'element-plus'
 export default {
     props: {
         visible: Boolean,
+        openArea: Array,
     },
     emits: ['update:visible'],
     data() {
@@ -100,36 +101,7 @@ export default {
             }, {
                 "value": "2",
                 "label": "休息中"
-            }],
-            areaOptions: [
-                {
-                    "label": "广东省",
-                    "value": "广东省",
-                    "children": [{
-                        "label": "广州市",
-                        "value": "广州市"
-                    }, {
-                        "label": "韶关市",
-                        "value": "韶关市"
-                    }]
-                },
-                {
-                    "label": "湖南省",
-                    "value": "湖南省",
-                    "children": [{
-                        "label": "长沙市",
-                        "value": "长沙市"
-                    },
-                    {
-                        "label": "衡阳市",
-                        "value": "衡阳市"
-                    }]
-                },
-                {
-                    "label": "北京市",
-                    "value": "北京市"
-                }
-            ],
+            }]
         }
     },
     methods: {
@@ -157,8 +129,30 @@ export default {
         confirm() {
             this.$refs["myform"].validate(valid => {
                 if (valid) {
-                    //关闭窗口
-                    this.closeDialog()
+                    //符合要求，处理数据
+                    let newStore = JSON.parse(JSON.stringify(this.data))//浅拷贝
+                    //提交数据
+                    this.$http.post("/company/store/add", {
+                        data: newStore
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(
+                        (response) => {
+                            if(response.data.code !== 200){
+                                ElMessage.error(response.data.msg)
+                                return
+                            }
+                            //成功
+                            ElMessage.success("添加成功")
+                            //关闭窗口
+                            this.closeDialog()
+                        },
+                        (response) => {
+                            ElMessage.error("服务器连接失败")
+                        }
+                    )
                 } else {
                     //报错
                     ElMessage.error("填写不符合要求")
@@ -178,6 +172,11 @@ export default {
             },
             set(see) {
                 this.$emit('update:visible', see)
+            }
+        },
+        areaOptions:{
+            get(){
+                return this.openArea
             }
         }
     }

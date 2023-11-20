@@ -174,6 +174,23 @@ export default {
         cancel() {
             //关闭窗口
             this.closeDialog()
+        },
+        //获取数据
+        getData() {
+            //get请求
+            this.$http.get("/company/store/info?id=" + this.id).then(
+                (response) => {
+                    console.log(response.data)
+                    if (response.data.code != 200) {
+                        ElMessage.error(response.data.msg)
+                        return
+                    }
+                    this.store = response.data.data.store
+                },
+                (response) => {
+                    ElMessage.error("服务器连接失败")
+                }
+            )
         }
     },
     computed: {

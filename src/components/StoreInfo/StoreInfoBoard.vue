@@ -100,7 +100,7 @@
                         地区:
                     </el-col>
                     <el-col :span="setting.value">
-                        {{ store.area.join('/') }}
+                        {{ store.area }}
                     </el-col>
                 </el-row>
             </el-col>
@@ -118,7 +118,7 @@
             </el-col>
         </el-row>
     </div>
-    <EditDialog v-model:visible="EditDialogVisible" :id="store.id"/>
+    <EditDialog v-model:visible="EditDialogVisible" :id="store.id" />
 </template>
 <script>
 import {
@@ -139,35 +139,47 @@ export default {
     data() {
         return {
             Edit,
-            store: {
-                "id": 1,
-                "name": "广州gogo新天地店",
-                "area": ["广东省", "广州市"],
-                "address": "小谷围街贝岗村贝岗村大街1号高高新天地商业广场一期一层第103、104、141、142号商铺",
-                "phone": "020-85202718",
-                "openTime": "周一至周日 10:00-22:00",
-                "openState": "1",
-            },
+            store: {},
             setting: {
                 gutter: 10,
                 label: 6,
                 value: 18
             },
-            EditDialogVisible:false
+            EditDialogVisible: false
         }
     },
     methods: {
         //编辑
         handleEdit() {
             this.EditDialogVisible = true
+        },
+        //获取数据
+        getData() {
+            //get请求
+            this.$http.get("/company/store/info?id=" + this.id).then(
+                (response) => {
+                    console.log(response.data)
+                    if (response.data.code != 200) {
+                        ElMessage.error(response.data.msg)
+                        return
+                    }
+                    this.store = response.data.data.store
+                },
+                (response) => {
+                    ElMessage.error("服务器连接失败")
+                }
+            )
         }
     },
     watch: {
-        EditDialogVisible(val){
-            if(!val){
+        EditDialogVisible(val) {
+            if (!val) {
                 ElMessage('请刷新数据')
             }
         }
+    },
+    mounted() {
+        this.getData()
     }
 }
 </script>

@@ -109,13 +109,17 @@ export default {
                     }
                     //提交数据
                     this.$http.post("/company/openarea/update", {
-                        newOpenArea: newOpenArea
+                        data: newOpenArea
                     }, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     }).then(
                         (response) => {
+                            if(response.data.code!==200){
+                                ElMessage.error(response.data.msg)
+                                return
+                            }
                             //成功
                             ElMessage.success("添加成功")
                             //关闭窗口
