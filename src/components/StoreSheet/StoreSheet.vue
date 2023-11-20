@@ -210,8 +210,11 @@ export default {
                     }, 0)
                 },
                 (response) => {
-                    ElMessage.error("服务器连接异常")
-                    this.loading = false
+                    setTimeout(() => {
+                        this.loading = false
+                        ElMessage.error("服务器连接异常")
+                    }, 1500)
+                    
                 }
             )
         },
