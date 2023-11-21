@@ -56,19 +56,19 @@ import { ElMessage } from 'element-plus'
 export default {
     props: {
         visible: Boolean,
-        id: Number,
+        store: Object
     },
     emits: ['update:visible'],
     data() {
         return {
             data: {
-                "id": 1,
-                "name": "广州gogo新天地店",
-                "area": ["广东省", "广州市"],
-                "address": "小谷围街贝岗村贝岗村大街1号高高新天地商业广场一期一层第103、104、141、142号商铺",
-                "phone": "020-85202718",
-                "openTime": "周一至周日 10:00-22:00",
-                "openState": "1",
+                id: "",
+                name: "",
+                openState: "",
+                phone: "",
+                openTime: "",
+                area: [],
+                address: ""
             },
             rules: {
                 name: [{
@@ -101,40 +101,12 @@ export default {
                 "label": "未开业 "
             }, {
                 "value": "1",
-                "label": "营业中"
+                "label": "营业"
             }, {
                 "value": "2",
-                "label": "休息中"
+                "label": "闭店"
             }],
-            areaOptions: [
-                {
-                    "label": "广东省",
-                    "value": "广东省",
-                    "children": [{
-                        "label": "广州市",
-                        "value": "广州市"
-                    }, {
-                        "label": "韶关市",
-                        "value": "韶关市"
-                    }]
-                },
-                {
-                    "label": "湖南省",
-                    "value": "湖南省",
-                    "children": [{
-                        "label": "长沙市",
-                        "value": "长沙市"
-                    },
-                    {
-                        "label": "衡阳市",
-                        "value": "衡阳市"
-                    }]
-                },
-                {
-                    "label": "北京市",
-                    "value": "北京市"
-                }
-            ],
+            areaOptions: [],
         }
     },
     methods: {
@@ -175,17 +147,16 @@ export default {
             //关闭窗口
             this.closeDialog()
         },
-        //获取数据
-        getData() {
+        //获取营业区域选项
+        getAreaOptions() {
             //get请求
-            this.$http.get("/company/store/info?id=" + this.id).then(
+            this.$http.get("/company/openarea/option").then(
                 (response) => {
-                    console.log(response.data)
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
                         return
                     }
-                    this.store = response.data.data.store
+                    this.areaOptions = response.data.data.openArea
                 },
                 (response) => {
                     ElMessage.error("服务器连接失败")
@@ -201,14 +172,15 @@ export default {
             set(see) {
                 this.$emit('update:visible', see)
             }
-        }
-    },
-    watch:{
-        see(val){
-            if(val){
-                ElMessage("请从服务器获取数据")
+        },
+        data:{
+            get(){
+                return this.store
             }
         }
+    },
+    mounted() {
+        this.getAreaOptions()
     }
 }
 </script>

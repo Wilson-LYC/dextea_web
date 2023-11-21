@@ -35,8 +35,8 @@
         <div class="btn-container" style="margin-bottom: 15px;">
             <el-button type="primary" @click="add">新增</el-button>
             <el-button type="success" @click="updateOpenState('1')">营业</el-button>
-            <el-button type="warning" @click="updateOpenState('2')">闭店</el-button>
-            <el-button type="danger" @click="updateOpenState('0')">未营业</el-button>
+            <el-button type="danger" @click="updateOpenState('2')">闭店</el-button>
+            <el-button type="info" @click="updateOpenState('0')">未开业</el-button>
             <el-button type="default" @click="getData">刷新</el-button>
         </div>
 
@@ -63,13 +63,12 @@
             </el-table-column>
             <el-table-column label="所在区域" min-width="100" :show-overflow-tooltip="true">
                 <template #default="scope">
-                    <span>{{ scope.row.area }}</span>
+                    {{ scope.row.area[0] }}{{ scope.row.area[1] }}
                 </template>
             </el-table-column>
             <el-table-column prop="address" label="地址" min-width="300" :show-overflow-tooltip="true" />
             <el-table-column prop="phone" label="联系方式" min-width="100" :show-overflow-tooltip="true" />
             <el-table-column prop="openTime" label="营业时间" min-width="200" :show-overflow-tooltip="true" />
-            <el-table-column prop="account" label="登录帐号" min-width="100" :show-overflow-tooltip="true" />
             <!-- 行内操作栏 -->
             <el-table-column fixed="right" label="操作" min-width="200" align="center">
                 <template #default="scope">
@@ -91,16 +90,28 @@
 </template>
 
 <script>
+import { Text } from 'vue'
 import AddDialog from './AddShopDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
-        AddDialog
+        AddDialog,
+        Text
     },
     data() {
         return {
             //表格数据
-            tabledata: [],
+            tabledata: [
+                {
+                    id: "",
+                    name: "",
+                    openState: "",
+                    area: [],
+                    address: "",
+                    phone: "",
+                    openTime: ""
+                }
+            ],
             loading: false,
             //被选中的门店
             multipleSelection: [],
@@ -214,7 +225,7 @@ export default {
                         this.loading = false
                         ElMessage.error("服务器连接异常")
                     }, 1500)
-                    
+
                 }
             )
         },

@@ -61,10 +61,10 @@
                     </el-col>
                     <el-col :span="setting.value">
                         <el-tag type="success" effect="plain" round v-if="store.openState === '1'">
-                            营业中
+                            营业
                         </el-tag>
                         <el-tag type="danger" effect="plain" round v-else-if="store.openState === '2'">
-                            休息中
+                            闭店
                         </el-tag>
                         <el-tag type="info" effect="plain" round v-else>
                             未开业
@@ -100,7 +100,7 @@
                         地区:
                     </el-col>
                     <el-col :span="setting.value">
-                        {{ store.area }}
+                        {{ store.area[0] }}{{ store.area[1] }}
                     </el-col>
                 </el-row>
             </el-col>
@@ -118,7 +118,7 @@
             </el-col>
         </el-row>
     </div>
-    <EditDialog v-model:visible="EditDialogVisible" :id="store.id" />
+    <EditDialog v-model:visible="EditDialogVisible" :store="store" />
 </template>
 <script>
 import {
@@ -139,7 +139,15 @@ export default {
     data() {
         return {
             Edit,
-            store: {},
+            store: {
+                id: "",
+                name: "",
+                openState: "",
+                phone: "",
+                openTime: "",
+                area: [],
+                address: ""
+            },
             setting: {
                 gutter: 10,
                 label: 6,
@@ -158,7 +166,6 @@ export default {
             //get请求
             this.$http.get("/company/store/info?id=" + this.id).then(
                 (response) => {
-                    console.log(response.data)
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
                         return
@@ -173,8 +180,8 @@ export default {
     },
     watch: {
         EditDialogVisible(val) {
-            if (!val) {
-                ElMessage('请刷新数据')
+            if (val === false) {
+                this.getData()
             }
         }
     },
