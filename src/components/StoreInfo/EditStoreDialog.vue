@@ -134,8 +134,30 @@ export default {
         confirm() {
             this.$refs["myform"].validate(valid => {
                 if (valid) {
-                    //关闭窗口
-                    this.closeDialog()
+                    //符合要求，处理数据
+                    let newdata = JSON.parse(JSON.stringify(this.data))//浅拷贝
+                    //提交数据
+                    this.$http.post("/company/store/update", {
+                        data: newdata
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(
+                        (response) => {
+                            if(response.data.code !== 200){
+                                ElMessage.error(response.data.msg)
+                                return
+                            }
+                            //成功
+                            ElMessage.success("修改成功")
+                            //关闭窗口
+                            this.closeDialog()
+                        },
+                        (response) => {
+                            ElMessage.error("服务器连接失败")
+                        }
+                    )
                 } else {
                     //报错
                     ElMessage.error("填写不符合要求")
@@ -172,15 +194,17 @@ export default {
             set(see) {
                 this.$emit('update:visible', see)
             }
-        },
-        data:{
-            get(){
-                return this.store
-            }
         }
     },
-    mounted() {
-        this.getAreaOptions()
+    watch: {
+        see(val) {
+            if (val === false) {
+                this.dataReset()
+            }else{
+                this.data=JSON.parse(JSON.stringify(this.store))
+                this.getAreaOptions()
+            }
+        }
     }
 }
 </script>
