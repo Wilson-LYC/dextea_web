@@ -25,10 +25,14 @@ const router = createRouter({
                   component: () => import("@/views/company/store/OpenAreaView.vue"),
                 },
                 {
-                  path:'detail/:id',
+                  path: 'detail/:id',
                   component: () => import("@/views/company/store/StoreDetailView.vue"),
                 }
               ]
+            },
+            {
+              path: 'staff',
+              component: () => import("@/views/company/staff/StaffView.vue"),
             },
             {
               path: 'commodity',

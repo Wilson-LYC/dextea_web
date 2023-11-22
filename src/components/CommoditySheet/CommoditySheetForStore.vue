@@ -10,7 +10,7 @@
 .title {
     margin: 0;
     padding: 0;
-    font-size: 25px;
+    font-size: 22px;
     color: #409EFF;
     font-weight: bold;
 }

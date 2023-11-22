@@ -36,7 +36,7 @@
 
 <script>
 import { ElMessage } from 'element-plus'
-import AddDialog from '@/components/OpenAreaSheet/AddOpenAreaDialog.vue'
+import AddDialog from './AddOpenAreaDialog.vue'
 export default {
   components: {
     AddDialog

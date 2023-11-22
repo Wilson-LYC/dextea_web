@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import StoreSheet from '@/components/StoreSheet/StoreSheet.vue'
+import StoreSheet from '@/components/StoreComponents/StoreSheet.vue'
 export default {
   components: {
     StoreSheet

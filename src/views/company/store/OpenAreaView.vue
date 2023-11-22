@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import OpenAreaSheet from '@/components/OpenAreaSheet/OpenAreaSheet.vue'
+import OpenAreaSheet from '@/components/OpenAreaComponents/OpenAreaSheet.vue'
 export default {
   components: {
     OpenAreaSheet

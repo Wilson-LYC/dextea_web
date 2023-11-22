@@ -15,7 +15,7 @@
 .title {
     margin: 0;
     padding: 0;
-    font-size: 25px;
+    font-size: 22px;
     color: #409EFF;
     font-weight: bold;
 }
@@ -124,7 +124,7 @@
 import {
     Edit,
 } from '@element-plus/icons-vue'
-import EditDialog from '@/components/StoreInfo/EditStoreDialog.vue'
+import EditDialog from './EditStoreDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
