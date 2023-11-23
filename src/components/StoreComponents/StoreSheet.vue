@@ -20,12 +20,12 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="所在区域">
-                    <el-cascader v-model="search.form.openArea" clearable style="width: 150px;" :options="areaOptions"
+                    <el-cascader v-model="search.form.area" clearable style="width: 150px;" :options="areaOptions"
                         placeholder="请选择">
                     </el-cascader>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="searchSubmit">查询</el-button>
+                    <el-button type="primary" @click="searchSubmit" :loading="searchLoading">查询</el-button>
                     <el-button type="default" @click="searchReset">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -61,11 +61,7 @@
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="所在区域" min-width="100" :show-overflow-tooltip="true">
-                <template #default="scope">
-                    {{ scope.row.area[0] }}{{ scope.row.area[1] }}
-                </template>
-            </el-table-column>
+            <el-table-column prop="area" label="所在区域" min-width="100" :show-overflow-tooltip="true" />
             <el-table-column prop="address" label="地址" min-width="300" :show-overflow-tooltip="true" />
             <el-table-column prop="phone" label="联系方式" min-width="100" :show-overflow-tooltip="true" />
             <el-table-column prop="openTime" label="营业时间" min-width="200" :show-overflow-tooltip="true" />
@@ -106,6 +102,8 @@ export default {
             tableLoading: false,
             //刷新按钮加载动画
             refreshLoading: false,
+            //搜索动画
+            searchLoading: false,
             //被选中的行
             multipleSelection: [],
             //“新增”对话框可见性
@@ -117,8 +115,7 @@ export default {
                     "name": "",
                     "phone": "",
                     "openState": "",
-                    "openArea": [],
-                    "phone": ""
+                    "area": [],
                 },
                 rules: {
                     id: [{
@@ -154,14 +151,36 @@ export default {
                 "name": "",
                 "phone": "",
                 "openState": "",
-                "openArea": [],
-                "phone": ""
+                "area": []
             }
+            this.getData()
         },
         //搜索
         searchSubmit() {
-            ElMessage("搜索")
-            console.log(this.search.form)
+            this.searchLoading = true
+            setTimeout(() => {
+                this.$http.post("/company/store/search", {
+                    data: this.search.form
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(
+                    (response) => {
+                        console.log(response.data)
+                        if (response.data.code != 200) {
+                            ElMessage.error("查询失败")
+                            return
+                        }
+                        this.tabledata = response.data.data.stores
+                        ElMessage.success("查询成功")
+                    },
+                    (response) => {
+                        ElMessage.error("服务器连接失败")
+                    }
+                )
+                this.searchLoading = false
+            }, 500)
         },
         //表格相关
         //添加

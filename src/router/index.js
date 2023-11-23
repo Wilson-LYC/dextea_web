@@ -38,6 +38,10 @@ const router = createRouter({
               path: 'commodity',
               children: [
                 {
+                  path: 'category',
+                  component: () => import("@/views/company/commodity/CategoryView.vue"),
+                },
+                {
                   path: 'all',
                   component: () => import("@/views/company/commodity/CommodityView.vue"),
                 },

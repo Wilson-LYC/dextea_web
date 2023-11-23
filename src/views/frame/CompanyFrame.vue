@@ -56,7 +56,7 @@ span {
                             </el-icon>
                             <span>商品管理</span>
                         </template>
-                        <el-menu-item index="/company/commodity/class"><span>品类管理</span></el-menu-item>
+                        <el-menu-item index="/company/commodity/category"><span>品类管理</span></el-menu-item>
                         <el-menu-item index="/company/commodity/all"><span>全部商品</span></el-menu-item>
                     </el-sub-menu>
                     <el-menu-item index="/company/order">

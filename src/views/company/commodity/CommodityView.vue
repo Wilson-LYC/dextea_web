@@ -2,7 +2,7 @@
 <CommoditySheet/>
 </template>
 <script>
-import CommoditySheet from '../../../components/CommoditySheet/CommoditySheetForCompany.vue';
+import CommoditySheet from '@/components/CommodityComponents/CommoditySheetForCompany.vue'
 export default {
     components: {
         CommoditySheet

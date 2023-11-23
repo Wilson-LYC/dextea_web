@@ -4,13 +4,10 @@
         <!-- 搜索栏 -->
         <div>
             <el-form :inline="true" :model="search.data" :rules="search.rules">
-                <el-form-item label="员工ID" prop="id">
+                <el-form-item label="商品ID" prop="id">
                     <el-input v-model="search.data.id" clearable style="width: 150px;" />
                 </el-form-item>
-                <el-form-item label="账号">
-                    <el-input v-model="search.data.account" clearable style="width: 150px;" />
-                </el-form-item>
-                <el-form-item label="昵称">
+                <el-form-item label="名称">
                     <el-input v-model="search.data.name" clearable style="width: 150px;" />
                 </el-form-item>
                 <el-form-item label="账号类型">
@@ -20,13 +17,12 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="所属门店">
-                    <el-select v-model="search.data.storeId" placeholder="请选择" clearable style="width: 150px;">
-                        <el-option v-for="(item, index) in storeOptions" :key="index" :label="item.label"
-                            :value="item.value"></el-option>
-                    </el-select>
+                    <el-cascader v-model="search.data.storeName" clearable style="width: 150px;" :options="areaOptions"
+                        placeholder="请选择">
+                    </el-cascader>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="searchSubmit" :loading="searchLoading">查询</el-button>
+                    <el-button type="primary" @click="searchSubmit">查询</el-button>
                     <el-button type="default" @click="searchReset">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -44,26 +40,23 @@
             <template #empty>无数据</template>
             <!-- 数据部分 -->
             <el-table-column type="selection" width="50" fixed="left" />
-            <el-table-column prop="id" label="员工ID" min-width="80" fixed="left" sortable />
-            <el-table-column prop="name" label="昵称" min-width="80" :show-overflow-tooltip="true" />
-            <el-table-column prop="account" label="账号" min-width="80" :show-overflow-tooltip="true" />
-            <el-table-column label="账号类型" width="80" align="center">
+            <el-table-column prop="id" label="商品ID" min-width="80" fixed="left" sortable />
+            <el-table-column prop="name" label="名称" min-width="80" :show-overflow-tooltip="true" />
+            <el-table-column label="销售状态" min-width="80" align="center">
                 <template #default="scope">
-                    <el-tag type="danger" effect="light" round v-if="scope.row.role === '0'">
-                        超级管理员
+                    <el-tag type="danger" effect="light" round v-if="scope.row.state == '0'">
+                        不可售
                     </el-tag>
-                    <el-tag type="success" effect="light" round v-else-if="scope.row.role === '1'">
-                        公司账号
-                    </el-tag>
-                    <el-tag type="" effect="light" round v-else-if="scope.row.role === '2'">
-                        门店账号
+                    <el-tag type="success" effect="light" round v-else-if="scope.row.state === '1'">
+                        可售
                     </el-tag>
                     <el-tag type="info" effect="light" round v-else>
-                        未指定
+                        未知
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column prop="storeName" label="所属门店" min-width="150" :show-overflow-tooltip="true" />
+            <el-table-column prop="price" label="价格" min-width="80" :show-overflow-tooltip="true" />
+            <el-table-column prop="category" label="品类" min-width="80" :show-overflow-tooltip="true" />
             <!-- 行内操作栏 -->
             <el-table-column fixed="right" label="操作" min-width="200" align="center">
                 <template #default="scope">
@@ -81,18 +74,18 @@
         <!-- 对话框 -->
         <!-- 新增对话框 -->
         <AddDialog v-model:visible="addDialogVisible" />
-        <EditDialog v-model:visible="editDialogVisible" :staff="cStaff" />
+        <!-- <EditDialog v-model:visible="editDialogVisible" :staff="cStaff" /> -->
     </div>
 </template>
 
 <script>
-import AddDialog from './AddStaffDialog.vue'
-import EditDialog from './EditStaffDialog.vue'
+import AddDialog from './AddCommodityDialog.vue'
+// import EditDialog from './EditStaffDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
         AddDialog,
-        EditDialog
+        // EditDialog
     },
     data() {
         return {
@@ -102,8 +95,6 @@ export default {
             tableLoading: false,
             //刷新按钮动画
             refreshLoading: false,
-            //搜索动画
-            searchLoading: false,
             //被选中的行
             multipleSelection: [],
             //“新增”对话框可见性
@@ -118,8 +109,7 @@ export default {
                     "id": "",
                     "name": "",
                     "role": "",
-                    "storeId": "",
-                    "account": ""
+                    "storeName": ""
                 },
                 rules: {
                     id: [{
@@ -129,22 +119,6 @@ export default {
                     }],
                 },
             },
-            //选项
-            //账号类别
-            roleOptions: [{
-                "value": "0",
-                "label": "超级管理员"
-            },
-            {
-                "value": "1",
-                "label": "公司账号"
-            },
-            {
-                "value": "2",
-                "label": "门店账号"
-            }],
-            //门店
-            storeOptions: [],
         }
     },
     methods: {
@@ -155,36 +129,13 @@ export default {
                 "id": "",
                 "name": "",
                 "role": "",
-                "storeId": "",
-                "account": ""
+                "storeName": ""
             }
-            this.getStaffData()
         },
         //搜索
         searchSubmit() {
-            this.searchLoading = true
-            setTimeout(() => {
-                this.$http.post("/company/staff/search", {
-                    data: this.search.data
-                }, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then(
-                    (response) => {
-                        if (response.data.code != 200) {
-                            ElMessage.error("查询失败")
-                            return
-                        }
-                        this.tabledata = response.data.data.staff
-                        ElMessage.success("查询成功")
-                    },
-                    (response) => {
-                        ElMessage.error("服务器连接失败")
-                    }
-                )
-                this.searchLoading = false
-            }, 500)
+            ElMessage("搜索")
+            console.log(this.search.data)
         },
         //添加
         add() {
@@ -220,15 +171,15 @@ export default {
             this.multipleSelection = val;
         },
         //从服务器获取数据
-        getStaffData() {
+        getData() {
             this.loading = true
-            this.$http.get("/company/staff/get").then(
+            this.$http.get("/company/commodity/get").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
                         return false
                     }
-                    this.tabledata = response.data.data.staff
+                    this.tabledata = response.data.data.commodity
                     this.tableLoading = false
                     this.refreshLoading = false
                     return true
@@ -248,38 +199,23 @@ export default {
             let res
             this.refreshLoading = true
             setTimeout(() => {
-                res = this.getStaffData()
+                res = this.getData()
                 if (res == false) {
                     ElMessage.error("刷新失败")
                 } else {
                     ElMessage.success("刷新成功")
                 }
             }, 500)
-        },
-        getStoreOption() {
-            //get请求
-            this.$http.get("/company/store/option").then(
-                (response) => {
-                    if (response.data.code != 200) {
-                        ElMessage.error(response.data.msg)
-                        return
-                    }
-                    this.storeOptions = response.data.data.stores
-                },
-                (response) => {
-                }
-            )
         }
     },
     watch: {
         addDialogVisible(val) {
             if (val == false)
-                this.getStaffData()
+                this.getData()
         }
     },
     mounted() {
-        this.getStaffData()
-        this.getStoreOption()
+        this.getData()
     }
 }
 </script>
