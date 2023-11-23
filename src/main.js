@@ -5,7 +5,7 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import axios from 'axios';
-axios.defaults.baseURL = "http://192.168.205.57:8080"
+axios.defaults.baseURL = "http://192.168.205.57:6688"
 const app = createApp(App)
 app.use(router)
 app.config.globalProperties.$http = axios
