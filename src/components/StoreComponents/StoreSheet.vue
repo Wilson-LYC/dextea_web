@@ -101,17 +101,7 @@ export default {
     data() {
         return {
             //表格数据
-            tabledata: [
-                {
-                    id: "",
-                    name: "",
-                    openState: "",
-                    area: [],
-                    address: "",
-                    phone: "",
-                    openTime: ""
-                }
-            ],
+            tabledata: [],
             //表格加载动画
             tableLoading: false,
             //刷新按钮加载动画
@@ -209,12 +199,7 @@ export default {
             //500ms后刷新
             let res
             setTimeout(() => {
-                res = this.getData()
-                if (res == false) {
-                    ElMessage.error("刷新失败")
-                } else {
-                    ElMessage.success("刷新成功")
-                }
+                this.getData()
             }, 500)
         },
         //多选

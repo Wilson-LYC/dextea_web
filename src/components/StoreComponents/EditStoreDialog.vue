@@ -11,29 +11,29 @@
         :destroy-on-close="false" :before-close="closeDialog">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
-            <el-form :model="data" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default">
+            <el-form :model="form" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default">
                 <el-form-item label="门店ID" prop="name" class="required">
-                    <el-input v-model="data.id" type="text" disabled></el-input>
+                    <el-input v-model="form.id" type="text" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="门店名称" prop="name" class="required">
-                    <el-input v-model="data.name" type="text" clearable></el-input>
+                    <el-input v-model="form.name" type="text" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="所在区域" prop="area" class="required">
-                    <el-cascader v-model="data.area" class="full-width-input" :options="areaOptions" clearable
+                    <el-cascader v-model="form.area" class="full-width-input" :options="areaOptions" clearable
                         placeholder="请选择">
                     </el-cascader>
                 </el-form-item>
                 <el-form-item label="详细地址" prop="address" class="required">
-                    <el-input v-model="data.address" type="text" clearable></el-input>
+                    <el-input v-model="form.address" type="text" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="电话" prop="phone" class="required">
-                    <el-input v-model="data.phone" type="text" clearable></el-input>
+                    <el-input v-model="form.phone" type="text" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="营业时间" prop="openTime" class="required">
-                    <el-input v-model="data.openTime" type="text" clearable></el-input>
+                    <el-input v-model="form.openTime" type="text" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="营业状态" prop="openState" class="required">
-                    <el-select v-model="data.openState" class="full-width-input" clearable placeholder="请选择">
+                    <el-select v-model="form.openState" class="full-width-input" clearable placeholder="请选择">
                         <el-option v-for="(item, index) in openStateOptions" :key="index" :label="item.label"
                             :value="item.value" :disabled="item.disabled"></el-option>
                     </el-select>
@@ -61,7 +61,7 @@ export default {
     emits: ['update:visible'],
     data() {
         return {
-            data: {
+            form: {
                 id: "",
                 name: "",
                 openState: "",
@@ -73,28 +73,34 @@ export default {
             rules: {
                 name: [{
                     required: true,
-                    message: '字段值不可为空',
+                    message: "请输入门店名称",
+                    trigger: "blur"
                 }],
                 area: [{
                     required: true,
-                    message: '字段值不可为空',
+                    message: "请选择所在区域",
+                    trigger: "change"
                 }],
                 address: [{
                     required: true,
-                    message: '字段值不可为空',
+                    message: "请输入详细地址",
+                    trigger: "blur"
                 }],
                 phone: [{
                     required: true,
-                    message: '字段值不可为空',
+                    message: "请输入电话",
+                    trigger: "blur"
                 }],
                 openTime: [{
                     required: true,
-                    message: '字段值不可为空',
+                    message: "请输入营业时间",
+                    trigger: "blur"
                 }],
                 openState: [{
                     required: true,
-                    message: '字段值不可为空',
-                }],
+                    message: "请选择营业状态",
+                    trigger: "change"
+                }]
             },
             openStateOptions: [{
                 "value": "0",
@@ -112,7 +118,7 @@ export default {
     methods: {
         //清空数据
         dataReset() {
-            this.data = {
+            this.form = {
                 name: "",
                 area: "",
                 address: "",
@@ -123,8 +129,6 @@ export default {
         },
         //关闭窗口
         closeDialog(done) {
-            //重置数据
-            // this.dataReset()
             //关闭窗口
             this.see = false
             // ElMessage("窗口关闭")
@@ -134,11 +138,11 @@ export default {
         confirm() {
             this.$refs["myform"].validate(valid => {
                 if (valid) {
-                    //符合要求，处理数据
-                    let newdata = JSON.parse(JSON.stringify(this.data))//浅拷贝
+                    //表单验证通过
+                    let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
                     //提交数据
                     this.$http.post("/company/store/update", {
-                        data: newdata
+                        data: sData
                     }, {
                         headers: {
                             'Content-Type': 'application/json'
@@ -159,8 +163,8 @@ export default {
                         }
                     )
                 } else {
-                    //报错
-                    ElMessage.error("填写不符合要求")
+                    //表单验证不通过
+                    ElMessage.error("未按要求填写")
                 }
             });
         },
@@ -201,7 +205,7 @@ export default {
             if (val === false) {
                 this.dataReset()
             }else{
-                this.data=JSON.parse(JSON.stringify(this.store))
+                this.form=JSON.parse(JSON.stringify(this.store))
                 this.getAreaOptions()
             }
         }

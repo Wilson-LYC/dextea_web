@@ -3,21 +3,21 @@
         :before-close="closeDialog">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
-            <el-form :model="data" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default"
+            <el-form :model="form" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default"
                 @submit.native.prevent>
                 <el-form-item label="区域类型" prop="type" class="required">
-                    <el-radio-group v-model="data.type">
+                    <el-radio-group v-model="form.type">
                         <el-radio v-for="(item, index) in typeOptions" :key="index" :label="item.value"
                             :disabled="item.disabled" style="{display: inline}">{{ item.label }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="上级区域" prop="superior" class="required" v-if="data.type == 2">
-                    <el-select v-model="data.superior" class="full-width-input" clearable placeholder="请选择">
+                <el-form-item label="上级区域" prop="superior" class="required" v-if="form.type == 2">
+                    <el-select v-model="form.superior" class="full-width-input" clearable placeholder="请选择">
                         <el-option v-for="(item, index) in openArea" :label="item.value" :value="index"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="区域名称" prop="name" class="required">
-                    <el-input v-model="data.name" type="text" clearable></el-input>
+                    <el-input v-model="form.name" type="text" clearable></el-input>
                 </el-form-item>
             </el-form>
         </el-scrollbar>
@@ -42,7 +42,7 @@ export default {
     data() {
         return {
             //表单数据
-            data: {
+            form: {
                 type: "",//1:省/直辖市，2:市
                 superior: "",//上级区域
                 name: "",//区域名称
@@ -51,16 +51,19 @@ export default {
             rules: {
                 type: [{
                     required: true,
-                    message: '字段值不可为空',
+                    message: "请选择区域类型",
+                    trigger: "change"
                 }],
                 superior: [{
                     required: true,
-                    message: '字段值不可为空',
+                    message: "请选择上级区域",
+                    trigger: "change"
                 }],
                 name: [{
                     required: true,
-                    message: '字段值不可为空',
-                }],
+                    message: "请输入区域名称",
+                    trigger: "blur"
+                }]
             },
             //区域类型选项
             typeOptions: [{
@@ -75,7 +78,7 @@ export default {
     methods: {
         //清空数据
         dataReset() {
-            this.data = {
+            this.form = {
                 type: "",
                 superior: "",
                 name: "",
@@ -91,25 +94,25 @@ export default {
         confirm() {
             this.$refs["myform"].validate(valid => {
                 if (valid) {
-                    //符合要求，处理数据
-                    let newOpenArea = JSON.parse(JSON.stringify(this.openArea))//浅拷贝
-                    if (this.data.type == 1) {
+                    //表单验证通过
+                    let sData = JSON.parse(JSON.stringify(this.openArea))//浅拷贝
+                    if (this.form.type == 1) {
                         //省/直辖市
-                        newOpenArea.push({
-                            "value": this.data.name,
+                        sData.push({
+                            "value": this.form.name,
                             "num": "0",
                             "children": []
                         })
                     } else {
                         //市
-                        newOpenArea[this.data.superior].children.push({
-                            "value": this.data.name,
+                        sData[this.form.superior].children.push({
+                            "value": this.form.name,
                             "num": "0"
                         })
                     }
                     //提交数据
                     this.$http.post("/company/openarea/update", {
-                        data: newOpenArea
+                        data: sData
                     }, {
                         headers: {
                             'Content-Type': 'application/json'
@@ -130,8 +133,8 @@ export default {
                         }
                     )
                 } else {
-                    //不符合要求，提示错误
-                    ElMessage.error("填写不符合要求")
+                    //表单验证不通过
+                    ElMessage.error("未按要求填写")
                 }
             });
         },

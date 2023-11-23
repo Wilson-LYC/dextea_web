@@ -4,12 +4,12 @@
     <!-- 操作栏 -->
     <div class="btn-container" style="margin-bottom: 15px;">
       <el-button type="primary" @click="add">新增</el-button>
-      <el-button type="default" @click="getOpenAreaData">刷新</el-button>
+      <el-button type="default" @click="refresh" :loading="refreshLoading">刷新</el-button>
     </div>
 
     <!-- 表格主体 -->
     <el-table :data="tabledata" style="width: 100%" border height="600px" table-layout="auto" row-key="value"
-      v-loading="loading">
+      v-loading="tableLoading">
       <template #empty>无数据</template>
       <!-- 数据部分 -->
       <el-table-column prop="value" label="区域" width="300" />
@@ -17,8 +17,8 @@
       <!-- 行内操作栏 -->
       <el-table-column fixed="right" label="操作" width="100" align="center">
         <template #default="scope">
-          <!-- 没有子节点才能删除 -->
-          <el-popconfirm v-if="scope.row.children == null || scope.row.children.length < 1" width="220"
+          <!-- 没有子节点且区域内无门店才能删除 -->
+          <el-popconfirm v-if="(scope.row.children == null || scope.row.children.length < 1) && (scope.row.num<1)" width="220"
             confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled" icon-color="#626AEF" title="确定删除?"
             @confirm="del(scope.row)">
             <template #reference>
@@ -48,7 +48,9 @@ export default {
       //“新增”对话框可见性
       addDialogVisible: false,
       //加载动画
-      loading: false
+      tableLoading: false,
+      //刷新按钮动画
+      refreshLoading: false
     }
   },
   methods: {
@@ -106,28 +108,42 @@ export default {
         }
       )
     },
-    //从服务器获取数据
+    //从服务器获取营业区域
     getOpenAreaData() {
       this.loading = true
       this.$http.get("/company/openarea/get").then(
         (response) => {
           if (response.data.code != 200) {
             ElMessage.error(response.data.msg)
+            return false
           }
           this.tabledata = response.data.data.openArea
-          //500ms后关闭加载动画
-          setTimeout(() => {
-            this.loading = false
-          }, 0)
+          this.loading = false
+          this.refreshLoading = false
+          return true
         },
         (response) => {
           setTimeout(() => {
             this.loading = false
             ElMessage.error("服务器连接异常")
-          }, 1500)
-          
+            return false
+          }, 1000)
         }
       )
+    },
+    //刷新
+    refresh() {
+      this.refreshLoading = true
+      //500ms后刷新
+      let res
+      setTimeout(() => {
+        res = this.getOpenAreaData()
+        if (res == false) {
+          ElMessage.error("刷新失败")
+        } else {
+          ElMessage.success("刷新成功")
+        }
+      }, 500)
     }
   },
   watch: {

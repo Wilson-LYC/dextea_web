@@ -22,13 +22,13 @@
                     <el-input v-model="form.name" type="text" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="账号类型" prop="role" class="required">
-                    <el-select v-model="form.role" class="full-width-input" clearable placeholder="请选择">
+                    <el-select v-model="form.role" class="full-width-input" clearable placeholder="请选择" disabled>
                         <el-option v-for="(item, index) in roleOptions" :key="index" :label="item.label"
                             :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="门店ID" prop="storeId" class="required" v-if="form.role == '2'">
-                    <el-input v-model="form.storeId" type="text" clearable></el-input>
+                    <el-input v-model="form.storeId" type="text" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="门店名称" prop="storeName" class="required" v-if="form.role == '2'">
                     <el-input v-model="form.storeName" type="text" disabled></el-input>
@@ -51,7 +51,8 @@ import { ElMessage } from 'element-plus'
 import bcrypt from 'bcryptjs'
 export default {
     props: {
-        visible: Boolean
+        visible: Boolean,
+        sid: String
     },
     emits: ['update:visible'],
     data() {
@@ -60,7 +61,7 @@ export default {
                 account: "",
                 password: "",
                 name: "",
-                role: "",
+                role: "2",
                 storeId: "",
                 storeName: ""
             },
@@ -154,8 +155,10 @@ export default {
             this.form = {
                 account: "",
                 password: "",
-                role: "",
-                store: "",
+                name: "",
+                role: "2",
+                storeId: "",
+                storeName: ""
             }
         },
         //关闭窗口
@@ -185,7 +188,7 @@ export default {
                         }
                     }).then(
                         (response) => {
-                            if(response.data.code !== 200){
+                            if (response.data.code !== 200) {
                                 ElMessage.error(response.data.msg)
                                 return
                             }
@@ -217,6 +220,24 @@ export default {
             },
             set(see) {
                 this.$emit('update:visible', see)
+            }
+        }
+    },
+    watch: {
+        see(val) {
+            if (val == true) {
+                this.form.storeId = this.sid
+                this.$http.get("/company/store/info?id=" + this.sid).then(
+                    (response) => {
+                        if (response.data.code != 200) {
+                            ElMessage.error("参数错误")
+                        }
+                        this.form.storeName = response.data.data.store.name
+                    },
+                    (response) => {
+                        ElMessage.error("服务器连接失败")
+                    }
+                )
             }
         }
     }

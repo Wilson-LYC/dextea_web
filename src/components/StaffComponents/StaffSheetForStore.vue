@@ -1,6 +1,6 @@
 <style scoped></style>
 <template>
-    <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
+    <div style="background: #ffffff;border-radius: 8px;">
         <!-- 搜索栏 -->
         <div>
             <el-form :inline="true" :model="search.data" :rules="search.rules">
@@ -76,16 +76,19 @@
 
         <!-- 对话框 -->
         <!-- 新增对话框 -->
-        <AddDialog v-model:visible="addDialogVisible" />
+        <AddDialog v-model:visible="addDialogVisible" :sid="sid"/>
         <EditDialog v-model:visible="editDialogVisible" :staff="cStaff" />
     </div>
 </template>
 
 <script>
-import AddDialog from './AddStaffDialog.vue'
+import AddDialog from './AddStaffDialogForStore.vue'
 import EditDialog from './EditStaffDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
+    props:{
+        sid: Number
+    },
     components: {
         AddDialog,
         EditDialog
@@ -200,7 +203,7 @@ export default {
         //从服务器获取数据
         getStaffData() {
             this.loading = true
-            this.$http.get("/company/staff/get").then(
+            this.$http.get("/company/staff/store?sid="+this.sid).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
