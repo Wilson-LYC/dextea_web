@@ -1,46 +1,22 @@
-<style scoped>
-.mytitle {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-</style>
+<style scoped></style>
 
 <template>
-    <el-dialog v-model="see" :close-on-click-modal="false" :before-close="closeDialog" fullscreen>
-        <template #header>
-            <div style="font-size: 20px;">新增商品</div>
-        </template>
+    <el-dialog title="新增商品" v-model="see" :before-close="closeDialog" width="500px" :draggable="true">
         <!-- 表单 -->
-        <div class="mytitle">
-            基本信息
-        </div>
-        <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default" style="width: 500px;">
+        <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
             <el-form-item label="商品名称" prop="name">
                 <el-input v-model="form.name" type="text" clearable></el-input>
             </el-form-item>
-            <el-form-item label="价格" prop="price">
+            <el-form-item label="基础售价" prop="price">
                 <el-input v-model="form.price" type="text" clearable></el-input>
             </el-form-item>
-            <el-form-item label="详细介绍" prop="introduce">
-                <el-input v-model="form.introduce" type="textarea" clearable
-                    :autosize="{ minRows: 2, maxRows: 2 }"></el-input>
-            </el-form-item>
-            <el-form-item label="简介" prop="briefIntro">
-                <el-input v-model="form.briefIntro" type="textarea" clearable
-                    :autosize="{ minRows: 2, maxRows: 2 }"></el-input>
-            </el-form-item>
-            <el-form-item label="状态" prop="state">
-                <el-select v-model="form.state" placeholder="请选择">
+            <el-form-item label="销售状态" prop="state">
+                <el-select v-model="form.state" placeholder="请选择" style="width: 100%;">
                     <el-option v-for="(item, index) in sellOptions" :key="index" :label="item.label"
                         :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
         </el-form>
-        <div class="mytitle">
-            客制化要求
-        </div>
-        <CustomEditor v-model:custom="form.custom" />
         <!-- 操作按钮 -->
         <template #footer>
             <span class="dialog-footer">
@@ -53,11 +29,7 @@
 
 <script>
 import { ElMessage } from 'element-plus'
-import CustomEditor from './CustomEditor.vue'
 export default {
-    components: {
-        CustomEditor
-    },
     props: {
         visible: Boolean
     },
@@ -65,63 +37,9 @@ export default {
     data() {
         return {
             form: {
-                "id": "",
                 "price": "",
                 "name": "",
-                "introduce": "",
-                "briefIntro": "",
-                "img": "",
-                "state": "0",
-                "custom": [
-                    {
-                        "title": "冰量",
-                        "option": [
-                            {
-                                "text": "推荐",
-                                "cost": 0
-                            },
-                            {
-                                "text": "少冰",
-                                "cost": 0
-                            },
-                            {
-                                "text": "少少冰",
-                                "cost": 0
-                            },
-                            {
-                                "text": "去冰(不推荐)",
-                                "cost": 0
-                            }
-                        ],
-                        "opt": 0
-                    },
-                    {
-                        "title": "甜度",
-                        "option": [
-                            {
-                                "text": "推荐甜度(少甜)",
-                                "cost": 0
-                            },
-                            {
-                                "text": "少少甜",
-                                "cost": 0
-                            },
-                            {
-                                "text": "少少少甜",
-                                "cost": 0
-                            },
-                            {
-                                "text": "不另外加糖(不推荐)",
-                                "cost": 0
-                            },
-                            {
-                                "text": "多甜",
-                                "cost": 0
-                            }
-                        ],
-                        "opt": 0
-                    }
-                ]
+                "state": "0"
             },
             rules: {
                 name: [
@@ -130,15 +48,9 @@ export default {
                 price: [
                     { required: true, message: '请输入商品价格', trigger: 'blur' },
                 ],
-                introduce: [
-                    { required: true, message: '请输入商品详细介绍', trigger: 'blur' },
-                ],
-                briefIntro: [
-                    { required: true, message: '请输入商品简介', trigger: 'blur' },
-                ],
                 state: [
                     { required: true, message: '请选择商品状态', trigger: 'blur' },
-                ],
+                ]
             },
             sellOptions: [{
                 "value": "0",

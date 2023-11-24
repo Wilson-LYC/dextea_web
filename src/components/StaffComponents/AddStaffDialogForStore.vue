@@ -7,30 +7,29 @@
 </style>
 
 <template>
-    <el-dialog title="新增员工" width="500" v-model="see" :draggable="true" :close-on-click-modal="false"
-        :destroy-on-close="false" :before-close="closeDialog">
+    <el-dialog title="新增员工" v-model="see" :before-close="closeDialog" width="500px" :draggable="true">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
-            <el-form :model="form" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default">
-                <el-form-item label="账号" prop="account" class="required">
+            <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
+                <el-form-item label="账号" prop="account">
                     <el-input v-model="form.account" type="text" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="密码" prop="password" class="required">
+                <el-form-item label="密码" prop="password">
                     <el-input v-model="form.password" type="password" show-password></el-input>
                 </el-form-item>
-                <el-form-item label="昵称" prop="name" class="required">
+                <el-form-item label="昵称" prop="name">
                     <el-input v-model="form.name" type="text" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="账号类型" prop="role" class="required">
-                    <el-select v-model="form.role" class="full-width-input" clearable placeholder="请选择" disabled>
+                <el-form-item label="账号类型" prop="role">
+                    <el-select v-model="form.role" disabled style="width:100%">
                         <el-option v-for="(item, index) in roleOptions" :key="index" :label="item.label"
                             :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="门店ID" prop="storeId" class="required" v-if="form.role == '2'">
+                <el-form-item label="门店ID" prop="storeId" v-if="form.role == '2'">
                     <el-input v-model="form.storeId" type="text" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="门店名称" prop="storeName" class="required" v-if="form.role == '2'">
+                <el-form-item label="门店名称" prop="storeName" v-if="form.role == '2'">
                     <el-input v-model="form.storeName" type="text" disabled></el-input>
                 </el-form-item>
             </el-form>

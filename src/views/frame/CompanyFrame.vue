@@ -41,7 +41,7 @@ span {
                             <span>门店管理</span>
                         </template>
                         <el-menu-item index="/company/store/all"><span>所有门店</span></el-menu-item>
-                        <el-menu-item index="/company/store/openarea"><span>开放区域</span></el-menu-item>
+                        <el-menu-item index="/company/store/openarea"><span>营业区域</span></el-menu-item>
                     </el-sub-menu>
                     <el-menu-item index="/company/staff">
                         <el-icon>

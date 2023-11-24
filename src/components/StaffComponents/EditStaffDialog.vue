@@ -7,11 +7,10 @@
 </style>
 
 <template>
-    <el-dialog title="新增员工" width="500" v-model="see" :draggable="true" :close-on-click-modal="false"
-        :destroy-on-close="false" :before-close="closeDialog">
+    <el-dialog title="新增员工" v-model="see" :before-close="closeDialog" width="500px" :draggable="true">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
-            <el-form :model="form" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default">
+            <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
                 <el-form-item label="员工ID" prop="id">
                     <el-input v-model="form.id" type="text" disabled></el-input>
                 </el-form-item>
@@ -25,7 +24,7 @@
                     <el-input v-model="form.name" type="text" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="账号类型" prop="role">
-                    <el-select v-model="form.role" class="full-width-input" clearable placeholder="请选择" disabled>
+                    <el-select v-model="form.role" placeholder="请选择" disabled style="width: 100%;">
                         <el-option v-for="(item, index) in roleOptions" :key="index" :label="item.label"
                             :value="item.value"></el-option>
                     </el-select>
