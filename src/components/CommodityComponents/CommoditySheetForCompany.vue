@@ -10,16 +10,17 @@
                 <el-form-item label="名称">
                     <el-input v-model="search.data.name" clearable style="width: 150px;" />
                 </el-form-item>
-                <el-form-item label="账号类型">
+                <el-form-item label="销售状态">
                     <el-select v-model="search.data.role" placeholder="请选择" clearable style="width: 150px;">
-                        <el-option v-for="(item, index) in roleOptions" :key="index" :label="item.label"
+                        <el-option v-for="(item, index) in sellOptions" :key="index" :label="item.label"
                             :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="所属门店">
-                    <el-cascader v-model="search.data.storeName" clearable style="width: 150px;" :options="areaOptions"
-                        placeholder="请选择">
-                    </el-cascader>
+                <el-form-item label="品类">
+                    <el-select v-model="search.data.category" placeholder="请选择" clearable style="width: 150px;">
+                        <el-option v-for="(item, index) in cateOptions" :key="index" :label="item.label"
+                            :value="item.value"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="searchSubmit">查询</el-button>
@@ -55,7 +56,7 @@
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column prop="price" label="价格" min-width="80" :show-overflow-tooltip="true" />
+            <el-table-column prop="price" label="基础售价(元)" min-width="80" :show-overflow-tooltip="true" />
             <el-table-column prop="category" label="品类" min-width="80" :show-overflow-tooltip="true" />
             <!-- 行内操作栏 -->
             <el-table-column fixed="right" label="操作" min-width="200" align="center">
@@ -74,18 +75,18 @@
         <!-- 对话框 -->
         <!-- 新增对话框 -->
         <AddDialog v-model:visible="addDialogVisible" />
-        <!-- <EditDialog v-model:visible="editDialogVisible" :staff="cStaff" /> -->
+        <EditDialog v-model:visible="editDialogVisible" :commId="sel" />
     </div>
 </template>
 
 <script>
 import AddDialog from './AddCommodityDialog.vue'
-// import EditDialog from './EditStaffDialog.vue'
+import EditDialog from './EditCommodityDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
         AddDialog,
-        // EditDialog
+        EditDialog
     },
     data() {
         return {
@@ -101,8 +102,7 @@ export default {
             addDialogVisible: false,
             //“编辑”对话框可见性
             editDialogVisible: false,
-            //选择查看的员工
-            cStaff: {},
+            sel:"",
             //搜索栏
             search: {
                 data: {
@@ -119,6 +119,15 @@ export default {
                     }],
                 },
             },
+            sellOptions: [{
+                "value": "0",
+                "label": "不可售"
+            },
+            {
+                "value": "1",
+                "label": "可售"
+            }],
+            cateOptions:[]
         }
     },
     methods: {
@@ -162,8 +171,7 @@ export default {
         },
         //详情
         detail(val) {
-            this.cStaff = JSON.parse(JSON.stringify(val))
-            this.cStaff.password = ""
+            this.sel=val.id
             this.editDialogVisible = true
         },
         //多选
@@ -173,13 +181,14 @@ export default {
         //从服务器获取数据
         getData() {
             this.loading = true
-            this.$http.get("/company/commodity/get").then(
+            this.$http.get("/company/commodity/commcate").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
                         return false
                     }
                     this.tabledata = response.data.data.commodity
+                    this.cateOptions = response.data.data.category
                     this.tableLoading = false
                     this.refreshLoading = false
                     return true

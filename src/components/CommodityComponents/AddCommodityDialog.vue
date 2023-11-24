@@ -17,6 +17,7 @@
                 </el-select>
             </el-form-item>
         </el-form>
+        <div style="color: #999999;">其他内容请在详情页设置</div>
         <!-- 操作按钮 -->
         <template #footer>
             <span class="dialog-footer">

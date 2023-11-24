@@ -86,13 +86,11 @@
 </template>
 
 <script>
-import { Text } from 'vue'
 import AddDialog from './AddShopDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
-        AddDialog,
-        Text
+        AddDialog
     },
     data() {
         return {
@@ -236,7 +234,7 @@ export default {
                 "openState": state
             }
             //提交数据
-            this.$http.post("/company/store/openstate/v2", {
+            this.$http.post("/company/store/update/openstate/v2", {
                 data: json
             }, {
                 headers: {
@@ -260,8 +258,12 @@ export default {
         },
         //从服务器获取数据
         getData() {
+            this.getStoreDate()
+            this.getOpenAreaOption()
+        },
+        getStoreDate() {
             this.tableLoading = true
-            this.$http.get("/company/store/get").then(
+            this.$http.get("/company/store/get/all").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -281,6 +283,18 @@ export default {
                         ElMessage.error("服务器连接异常")
                         return false
                     }, 1000)
+                }
+            )
+        },
+        getOpenAreaOption(){
+            this.$http.get("/company/openarea/option").then(
+                (response) => {
+                    if (response.data.code != 200) {
+                        return
+                    }
+                    this.areaOptions = response.data.data.openArea
+                },
+                (response) => {
                 }
             )
         }

@@ -164,7 +164,7 @@ export default {
         //获取数据
         getData() {
             //get请求
-            this.$http.get("/company/store/info?id=" + this.id).then(
+            this.$http.get("/company/store/get/detail?id=" + this.id).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)

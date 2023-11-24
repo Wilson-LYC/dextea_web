@@ -141,15 +141,15 @@ export default {
             this.multipleSelection = val;
         },
         //从服务器获取数据
-        getCategoryData() {
+        getData() {
             this.loading = true
-            this.$http.get("/company/staff/get").then(
+            this.$http.get("/company/category/get").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
                         return false
                     }
-                    this.tabledata = response.data.data.staff
+                    this.tabledata = response.data.data.category
                     this.tableLoading = false
                     this.refreshLoading = false
                     return true
@@ -185,7 +185,7 @@ export default {
         // }
     },
     mounted() {
-        // this.getStaffData()
+        this.getData()
     }
 }
 </script>

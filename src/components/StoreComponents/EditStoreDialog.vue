@@ -7,33 +7,32 @@
 </style>
 
 <template>
-    <el-dialog title="新增门店" width="500" v-model="see" :draggable="true" :close-on-click-modal="false"
-        :destroy-on-close="false" :before-close="closeDialog">
+    <el-dialog title="修改门店信息" v-model="see" :before-close="closeDialog" width="500px" :draggable="true">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
-            <el-form :model="form" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default">
-                <el-form-item label="门店ID" prop="name" class="required">
+            <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
+                <el-form-item label="门店ID" prop="id">
                     <el-input v-model="form.id" type="text" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="门店名称" prop="name" class="required">
+                <el-form-item label="门店名称" prop="name">
                     <el-input v-model="form.name" type="text" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="所在区域" prop="area" class="required">
+                <el-form-item label="所在区域" prop="area">
                     <el-cascader v-model="form.area" class="full-width-input" :options="areaOptions" clearable
-                        placeholder="请选择">
+                        placeholder="请选择" style="width: 100%;">
                     </el-cascader>
                 </el-form-item>
-                <el-form-item label="详细地址" prop="address" class="required">
+                <el-form-item label="详细地址" prop="address">
                     <el-input v-model="form.address" type="text" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="电话" prop="phone" class="required">
+                <el-form-item label="电话" prop="phone">
                     <el-input v-model="form.phone" type="text" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="营业时间" prop="openTime" class="required">
+                <el-form-item label="营业时间" prop="openTime">
                     <el-input v-model="form.openTime" type="text" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="营业状态" prop="openState" class="required">
-                    <el-select v-model="form.openState" class="full-width-input" clearable placeholder="请选择">
+                <el-form-item label="营业状态" prop="openState">
+                    <el-select v-model="form.openState" class="full-width-input" placeholder="请选择" style="width: 100%;">
                         <el-option v-for="(item, index) in openStateOptions" :key="index" :label="item.label"
                             :value="item.value" :disabled="item.disabled"></el-option>
                     </el-select>

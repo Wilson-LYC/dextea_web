@@ -10,18 +10,18 @@
                 <el-button type="primary" size="small" @click="addOption(cIndex)">新增要求</el-button>
             </div>
             <el-table :data="cit.option" border height="300px" size="small">
-                <el-table-column label="项目" width="180">
+                <el-table-column label="项目">
                     <template #default="scope">
                         <el-input v-model="scope.row.text" />
                     </template>
                 </el-table-column>
-                <el-table-column label="价格" width="180">
+                <el-table-column label="价格">
                     <template #default="scope">
                         <el-input v-model="scope.row.cost" />
                     </template>
                 </el-table-column>
                 <!-- 行内操作栏 -->
-                <el-table-column fixed="right" label="操作" width="100" align="center">
+                <el-table-column label="操作" width="100" align="center">
                     <template #default="scope">
                         <el-popconfirm width="100" confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled"
                             icon-color="#626AEF" title="确定删除?" @confirm="delOption(cIndex,scope.$index)">
