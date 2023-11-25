@@ -7,9 +7,12 @@
 </style>
 
 <template>
-    <el-dialog title="新增品类" v-model="see" :draggable="true" width="500px" :before-close="closeDialog">
+    <el-dialog title="品类详情" v-model="see" :draggable="true" width="500px" :before-close="closeDialog">
         <!-- 表单 -->
         <el-form :model="form" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default">
+            <el-form-item label="品类ID" prop="id" class="required">
+                <el-input v-model="form.id" type="text" disabled></el-input>
+            </el-form-item>
             <el-form-item label="品类名" prop="name" class="required">
                 <el-input v-model="form.name" type="text" clearable></el-input>
             </el-form-item>
@@ -18,7 +21,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="cancel">取消</el-button>
-                <el-button type="primary" @click="confirm">确定</el-button>
+                <el-button type="primary" @click="confirm">修改</el-button>
             </span>
         </template>
     </el-dialog>
@@ -28,7 +31,8 @@
 import { ElMessage } from 'element-plus'
 export default {
     props: {
-        visible: Boolean
+        visible: Boolean,
+        category: Object
     },
     emits: ['update:visible'],
     data() {
@@ -67,7 +71,7 @@ export default {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
                     //提交数据
-                    this.$http.post("/company/category/add", {
+                    this.$http.post("/company/category/update", {
                         data: sData
                     }, {
                         headers: {
@@ -80,7 +84,7 @@ export default {
                                 return
                             }
                             //成功
-                            ElMessage.success("添加成功")
+                            ElMessage.success("修改成功")
                             //关闭窗口
                             this.closeDialog()
                         },
@@ -107,6 +111,13 @@ export default {
             },
             set(see) {
                 this.$emit('update:visible', see)
+            }
+        }
+    },
+    watch:{
+        see(val){
+            if(val==true){
+                this.form=JSON.parse(JSON.stringify(this.category))
             }
         }
     }

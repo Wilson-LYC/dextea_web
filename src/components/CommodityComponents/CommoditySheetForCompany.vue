@@ -11,7 +11,7 @@
                     <el-input v-model="search.data.name" clearable style="width: 150px;" />
                 </el-form-item>
                 <el-form-item label="销售状态">
-                    <el-select v-model="search.data.role" placeholder="请选择" clearable style="width: 150px;">
+                    <el-select v-model="search.data.state" placeholder="请选择" clearable style="width: 150px;">
                         <el-option v-for="(item, index) in sellOptions" :key="index" :label="item.label"
                             :value="item.value"></el-option>
                     </el-select>
@@ -102,14 +102,14 @@ export default {
             addDialogVisible: false,
             //“编辑”对话框可见性
             editDialogVisible: false,
-            sel:"",
+            sel: "",
             //搜索栏
             search: {
                 data: {
                     "id": "",
                     "name": "",
-                    "role": "",
-                    "storeName": ""
+                    "state": "",
+                    "category": ""
                 },
                 rules: {
                     id: [{
@@ -127,7 +127,7 @@ export default {
                 "value": "1",
                 "label": "可售"
             }],
-            cateOptions:[]
+            cateOptions: []
         }
     },
     methods: {
@@ -137,8 +137,8 @@ export default {
             this.search.data = {
                 "id": "",
                 "name": "",
-                "role": "",
-                "storeName": ""
+                "state": "",
+                "category": ""
             }
         },
         //搜索
@@ -171,24 +171,34 @@ export default {
         },
         //详情
         detail(val) {
-            this.sel=val.id
+            this.sel = val.id
             this.editDialogVisible = true
         },
         //多选
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
+
+        refresh() {
+            this.refreshLoading = true
+            setTimeout(() => {
+                this.getData()
+            }, 500)
+        },
         //从服务器获取数据
         getData() {
+            this.getCommodityData()
+            this.getCategoryOptions()
+        },
+        getCommodityData() {
             this.loading = true
-            this.$http.get("/company/commodity/commcate").then(
+            this.$http.get("/company/commodity/get/brief").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
                         return false
                     }
                     this.tabledata = response.data.data.commodity
-                    this.cateOptions = response.data.data.category
                     this.tableLoading = false
                     this.refreshLoading = false
                     return true
@@ -204,17 +214,15 @@ export default {
                 }
             )
         },
-        refresh() {
-            let res
-            this.refreshLoading = true
-            setTimeout(() => {
-                res = this.getData()
-                if (res == false) {
-                    ElMessage.error("刷新失败")
-                } else {
-                    ElMessage.success("刷新成功")
+        getCategoryOptions() {
+            this.$http.get("/company/category/get/option/select").then(
+                (response) => {
+                    if (response.data.code != 200) {
+                        return
+                    }
+                    this.cateOptions = response.data.data.category
                 }
-            }, 500)
+            )
         }
     },
     watch: {

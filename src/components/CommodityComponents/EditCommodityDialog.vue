@@ -131,7 +131,6 @@ export default {
         getCommData() {
             this.$http.get("/company/commodity/info?id=" + this.commId).then(
                 (response) => {
-                    console.log(response.data)
                     if (response.data.code !== 200) {
                         ElMessage.error(response.data.msg)
                         return
@@ -145,7 +144,7 @@ export default {
         },
         //获取品类选项数据
         getCategoryOptions() {
-            this.$http.get("/company/category/option/multiple").then(
+            this.$http.get("/company/category/get/option/multiple").then(
                 (response) => {
                     console.log(response.data)
                     if (response.data.code !== 200) {

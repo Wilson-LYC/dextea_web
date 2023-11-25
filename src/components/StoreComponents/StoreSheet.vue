@@ -214,7 +214,6 @@ export default {
         refresh() {
             this.refreshLoading = true
             //500ms后刷新
-            let res
             setTimeout(() => {
                 this.getData()
             }, 500)

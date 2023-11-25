@@ -134,15 +134,8 @@ export default {
     //刷新
     refresh() {
       this.refreshLoading = true
-      //500ms后刷新
-      let res
       setTimeout(() => {
-        res = this.getOpenAreaData()
-        if (res == false) {
-          ElMessage.error("刷新失败")
-        } else {
-          ElMessage.success("刷新成功")
-        }
+        this.getOpenAreaData()
       }, 500)
     }
   },

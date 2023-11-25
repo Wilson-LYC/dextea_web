@@ -1,33 +1,6 @@
 <style scoped></style>
 <template>
     <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
-        <!-- 搜索栏 -->
-        <div>
-            <el-form :inline="true" :model="search.data" :rules="search.rules">
-                <el-form-item label="员工ID" prop="id">
-                    <el-input v-model="search.data.id" clearable style="width: 150px;" />
-                </el-form-item>
-                <el-form-item label="账号">
-                    <el-input v-model="search.data.name" clearable style="width: 150px;" />
-                </el-form-item>
-                <el-form-item label="账号类型">
-                    <el-select v-model="search.data.role" placeholder="请选择" clearable style="width: 150px;">
-                        <el-option v-for="(item, index) in roleOptions" :key="index" :label="item.label"
-                            :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="所属门店">
-                    <el-cascader v-model="search.data.storeName" clearable style="width: 150px;" :options="areaOptions"
-                        placeholder="请选择">
-                    </el-cascader>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="searchSubmit">查询</el-button>
-                    <el-button type="default" @click="searchReset">重置</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
-
         <!-- 操作栏 -->
         <div class="btn-container" style="margin-bottom: 15px;">
             <el-button type="primary" @click="add">新增</el-button>
@@ -39,7 +12,6 @@
             @selection-change="handleSelectionChange" v-loading="tableLoading">
             <template #empty>无数据</template>
             <!-- 数据部分 -->
-            <el-table-column type="selection" width="50" fixed="left" />
             <el-table-column prop="name" label="品类" min-width="80" :show-overflow-tooltip="true" />
             <el-table-column prop="num" label="商品数量" min-width="80" :show-overflow-tooltip="true" />
             <!-- 行内操作栏 -->
@@ -59,18 +31,18 @@
         <!-- 对话框 -->
         <!-- 新增对话框 -->
         <AddDialog v-model:visible="addDialogVisible" />
-        <!-- <EditDialog v-model:visible="editDialogVisible" :staff="cStaff" /> -->
+        <EditDialog v-model:visible="editDialogVisible" :category="editSelect" />
     </div>
 </template>
 
 <script>
 import AddDialog from './AddCategoryDialog.vue'
-// import EditDialog from './EditStaffDialog.vue'
+import EditDialog from './EditCategoryDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
         AddDialog,
-        // EditDialog
+        EditDialog
     },
     data() {
         return {
@@ -86,64 +58,40 @@ export default {
             tableLoading: false,
             //刷新按钮动画
             refreshLoading: false,
-            //被选中的行
-            multipleSelection: [],
             //“新增”对话框可见性
             addDialogVisible: false,
             //“编辑”对话框可见性
             editDialogVisible: false,
-            //搜索栏
-            search: {
-                data: {
-                    "id": "",
-                    "name": "",
-                    "role": "",
-                    "storeName": ""
-                },
-                rules: {
-                    id: [{
-                        pattern: /^[-]?\d+(\.\d+)?$/,
-                        trigger: ['blur', 'change'],
-                        message: '请输入数字'
-                    }],
-                },
-            }
+            editSelect: {}
         }
     },
     methods: {
-        //搜索相关
-        // 重置搜索数据
-        searchReset() {
-            this.search.data = {
-                "id": "",
-                "name": "",
-                "role": "",
-                "storeName": ""
-            }
-        },
-        //搜索
-        searchSubmit() {
-            ElMessage("搜索")
-            console.log(this.search.data)
-        },
         //添加
         add() {
             this.addDialogVisible = true
         },
         //删除
-        del(val,index) {
+        del(val, index) {
         },
         //详情
         detail(val) {
+            this.editSelect = val
+            this.editDialogVisible = true
         },
-        //多选
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
+        refresh() {
+            this.refreshLoading = true
+            setTimeout(() => {
+                this.getData()
+            }, 500)
         },
         //从服务器获取数据
         getData() {
+            this.getCategoryData()
+        },
+        //获取品类数据
+        getCategoryData() {
             this.loading = true
-            this.$http.get("/company/category/get").then(
+            this.$http.get("/company/category/get/all").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -164,25 +112,17 @@ export default {
                     }, 1000)
                 }
             )
-        },
-        refresh() {
-            let res
-            this.refreshLoading = true
-            setTimeout(() => {
-                res = this.getStaffData()
-                if (res == false) {
-                    ElMessage.error("刷新失败")
-                } else {
-                    ElMessage.success("刷新成功")
-                }
-            }, 500)
         }
     },
     watch: {
-        // addDialogVisible(val) {
-        //     if (val == false)
-        //         this.getStaffData()
-        // }
+        addDialogVisible(val) {
+            if (val == false)
+                this.getData()
+        },
+        editDialogVisible(val) {
+            if (val == false)
+                this.getData()
+        }
     },
     mounted() {
         this.getData()

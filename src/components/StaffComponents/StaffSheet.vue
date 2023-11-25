@@ -219,7 +219,17 @@ export default {
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
+        refresh() {
+            this.refreshLoading = true
+            setTimeout(() => {
+                this.getData()
+            }, 500)
+        },
         //从服务器获取数据
+        getData() {
+            this.getStaffData()
+            this.getStoreOption()
+        },
         getStaffData() {
             this.loading = true
             this.$http.get("/company/staff/get").then(
@@ -244,21 +254,9 @@ export default {
                 }
             )
         },
-        refresh() {
-            let res
-            this.refreshLoading = true
-            setTimeout(() => {
-                res = this.getStaffData()
-                if (res == false) {
-                    ElMessage.error("刷新失败")
-                } else {
-                    ElMessage.success("刷新成功")
-                }
-            }, 500)
-        },
         getStoreOption() {
             //get请求
-            this.$http.get("/company/store/option").then(
+            this.$http.get("/company/store/get/option/select").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -274,12 +272,15 @@ export default {
     watch: {
         addDialogVisible(val) {
             if (val == false)
-                this.getStaffData()
+                this.getData()
+        },
+        editDialogVisible(val) {
+            if (val == false)
+                this.getData()
         }
     },
     mounted() {
-        this.getStaffData()
-        this.getStoreOption()
+        this.getData()
     }
 }
 </script>
