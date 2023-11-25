@@ -229,6 +229,10 @@ export default {
         addDialogVisible(val) {
             if (val == false)
                 this.getData()
+        },
+        editDialogVisible(val) {
+            if (val == false)
+                this.getData()
         }
     },
     mounted() {

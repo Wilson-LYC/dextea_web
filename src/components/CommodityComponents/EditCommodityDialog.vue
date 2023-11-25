@@ -49,7 +49,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="cancel">取消</el-button>
-                <el-button type="primary" @click="confirm">确定</el-button>
+                <el-button type="primary" @click="confirm">修改</el-button>
             </span>
         </template>
     </el-dialog>
@@ -110,7 +110,26 @@ export default {
             this.$refs["myform"].validate(valid => {
                 if (valid) {
                     //填写符合要求
-                    console.log(this.comm)
+                    let sData = JSON.parse(JSON.stringify(this.comm))
+                    this.$http.post("/company/commodity/update",{
+                        data: sData
+                    },{
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(
+                        (response) => {
+                            if (response.data.code !== 200) {
+                                ElMessage.error(response.data.msg)
+                                return
+                            }
+                            ElMessage.success("修改成功")
+                            this.closeDialog()
+                        },
+                        (response) => {
+                            ElMessage.error("服务器连接失败")
+                        }
+                    )
                 } else {
                     //填写不符合要求
                     ElMessage.error("填写不符合要求")
@@ -129,7 +148,7 @@ export default {
         },
         //获取商品数据
         getCommData() {
-            this.$http.get("/company/commodity/info?id=" + this.commId).then(
+            this.$http.get("/company/commodity/get/detail?id=" + this.commId).then(
                 (response) => {
                     if (response.data.code !== 200) {
                         ElMessage.error(response.data.msg)
@@ -146,7 +165,6 @@ export default {
         getCategoryOptions() {
             this.$http.get("/company/category/get/option/multiple").then(
                 (response) => {
-                    console.log(response.data)
                     if (response.data.code !== 200) {
                         ElMessage.error(response.data.msg)
                         return
