@@ -82,15 +82,18 @@
         <!-- 对话框 -->
         <!-- 新增对话框 -->
         <AddDialog v-model:visible="addDialogVisible" :openArea="areaOptions" />
+        <EditDialog v-model:visible="editDialogVisible" :store="sel" :openArea="areaOptions"/>
     </div>
 </template>
 
 <script>
-import AddDialog from './AddShopDialog.vue'
+import AddDialog from '@/components/StoreComponents/AddStoreDialog.vue'
+import EditDialog from '@/components/StoreComponents/EditStoreDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
-        AddDialog
+        AddDialog,
+        EditDialog
     },
     data() {
         return {
@@ -106,6 +109,10 @@ export default {
             multipleSelection: [],
             //“新增”对话框可见性
             addDialogVisible: false,
+            //编辑对话框可见性
+            editDialogVisible: false,
+            //选择的门店
+            sel: "",
             //搜索栏
             search: {
                 form: {
@@ -157,7 +164,7 @@ export default {
         searchSubmit() {
             this.searchLoading = true
             setTimeout(() => {
-                this.$http.post("/company/store/search", {
+                this.$http.post("/store/search", {
                     data: this.search.form
                 }, {
                     headers: {
@@ -188,7 +195,7 @@ export default {
         //删除
         del(store, index) {
             //get请求
-            this.$http.get("/company/store/delete?id=" + store.id).then(
+            this.$http.get("/store/delete?id=" + store.id).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -206,9 +213,8 @@ export default {
         },
         //详情
         detail(data) {
-            this.$router.push({
-                path: '/company/store/detail/' + data.id,
-            })
+            this.sel = data
+            this.editDialogVisible = true
         },
         //刷新
         refresh() {
@@ -224,6 +230,10 @@ export default {
         },
         //更新营业状态
         updateOpenState(state) {
+            if (this.multipleSelection.length == 0) {
+                ElMessage.error("请至少选择一项")
+                return
+            }
             let idList = []
             this.multipleSelection.forEach(element => {
                 idList.push(element.id)
@@ -233,7 +243,7 @@ export default {
                 "openState": state
             }
             //提交数据
-            this.$http.post("/company/store/update/openstate/v2", {
+            this.$http.post("/store/update/openstate/multiple", {
                 data: json
             }, {
                 headers: {
@@ -260,9 +270,10 @@ export default {
             this.getStoreDate()
             this.getOpenAreaOption()
         },
+        //获取所有门店
         getStoreDate() {
             this.tableLoading = true
-            this.$http.get("/company/store/get/all").then(
+            this.$http.get("/store/get/all").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -285,8 +296,9 @@ export default {
                 }
             )
         },
+        //获取营业区域选项
         getOpenAreaOption(){
-            this.$http.get("/company/openarea/option").then(
+            this.$http.get("/openarea/get/option").then(
                 (response) => {
                     if (response.data.code != 200) {
                         return
@@ -299,9 +311,11 @@ export default {
         }
     },
     watch: {
-        //监听“新增”对话框可见性
         addDialogVisible(val) {
-            //关闭时刷新数据
+            if (val == false)
+                this.getData()
+        },
+        editDialogVisible(val) {
             if (val == false)
                 this.getData()
         }

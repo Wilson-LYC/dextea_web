@@ -1,14 +1,15 @@
 <style scoped>
-.my-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
+.my-header {}
 </style>
 
 <template>
-    <el-dialog title="修改门店信息" v-model="see" :before-close="closeDialog" width="500px" :draggable="true">
-        <el-scrollbar max-height="400px">
+    <el-dialog v-model="see" :before-close="closeDialog" width="800px" :draggable="true" :destroy-on-close="true">
+        <template #header>
+            <div class="my-header">
+                <span> {{ form.name }}</span>
+            </div>
+        </template>
+        <el-scrollbar height="500px">
             <!-- 表单 -->
             <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
                 <el-form-item label="门店ID" prop="id">
@@ -38,13 +39,19 @@
                     </el-select>
                 </el-form-item>
             </el-form>
+            <el-tabs type="card">
+                <el-tab-pane label="商品管理">商品管理</el-tab-pane>
+                <el-tab-pane label="员工管理">
+                    <StaffSheet :sid="form.id"/>
+                </el-tab-pane>
+            </el-tabs>
         </el-scrollbar>
 
         <!-- 操作按钮 -->
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="cancel">取消</el-button>
-                <el-button type="primary" @click="confirm">确定</el-button>
+                <el-button type="primary" @click="confirm">修改</el-button>
             </span>
         </template>
     </el-dialog>
@@ -52,23 +59,20 @@
 
 <script>
 import { ElMessage } from 'element-plus'
+import StaffSheet from '@/components/StaffComponents/StaffSheetForStore.vue'
 export default {
+    components: {
+        StaffSheet
+    },
     props: {
         visible: Boolean,
-        store: Object
+        store: Object,
+        openArea: Object
     },
     emits: ['update:visible'],
     data() {
         return {
-            form: {
-                id: "",
-                name: "",
-                openState: "",
-                phone: "",
-                openTime: "",
-                area: [],
-                address: ""
-            },
+            form: {},
             rules: {
                 name: [{
                     required: true,
@@ -117,14 +121,7 @@ export default {
     methods: {
         //清空数据
         dataReset() {
-            this.form = {
-                name: "",
-                area: "",
-                address: "",
-                phone: "",
-                openTime: "",
-                openState: "",
-            }
+            this.form = {}
         },
         //关闭窗口
         closeDialog(done) {
@@ -135,12 +132,13 @@ export default {
         },
         //确认
         confirm() {
+            console.log(this.form)
             this.$refs["myform"].validate(valid => {
                 if (valid) {
                     //表单验证通过
                     let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
                     //提交数据
-                    this.$http.post("/company/store/update", {
+                    this.$http.post("/store/update", {
                         data: sData
                     }, {
                         headers: {
@@ -148,7 +146,7 @@ export default {
                         }
                     }).then(
                         (response) => {
-                            if(response.data.code !== 200){
+                            if (response.data.code !== 200) {
                                 ElMessage.error(response.data.msg)
                                 return
                             }
@@ -172,21 +170,18 @@ export default {
             //关闭窗口
             this.closeDialog()
         },
+        //获取数据
+        getData() {
+            this.getStoreData()
+            this.getAreaOptions()
+        },
+        //获取门店信息
+        getStoreData() {
+            this.form = JSON.parse(JSON.stringify(this.store))
+        },
         //获取营业区域选项
         getAreaOptions() {
-            //get请求
-            this.$http.get("/company/openarea/option").then(
-                (response) => {
-                    if (response.data.code != 200) {
-                        ElMessage.error(response.data.msg)
-                        return
-                    }
-                    this.areaOptions = response.data.data.openArea
-                },
-                (response) => {
-                    ElMessage.error("服务器连接失败")
-                }
-            )
+            this.areaOptions = this.openArea
         }
     },
     computed: {
@@ -201,11 +196,8 @@ export default {
     },
     watch: {
         see(val) {
-            if (val === false) {
-                this.dataReset()
-            }else{
-                this.form=JSON.parse(JSON.stringify(this.store))
-                this.getAreaOptions()
+            if (val) {
+                this.getData()
             }
         }
     }

@@ -86,7 +86,7 @@ export default {
         }
       }
       //提交数据
-      this.$http.post("/company/openarea/update", {
+      this.$http.post("/openarea/update", {
         data: newData
       }, {
         headers: {
@@ -111,7 +111,7 @@ export default {
     //从服务器获取营业区域
     getOpenAreaData() {
       this.loading = true
-      this.$http.get("/company/openarea/get").then(
+      this.$http.get("/openarea/get/all").then(
         (response) => {
           if (response.data.code != 200) {
             ElMessage.error(response.data.msg)

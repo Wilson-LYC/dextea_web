@@ -7,7 +7,7 @@
 </style>
 
 <template>
-    <el-dialog title="新增员工" v-model="see" :before-close="closeDialog" width="500px" :draggable="true">
+    <el-dialog title="新增员工" v-model="see" :before-close="closeDialog" width="500px" :draggable="true" :destroy-on-close="true">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
             <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
@@ -109,7 +109,7 @@ export default {
                     //密码加密
                     // sData.password = bcrypt.hashSync(sData.password, 10)
                     //提交数据
-                    this.$http.post("/company/staff/update", {
+                    this.$http.post("/staff/update", {
                         data: sData
                     }, {
                         headers: {

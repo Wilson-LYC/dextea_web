@@ -2,7 +2,7 @@
 <template>
     <div style="background: #ffffff;border-radius: 8px;">
         <!-- 搜索栏 -->
-        <div>
+        <!-- <div>
             <el-form :inline="true" :model="search.data" :rules="search.rules">
                 <el-form-item label="员工ID" prop="id">
                     <el-input v-model="search.data.id" clearable style="width: 150px;" />
@@ -26,24 +26,24 @@
                     <el-button type="default" @click="searchReset">重置</el-button>
                 </el-form-item>
             </el-form>
-        </div>
+        </div> -->
 
         <!-- 操作栏 -->
-        <div class="btn-container" style="margin-bottom: 15px;">
-            <el-button type="primary" @click="add">新增</el-button>
-            <el-button type="default" @click="refresh" :loading="refreshLoading">刷新</el-button>
-        </div>
+        <!-- <div class="btn-container" style="margin-bottom: 15px;">
+            <el-button type="primary" @click="add" size="small">新增</el-button>
+            <el-button type="default" @click="refresh" :loading="refreshLoading" size="small">刷新</el-button>
+        </div> -->
 
         <!-- 表格主体 -->
-        <el-table :data="tabledata" style="width: 100%" border height="550px" table-layout="auto"
-            @selection-change="handleSelectionChange" v-loading="tableLoading">
+        <el-table :data="tabledata" style="width: 100%" border height="300px" table-layout="auto"
+            @selection-change="handleSelectionChange" v-loading="tableLoading" size="small">
             <template #empty>无数据</template>
             <!-- 数据部分 -->
             <el-table-column type="selection" width="50" fixed="left" />
             <el-table-column prop="id" label="员工ID" min-width="80" fixed="left" sortable />
-            <el-table-column prop="name" label="昵称" min-width="80" :show-overflow-tooltip="true" />
+            <el-table-column prop="name" label="昵称" min-width="150" :show-overflow-tooltip="true" />
             <el-table-column prop="account" label="账号" min-width="80" :show-overflow-tooltip="true" />
-            <el-table-column label="账号类型" width="80" align="center">
+            <!-- <el-table-column label="账号类型" width="80" align="center">
                 <template #default="scope">
                     <el-tag type="danger" effect="light" round v-if="scope.row.role === '0'">
                         超级管理员
@@ -58,10 +58,10 @@
                         未指定
                     </el-tag>
                 </template>
-            </el-table-column>
-            <el-table-column prop="storeName" label="所属门店" min-width="150" :show-overflow-tooltip="true" />
+            </el-table-column> -->
+            <!-- <el-table-column prop="storeName" label="所属门店" min-width="150" :show-overflow-tooltip="true" /> -->
             <!-- 行内操作栏 -->
-            <el-table-column fixed="right" label="操作" min-width="200" align="center">
+            <!-- <el-table-column label="操作" min-width="200" align="center">
                 <template #default="scope">
                     <el-button type="primary" size="small" @click="detail(scope.row)">详情</el-button>
                     <el-popconfirm width="100" confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled"
@@ -71,7 +71,7 @@
                         </template>
                     </el-popconfirm>
                 </template>
-            </el-table-column>
+            </el-table-column> -->
         </el-table>
 
         <!-- 对话框 -->

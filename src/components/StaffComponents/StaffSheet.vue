@@ -164,7 +164,7 @@ export default {
         searchSubmit() {
             this.searchLoading = true
             setTimeout(() => {
-                this.$http.post("/company/staff/search", {
+                this.$http.post("/staff/search", {
                     data: this.search.data
                 }, {
                     headers: {
@@ -193,7 +193,7 @@ export default {
         //删除
         del(val, index) {
             //get请求
-            this.$http.get("/company/staff/delete?id=" + val.id).then(
+            this.$http.get("/staff/delete?id=" + val.id).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -232,7 +232,7 @@ export default {
         },
         getStaffData() {
             this.loading = true
-            this.$http.get("/company/staff/get").then(
+            this.$http.get("/staff/get/all").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -256,7 +256,7 @@ export default {
         },
         getStoreOption() {
             //get请求
-            this.$http.get("/company/store/get/option/select").then(
+            this.$http.get("/store/get/option/select").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)

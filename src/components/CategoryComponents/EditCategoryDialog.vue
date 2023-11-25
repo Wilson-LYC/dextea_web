@@ -7,7 +7,7 @@
 </style>
 
 <template>
-    <el-dialog title="品类详情" v-model="see" :draggable="true" width="500px" :before-close="closeDialog">
+    <el-dialog title="品类详情" v-model="see" :draggable="true" width="800px" :before-close="closeDialog" :destroy-on-close="true">
         <!-- 表单 -->
         <el-form :model="form" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default">
             <el-form-item label="品类ID" prop="id">
@@ -20,6 +20,8 @@
                 <el-input v-model="form.num" type="text" disabled></el-input>
             </el-form-item>
         </el-form>
+        <div style="margin-bottom: 10px;font-weight: bold;">商品列表</div>
+        <CommoditySheet v-model:cateId="sel"/>
         <!-- 操作按钮 -->
         <template #footer>
             <span class="dialog-footer">
@@ -32,7 +34,11 @@
 
 <script>
 import { ElMessage } from 'element-plus'
+import CommoditySheet from '@/components/CommodityComponents/CommoditySheetForCategory.vue'
 export default {
+    components: {
+        CommoditySheet
+    },
     props: {
         visible: Boolean,
         category: Object
@@ -40,14 +46,13 @@ export default {
     emits: ['update:visible'],
     data() {
         return {
-            form: {
-                name: ""
-            },
+            form: {},
             rules: {
                 name: [
                     { required: true, message: '请输入品类名', trigger: 'blur' },
                 ],
-            }
+            },
+            sel:0
         }
     },
     methods: {
@@ -121,6 +126,7 @@ export default {
         see(val){
             if(val==true){
                 this.form=JSON.parse(JSON.stringify(this.category))
+                this.sel=this.category.id
             }
         }
     }

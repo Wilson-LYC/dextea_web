@@ -6,7 +6,7 @@
 }
 </style>
 <template>
-    <el-dialog v-model="see" :before-close="closeDialog" width="800px" :draggable="true">
+    <el-dialog v-model="see" :before-close="closeDialog" width="800px" :draggable="true" :destroy-on-close="true">
         <template #header>
             {{ comm.name }}
         </template>
@@ -72,7 +72,7 @@
 
 <script>
 import { ElMessage } from 'element-plus'
-import CustomEditor from './CustomEditor.vue'
+import CustomEditor from '@/components/CommodityComponents/CustomEditor.vue'
 import { UploadFilled } from '@element-plus/icons-vue'
 export default {
     components: {
@@ -128,7 +128,7 @@ export default {
                 if (valid) {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.comm))
-                    this.$http.post("/company/commodity/update", {
+                    this.$http.post("/commodity/update", {
                         data: sData
                     }, {
                         headers: {
@@ -165,7 +165,7 @@ export default {
         },
         //获取商品数据
         getCommData() {
-            this.$http.get("/company/commodity/get/detail?id=" + this.commId).then(
+            this.$http.get("/commodity/get/detail?id=" + this.commId).then(
                 (response) => {
                     if (response.data.code !== 200) {
                         ElMessage.error(response.data.msg)
@@ -180,7 +180,7 @@ export default {
         },
         //获取品类选项数据
         getCategoryOptions() {
-            this.$http.get("/company/category/get/option/multiple").then(
+            this.$http.get("/category/get/option/multiple").then(
                 (response) => {
                     if (response.data.code !== 200) {
                         ElMessage.error(response.data.msg)

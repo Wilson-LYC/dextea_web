@@ -32,6 +32,8 @@
         <!-- 操作栏 -->
         <div class="btn-container" style="margin-bottom: 15px;">
             <el-button type="primary" @click="add">新增</el-button>
+            <el-button type="success" @click="updateSellState('1')">可售</el-button>
+            <el-button type="danger" @click="updateSellState('0')">不可售</el-button>
             <el-button type="default" @click="refresh" :loading="refreshLoading">刷新</el-button>
         </div>
 
@@ -144,14 +146,14 @@ export default {
         },
         //搜索
         searchSubmit() {
-            let sData=JSON.parse(JSON.stringify(this.search.data))
-            this.$http.post("/company/commodity/search",{
-                data:sData
-            },{
-                headers:{
-                    'Content-Type':'application/json'
+            let sData = JSON.parse(JSON.stringify(this.search.data))
+            this.$http.post("/commodity/search", {
+                data: sData
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
                 }
-            
+
             }).then(
                 (response) => {
                     if (response.data.code != 200) {
@@ -173,7 +175,7 @@ export default {
         //删除
         del(val, index) {
             //get请求
-            this.$http.get("/company/commodity/delete?id=" + val.id).then(
+            this.$http.get("/commodity/delete?id=" + val.id).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -198,7 +200,44 @@ export default {
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
-
+        //修改销售状态
+        updateSellState(state) {
+            let sData
+            if (this.multipleSelection.length == 0) {
+                ElMessage.error("请至少选择一项")
+                return
+            }
+            let idList = []
+            this.multipleSelection.forEach(element => {
+                idList.push(element.id)
+            });
+            sData = {
+                "idList": idList,
+                "state": state
+            }
+            this.$http.post("/commodity/update/state", {
+                data: sData
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(
+                (response) => {
+                    if (response.data.code != 200) {
+                        ElMessage.error(response.data.msg)
+                        return
+                    }
+                    //成功
+                    ElMessage.success("修改成功")
+                    //刷新
+                    this.getData()
+                },
+                (response) => {
+                    ElMessage.error("服务器连接失败")
+                }
+            )
+        },
+        //刷新
         refresh() {
             this.refreshLoading = true
             setTimeout(() => {
@@ -212,7 +251,7 @@ export default {
         },
         getCommodityData() {
             this.loading = true
-            this.$http.get("/company/commodity/get/brief").then(
+            this.$http.get("/commodity/get/brief").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -235,7 +274,7 @@ export default {
             )
         },
         getCategoryOptions() {
-            this.$http.get("/company/category/get/option/select").then(
+            this.$http.get("/category/get/option/select").then(
                 (response) => {
                     if (response.data.code != 200) {
                         return

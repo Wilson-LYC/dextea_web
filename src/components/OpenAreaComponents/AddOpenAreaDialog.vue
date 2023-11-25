@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="新增营业区域" width="500px" v-model="see" :draggable="true" :before-close="closeDialog">
+    <el-dialog title="新增营业区域" width="500px" v-model="see" :draggable="true" :before-close="closeDialog" :destroy-on-close="true">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
             <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
@@ -109,7 +109,7 @@ export default {
                         })
                     }
                     //提交数据
-                    this.$http.post("/company/openarea/update", {
+                    this.$http.post("/openarea/update", {
                         data: sData
                     }, {
                         headers: {

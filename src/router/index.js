@@ -23,10 +23,6 @@ const router = createRouter({
                 {
                   path: 'openarea',
                   component: () => import("@/views/company/store/OpenAreaView.vue"),
-                },
-                {
-                  path: 'detail/:id',
-                  component: () => import("@/views/company/store/StoreDetailView.vue"),
                 }
               ]
             },
@@ -44,10 +40,6 @@ const router = createRouter({
                 {
                   path: 'all',
                   component: () => import("@/views/company/commodity/CommodityView.vue"),
-                },
-                {
-                  path: 'detail/:id',
-                  component: () => import("@/views/company/commodity/CommodityDetailView.vue"),
                 }
               ]
             }

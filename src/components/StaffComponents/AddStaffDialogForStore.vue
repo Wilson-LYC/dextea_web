@@ -7,7 +7,7 @@
 </style>
 
 <template>
-    <el-dialog title="新增员工" v-model="see" :before-close="closeDialog" width="500px" :draggable="true">
+    <el-dialog title="新增员工" v-model="see" :before-close="closeDialog" width="500px" :draggable="true" :destroy-on-close="true">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
             <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
@@ -76,7 +76,7 @@ export default {
                         //账号不能重复
                         asyncValidator: (rule, value) => {
                             return new Promise((resolve, reject) => {
-                                this.$http.get("/company/staff/account/exist?account=" + value).then(
+                                this.$http.get("/staff/account/exist?account=" + value).then(
                                     (response) => {
                                         if (response.data.code == 200) {
                                             resolve()
@@ -111,7 +111,7 @@ export default {
                     //门店ID必须存在
                     asyncValidator: (rule, value) => {
                         return new Promise((resolve, reject) => {
-                            this.$http.get("/company/store/info?id=" + value).then(
+                            this.$http.get("/store/get/detail?id=" + value).then(
                                 (response) => {
                                     if (response.data.code != 200) {
                                         this.form.storeName = ""
@@ -179,7 +179,7 @@ export default {
                     // sData.password = bcrypt.hashSync(sData.password, 10)
                     console.log(sData)
                     //提交数据
-                    this.$http.post("/company/staff/add", {
+                    this.$http.post("/staff/add", {
                         data: sData
                     }, {
                         headers: {
@@ -226,7 +226,7 @@ export default {
         see(val) {
             if (val == true) {
                 this.form.storeId = this.sid
-                this.$http.get("/company/store/info?id=" + this.sid).then(
+                this.$http.get("/store/get/detail?id=" + this.sid).then(
                     (response) => {
                         if (response.data.code != 200) {
                             ElMessage.error("参数错误")

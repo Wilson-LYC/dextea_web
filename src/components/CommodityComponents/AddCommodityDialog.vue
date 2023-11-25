@@ -1,7 +1,7 @@
 <style scoped></style>
 
 <template>
-    <el-dialog title="新增商品" v-model="see" :before-close="closeDialog" width="500px" :draggable="true">
+    <el-dialog title="新增商品" v-model="see" :before-close="closeDialog" width="500px" :draggable="true" :destroy-on-close="true">
         <!-- 表单 -->
         <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
             <el-form-item label="商品名称" prop="name">
@@ -142,7 +142,7 @@ export default {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
                     //提交数据
-                    this.$http.post("/company/commodity/add", {
+                    this.$http.post("/commodity/add", {
                         data: sData
                     }, {
                         headers: {
