@@ -72,6 +72,23 @@ export default {
         },
         //删除
         del(val, index) {
+            if(val.num>0){
+                ElMessage.error("该品类下有商品，无法删除")
+                return false
+            }
+            this.$http.get("/company/category/delete?id=" + val.id).then(
+                (response) => {
+                    if (response.data.code != 200) {
+                        ElMessage.error(response.data.msg)
+                        return false
+                    }
+                    this.getData()
+                    ElMessage.success("删除成功")
+                },
+                (response) => {
+                    ElMessage.error("服务器连接异常")
+                }
+            )
         },
         //详情
         detail(val) {

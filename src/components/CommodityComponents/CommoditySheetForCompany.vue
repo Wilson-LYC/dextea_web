@@ -17,7 +17,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="品类">
-                    <el-select v-model="search.data.category" placeholder="请选择" clearable style="width: 150px;">
+                    <el-select v-model="search.data.cateId" placeholder="请选择" clearable style="width: 150px;">
                         <el-option v-for="(item, index) in cateOptions" :key="index" :label="item.label"
                             :value="item.value"></el-option>
                     </el-select>
@@ -109,7 +109,7 @@ export default {
                     "id": "",
                     "name": "",
                     "state": "",
-                    "category": ""
+                    "cateId": ""
                 },
                 rules: {
                     id: [{
@@ -138,13 +138,33 @@ export default {
                 "id": "",
                 "name": "",
                 "state": "",
-                "category": ""
+                "cateId": ""
             }
+            this.getData()
         },
         //搜索
         searchSubmit() {
-            ElMessage("搜索")
-            console.log(this.search.data)
+            let sData=JSON.parse(JSON.stringify(this.search.data))
+            this.$http.post("/company/commodity/search",{
+                data:sData
+            },{
+                headers:{
+                    'Content-Type':'application/json'
+                }
+            
+            }).then(
+                (response) => {
+                    if (response.data.code != 200) {
+                        ElMessage.error(response.data.msg)
+                        return
+                    }
+                    this.tabledata = response.data.data.commodity
+                    ElMessage.success("查询成功")
+                },
+                (response) => {
+                    ElMessage.error("服务器连接失败")
+                }
+            )
         },
         //添加
         add() {
@@ -153,7 +173,7 @@ export default {
         //删除
         del(val, index) {
             //get请求
-            this.$http.get("/company/staff/delete?id=" + val.id).then(
+            this.$http.get("/company/commodity/delete?id=" + val.id).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -162,7 +182,7 @@ export default {
                     //成功
                     ElMessage.success("删除成功")
                     //刷新
-                    this.getStaffData()
+                    this.getData()
                 },
                 (response) => {
                     ElMessage.error("服务器连接失败")

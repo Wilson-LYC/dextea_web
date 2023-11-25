@@ -141,7 +141,6 @@ export default {
                 if (valid) {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
-                    console.log(sData)
                     //提交数据
                     this.$http.post("/company/commodity/add", {
                         data: sData
@@ -151,7 +150,6 @@ export default {
                         }
                     }).then(
                         (response) => {
-                            console.log(response.data)
                             if (response.data.code !== 200) {
                                 ElMessage.error(response.data.msg)
                                 return

@@ -10,11 +10,14 @@
     <el-dialog title="品类详情" v-model="see" :draggable="true" width="500px" :before-close="closeDialog">
         <!-- 表单 -->
         <el-form :model="form" ref="myform" :rules="rules" label-position="left" label-width="80px" size="default">
-            <el-form-item label="品类ID" prop="id" class="required">
+            <el-form-item label="品类ID" prop="id">
                 <el-input v-model="form.id" type="text" disabled></el-input>
             </el-form-item>
-            <el-form-item label="品类名" prop="name" class="required">
+            <el-form-item label="品类名" prop="name">
                 <el-input v-model="form.name" type="text" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="商品数量" prop="num">
+                <el-input v-model="form.num" type="text" disabled></el-input>
             </el-form-item>
         </el-form>
         <!-- 操作按钮 -->

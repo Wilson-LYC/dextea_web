@@ -41,6 +41,21 @@
                         <el-checkbox v-for="(item, index) in categoryOptions" :label="item" :name="index" />
                     </el-checkbox-group>
                 </el-form-item>
+                <el-form-item label="商品图片">
+                    <el-upload drag action="http://192.168.205.57:6688/img/upload" style="width: 100%;"
+                        :on-success="uploadSuccess" list-type="picture" v-model:file-list="imgList" :limit="1"
+                        :on-exceed="uploadExceed">
+                        <el-icon><upload-filled /></el-icon>
+                        <div>
+                            将文件拖到此处，或<em>点击上传</em>
+                        </div>
+                        <template #tip>
+                            <div class="el-upload__tip">
+                                仅支持jpg/png文件，且不超过500kb
+                            </div>
+                        </template>
+                    </el-upload>
+                </el-form-item>
             </el-form>
             <div class="mytitle">个性化定制</div>
             <CustomEditor v-model:custom="comm.custom" />
@@ -58,6 +73,7 @@
 <script>
 import { ElMessage } from 'element-plus'
 import CustomEditor from './CustomEditor.vue'
+import { UploadFilled } from '@element-plus/icons-vue'
 export default {
     components: {
         CustomEditor
@@ -89,7 +105,8 @@ export default {
                 "value": "1",
                 "label": "可售"
             }],
-            categoryOptions: []
+            categoryOptions: [],
+            imgList: [],
         }
     },
     methods: {
@@ -111,9 +128,9 @@ export default {
                 if (valid) {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.comm))
-                    this.$http.post("/company/commodity/update",{
+                    this.$http.post("/company/commodity/update", {
                         data: sData
-                    },{
+                    }, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -176,6 +193,15 @@ export default {
                 }
             )
         },
+        //上传成功
+        uploadSuccess(response, file, fileList) {
+            console.log(response)
+            console.log(this.imgList)
+        },
+        //上传超出限制
+        uploadExceed(files, uploadFiles) {
+            ElMessage.warning("最多只能上传1张图片")
+        }
     },
     computed: {
         see: {
