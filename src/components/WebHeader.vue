@@ -85,17 +85,22 @@
 <script>
 import { ElMessage } from 'element-plus'
 export default {
-    props: {
-        username: {
-            type: String,
-            default: 'admin'
+    data() {
+        return {
+            username: "admin"
         }
     },
     methods: {
         logout() {
+            this.$cookie.clearCookie('username')
+            this.$cookie.clearCookie('token')
+            this.$cookie.clearCookie('storeId')
             ElMessage.success('退出成功')
             this.$router.push('/login')
         }
+    },
+    mounted() {
+        this.username = this.$cookie.getCookie('username')
     }
 }
 </script>

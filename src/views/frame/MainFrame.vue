@@ -13,11 +13,6 @@
 <script>
 import WebHead from '@/components/WebHeader.vue'
 export default {
-  data() {
-    return {
-      msg: 'company'
-    }
-  },
   components: {
     WebHead
   },

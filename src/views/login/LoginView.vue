@@ -1,12 +1,9 @@
 <style scoped>
-*{
+body {
   margin: 0;
   padding: 0;
 }
-body{
-  margin: 0;
-  padding: 0;
-}
+
 .window {
   width: 100vw;
   height: 100vh;
@@ -69,7 +66,7 @@ body{
   font-size: 14px;
   color: #999;
   user-select: none;
-
+  margin: 0;
 }
 
 .forget-p {
@@ -81,7 +78,8 @@ a {
   color: #999;
   text-decoration: none;
 }
-.backpic{
+
+.backpic {
   position: fixed;
   bottom: 0;
   right: 0;
@@ -98,8 +96,8 @@ a {
         <div class="login-card">
           <img src="@/assets/img/logo.png" id="login-logo">
           <p class="login-title">登录 DexTea 管理端</p>
-          <el-form :model="loginData" ref="vForm" :rules="rules" label-position="top" label-width="150px" size="large">
-            <el-form-item label="账号" prop="account" class="required label-right-align">
+          <el-form :model="loginData" ref="vForm" :rules="rules" label-position="top" label-width="60px" size="large">
+            <el-form-item label="账号" prop="account">
               <el-input v-model="loginData.account" type="text" clearable prefix-icon="UserFilled"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password" class="required label-right-align">
@@ -107,7 +105,8 @@ a {
                 prefix-icon="Lock"></el-input>
             </el-form-item>
           </el-form>
-          <el-button color="#B8701B" style="width: 100%;margin-top: 10px;font-size: 18px;" size="large" @click="login">登录</el-button>
+          <el-button color="#B8701B" style="width: 100%;margin-top: 10px;font-size: 18px;" size="large" @click="login"
+            :loading="loading">登录</el-button>
           <div class="forget-p">
             <a href="#" @click="forpass">忘记密码</a>
           </div>
@@ -123,6 +122,7 @@ a {
 </template>
 <script>
 import { ElMessage } from 'element-plus'
+import bcrypt from 'bcryptjs'
 export default {
   components: {},
   props: {},
@@ -142,19 +142,74 @@ export default {
           message: '密码不能为空',
         }],
       },
+      loading: false,
     }
   },
-  computed: {},
-  watch: {},
-  created() { },
-  mounted() { },
   methods: {
     forpass() {
-      ElMessage.error('请联系直接上级重置密码')
+      ElMessage.error('请联系公司重置密码')
     },
-    login(){
-      ElMessage.success('登录成功')
-      this.$router.push('/company')
+    login() {
+      this.loading = true
+      //验证表单
+      this.$refs.vForm.validate((valid) => {
+        if (valid) {
+          //验证成功
+          let sData = JSON.parse(JSON.stringify(this.loginData))
+          sData.password = this.$md5(sData.password)
+          //提交数据
+          this.$http.post("/login/staff", {
+            data: sData
+          }, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(
+            (response) => {
+              //500ms后
+              setTimeout(() => {
+                console.log(response.data)
+                this.loading = false
+                if (response.data.code != 200) {
+                  ElMessage.error(response.data.msg)
+                  return
+                }
+                //获取数据
+                let role = response.data.data.staff.role
+                let token = response.data.data.token
+                let storeId = response.data.data.staff.storeId
+                let username=response.data.data.staff.name
+                //存储数据到缓存
+                let cookieData = {
+                  token: token,
+                  storeId: storeId,
+                  username:username
+                }
+                this.$cookie.setCookie(cookieData,3)
+                ElMessage.success('欢迎您！'+username)
+                //根据role跳转
+                if (role == "0") {
+                  this.$router.push('/company')
+                } else if (role == "1") {
+                  this.$router.push('/company')
+                } else if (role == "2") {
+                  this.$router.push('/store')
+                } else {
+                  ElMessage.error('账号异常')
+                }
+              }, 500)
+            },
+            (response) => {
+              ElMessage.error("服务器连接失败")
+              this.loading = false
+            }
+          )
+        } else {
+          //验证失败
+          ElMessage.error('密码或账号不能为空')
+          this.loading = false
+        }
+      })
     }
   }
 }

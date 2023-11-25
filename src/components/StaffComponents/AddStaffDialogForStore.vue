@@ -176,8 +176,7 @@ export default {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
                     //密码加密
-                    // sData.password = bcrypt.hashSync(sData.password, 10)
-                    console.log(sData)
+                    sData.password = this.$md5(sData.password)
                     //提交数据
                     this.$http.post("/staff/add", {
                         data: sData
