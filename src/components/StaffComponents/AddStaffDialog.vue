@@ -47,7 +47,6 @@
 
 <script>
 import { ElMessage } from 'element-plus'
-import bcrypt from 'bcryptjs'
 export default {
     props: {
         visible: Boolean
@@ -76,7 +75,11 @@ export default {
                         asyncValidator: (rule, value) => {
                             return new Promise((resolve, reject) => {
                                 if (value != "") {
-                                    this.$http.get("/staff/account/exist?account=" + value).then(
+                                    this.$http.get("/staff/account/exist?account=" + value,{
+                                        headers: {
+                                            'Authorization': sessionStorage.getItem('token')
+                                        }
+                                    }).then(
                                         (response) => {
                                             if (response.data.code == 200) {
                                                 resolve()
@@ -113,7 +116,12 @@ export default {
                     asyncValidator: (rule, value) => {
                         return new Promise((resolve, reject) => {
                             if (value != "") {
-                                this.$http.get("/store/get/detail?id=" + value).then(
+                                this.$http.get("/store/get/detail?id=" + value,{
+                                    headers: {
+                                        'Authorization': sessionStorage.getItem('token')
+                                    }
+                                
+                                }).then(
                                     (response) => {
                                         if (response.data.code != 200) {
                                             this.form.storeName = ""
@@ -183,7 +191,8 @@ export default {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': sessionStorage.getItem('token')
                         }
                     }).then(
                         (response) => {

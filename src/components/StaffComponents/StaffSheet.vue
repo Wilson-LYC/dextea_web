@@ -168,7 +168,8 @@ export default {
                     data: this.search.data
                 }, {
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': sessionStorage.getItem('token')
                     }
                 }).then(
                     (response) => {
@@ -193,7 +194,11 @@ export default {
         //删除
         del(val, index) {
             //get请求
-            this.$http.get("/staff/delete?id=" + val.id).then(
+            this.$http.get("/staff/delete?id=" + val.id,{
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -232,7 +237,11 @@ export default {
         },
         getStaffData() {
             this.loading = true
-            this.$http.get("/staff/get/all").then(
+            this.$http.get("/staff/get/all",{
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -256,7 +265,11 @@ export default {
         },
         getStoreOption() {
             //get请求
-            this.$http.get("/store/get/option/select").then(
+            this.$http.get("/store/get/option/select",{
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)

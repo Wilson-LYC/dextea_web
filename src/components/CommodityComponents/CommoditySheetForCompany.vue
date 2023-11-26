@@ -151,7 +151,8 @@ export default {
                 data: sData
             }, {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': sessionStorage.getItem('token')
                 }
 
             }).then(
@@ -175,7 +176,11 @@ export default {
         //删除
         del(val, index) {
             //get请求
-            this.$http.get("/commodity/delete?id=" + val.id).then(
+            this.$http.get("/commodity/delete?id=" + val.id, {
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -219,7 +224,8 @@ export default {
                 data: sData
             }, {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': sessionStorage.getItem('token')
                 }
             }).then(
                 (response) => {
@@ -251,7 +257,11 @@ export default {
         },
         getCommodityData() {
             this.loading = true
-            this.$http.get("/commodity/get/brief").then(
+            this.$http.get("/commodity/get/brief", {
+                headers: {
+                    "Authorization": localStorage.getItem("token")
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -274,7 +284,11 @@ export default {
             )
         },
         getCategoryOptions() {
-            this.$http.get("/category/get/option/select").then(
+            this.$http.get("/category/get/option/select",{
+                headers: {
+                    "Authorization": localStorage.getItem("token")
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         return

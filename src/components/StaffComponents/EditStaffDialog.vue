@@ -62,7 +62,6 @@ export default {
             form: {},
             rules: {
                 password: [{
-                    required: true,
                     message: "请输入密码",
                     trigger: "blur"
                 }],
@@ -107,13 +106,16 @@ export default {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
                     //密码加密
-                    sData.password = this.$md5(sData.password)
+                    if (sData.password != "")
+                        sData.password = this.$md5(sData.password)
+                    console.log(sData)
                     //提交数据
                     this.$http.post("/staff/update", {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': sessionStorage.getItem('token')
                         }
                     }).then(
                         (response) => {
@@ -122,7 +124,7 @@ export default {
                                 return
                             }
                             //成功
-                            ElMessage.success("修改成功")
+                            ElMessage.success("修改成功，下次登录时生效")
                             //关闭窗口
                             this.closeDialog()
                         },

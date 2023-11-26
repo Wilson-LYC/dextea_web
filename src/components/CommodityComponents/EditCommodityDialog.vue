@@ -132,7 +132,8 @@ export default {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': sessionStorage.getItem('token')
                         }
                     }).then(
                         (response) => {
@@ -165,7 +166,11 @@ export default {
         },
         //获取商品数据
         getCommData() {
-            this.$http.get("/commodity/get/detail?id=" + this.commId).then(
+            this.$http.get("/commodity/get/detail?id=" + this.commId,{
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
                 (response) => {
                     if (response.data.code !== 200) {
                         ElMessage.error(response.data.msg)
@@ -180,7 +185,11 @@ export default {
         },
         //获取品类选项数据
         getCategoryOptions() {
-            this.$http.get("/category/get/option/multiple").then(
+            this.$http.get("/category/get/option/multiple",{
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
                 (response) => {
                     if (response.data.code !== 200) {
                         ElMessage.error(response.data.msg)

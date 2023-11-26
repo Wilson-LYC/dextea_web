@@ -76,7 +76,11 @@ export default {
                 ElMessage.error("该品类下有商品，无法删除")
                 return false
             }
-            this.$http.get("/category/delete?id=" + val.id).then(
+            this.$http.get("/category/delete?id=" + val.id,{
+                headers: {
+                    "Authorization": localStorage.getItem("token")
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -108,7 +112,11 @@ export default {
         //获取品类数据
         getCategoryData() {
             this.loading = true
-            this.$http.get("/category/get/all").then(
+            this.$http.get("/category/get/all",{
+                headers: {
+                    "Authorization": localStorage.getItem("token")
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)

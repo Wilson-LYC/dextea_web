@@ -71,7 +71,8 @@ export default {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': sessionStorage.getItem('token')
                         }
                     }).then(
                         (response) => {

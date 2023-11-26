@@ -2,37 +2,26 @@
 <template>
     <div style="background: #ffffff;border-radius: 8px;">
         <!-- 搜索栏 -->
-        <!-- <div>
-            <el-form :inline="true" :model="search.data" :rules="search.rules">
+        <div>
+             <el-form :inline="true" :model="search.data" :rules="search.rules" size="small">
                 <el-form-item label="员工ID" prop="id">
                     <el-input v-model="search.data.id" clearable style="width: 150px;" />
                 </el-form-item>
-                <el-form-item label="账号">
+               <el-form-item label="账号">
                     <el-input v-model="search.data.name" clearable style="width: 150px;" />
-                </el-form-item>
-                <el-form-item label="账号类型">
-                    <el-select v-model="search.data.role" placeholder="请选择" clearable style="width: 150px;">
-                        <el-option v-for="(item, index) in roleOptions" :key="index" :label="item.label"
-                            :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="所属门店">
-                    <el-cascader v-model="search.data.storeName" clearable style="width: 150px;" :options="areaOptions"
-                        placeholder="请选择">
-                    </el-cascader>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="searchSubmit">查询</el-button>
                     <el-button type="default" @click="searchReset">重置</el-button>
                 </el-form-item>
             </el-form>
-        </div> -->
+        </div>
 
         <!-- 操作栏 -->
-        <!-- <div class="btn-container" style="margin-bottom: 15px;">
+        <div class="btn-container" style="margin-bottom: 15px;">
             <el-button type="primary" @click="add" size="small">新增</el-button>
             <el-button type="default" @click="refresh" :loading="refreshLoading" size="small">刷新</el-button>
-        </div> -->
+        </div>
 
         <!-- 表格主体 -->
         <el-table :data="tabledata" style="width: 100%" border height="300px" table-layout="auto"
@@ -61,7 +50,7 @@
             </el-table-column> -->
             <!-- <el-table-column prop="storeName" label="所属门店" min-width="150" :show-overflow-tooltip="true" /> -->
             <!-- 行内操作栏 -->
-            <!-- <el-table-column label="操作" min-width="200" align="center">
+            <el-table-column label="操作" min-width="200" align="center">
                 <template #default="scope">
                     <el-button type="primary" size="small" @click="detail(scope.row)">详情</el-button>
                     <el-popconfirm width="100" confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled"
@@ -71,7 +60,7 @@
                         </template>
                     </el-popconfirm>
                 </template>
-            </el-table-column> -->
+            </el-table-column>
         </el-table>
 
         <!-- 对话框 -->
@@ -174,7 +163,11 @@ export default {
         //删除
         del(val, index) {
             //get请求
-            this.$http.get("/company/staff/delete?id=" + val.id).then(
+            this.$http.get("/staff/delete?id=" + val.id,{
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -203,7 +196,11 @@ export default {
         //从服务器获取数据
         getStaffData() {
             this.loading = true
-            this.$http.get("/company/staff/store?sid="+this.sid).then(
+            this.$http.get("/staff/get/samestore?sid="+this.sid,{
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)

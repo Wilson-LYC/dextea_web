@@ -26,12 +26,12 @@
                             :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="门店ID" prop="storeId" v-if="form.role == '2'">
+                <!-- <el-form-item label="门店ID" prop="storeId" v-if="form.role == '2'">
                     <el-input v-model="form.storeId" type="text" disabled></el-input>
-                </el-form-item>
-                <el-form-item label="门店名称" prop="storeName" v-if="form.role == '2'">
+                </el-form-item> -->
+                <!-- <el-form-item label="门店名称" prop="storeName" v-if="form.role == '2'">
                     <el-input v-model="form.storeName" type="text" disabled></el-input>
-                </el-form-item>
+                </el-form-item> -->
             </el-form>
         </el-scrollbar>
 
@@ -47,11 +47,10 @@
 
 <script>
 import { ElMessage } from 'element-plus'
-import bcrypt from 'bcryptjs'
 export default {
     props: {
         visible: Boolean,
-        sid: String
+        sid: Number
     },
     emits: ['update:visible'],
     data() {
@@ -76,7 +75,11 @@ export default {
                         //账号不能重复
                         asyncValidator: (rule, value) => {
                             return new Promise((resolve, reject) => {
-                                this.$http.get("/staff/account/exist?account=" + value).then(
+                                this.$http.get("/staff/account/exist?account=" + value,{
+                                    headers: {
+                                        'Authorization': sessionStorage.getItem('token')
+                                    }
+                                }).then(
                                     (response) => {
                                         if (response.data.code == 200) {
                                             resolve()
@@ -97,35 +100,6 @@ export default {
                     required: true,
                     message: "请输入密码",
                     trigger: "blur"
-                }],
-                role: [{
-                    required: true,
-                    message: "请选择账号类型",
-                    trigger: "change"
-                }],
-                storeId: [{
-                    required: true,
-                    message: "请输入所属门店ID",
-                    trigger: "blur"
-                }, {
-                    //门店ID必须存在
-                    asyncValidator: (rule, value) => {
-                        return new Promise((resolve, reject) => {
-                            this.$http.get("/store/get/detail?id=" + value).then(
-                                (response) => {
-                                    if (response.data.code != 200) {
-                                        this.form.storeName = ""
-                                        reject("门店ID不存在，请重新输入")
-                                    }
-                                    this.form.storeName = response.data.data.store.name
-                                    resolve()
-                                },
-                                (response) => {
-                                    reject("服务器连接失败")
-                                }
-                            )
-                        });
-                    }
                 }],
                 name: [{
                     required: true,
@@ -182,7 +156,8 @@ export default {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': sessionStorage.getItem('token')
                         }
                     }).then(
                         (response) => {
@@ -225,17 +200,6 @@ export default {
         see(val) {
             if (val == true) {
                 this.form.storeId = this.sid
-                this.$http.get("/store/get/detail?id=" + this.sid).then(
-                    (response) => {
-                        if (response.data.code != 200) {
-                            ElMessage.error("参数错误")
-                        }
-                        this.form.storeName = response.data.data.store.name
-                    },
-                    (response) => {
-                        ElMessage.error("服务器连接失败")
-                    }
-                )
             }
         }
     }

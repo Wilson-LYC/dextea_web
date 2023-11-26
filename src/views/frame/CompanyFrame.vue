@@ -116,6 +116,8 @@ span {
 </template>
 <script>
 import WebFoo from '@/components/WebFooter.vue'
+import { ElMessage } from 'element-plus'
+import { ElNotification } from 'element-plus'
 export default {
     data() {
         return {
@@ -141,6 +143,23 @@ export default {
         nowurl: {
             get() {
                 return this.$route.path
+            }
+        }
+    },
+    mounted() {
+        let role = sessionStorage.getItem('role')
+        if(role =='1' || role =='0'){
+            //允许0超级管理员和1公司账号访问
+        }else{
+            if (role == '2') {
+                this.$router.push('/store')
+            } else {
+                ElMessage.error('权限错误，请重新登录')
+                sessionStorage.removeItem('username')
+                sessionStorage.removeItem('token')
+                sessionStorage.removeItem('role')
+                sessionStorage.removeItem('storeId')
+                this.$router.push('/login')
             }
         }
     }

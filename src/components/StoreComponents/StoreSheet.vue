@@ -82,7 +82,7 @@
         <!-- 对话框 -->
         <!-- 新增对话框 -->
         <AddDialog v-model:visible="addDialogVisible" :openArea="areaOptions" />
-        <EditDialog v-model:visible="editDialogVisible" :store="sel" :openArea="areaOptions"/>
+        <EditDialog v-model:visible="editDialogVisible" :store="sel" :openArea="areaOptions" />
     </div>
 </template>
 
@@ -168,7 +168,8 @@ export default {
                     data: this.search.form
                 }, {
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': sessionStorage.getItem('token')
                     }
                 }).then(
                     (response) => {
@@ -195,7 +196,11 @@ export default {
         //删除
         del(store, index) {
             //get请求
-            this.$http.get("/store/delete?id=" + store.id).then(
+            this.$http.get("/store/delete?id=" + store.id, {
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -247,7 +252,8 @@ export default {
                 data: json
             }, {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': sessionStorage.getItem('token')
                 }
             }).then(
                 (response) => {
@@ -273,8 +279,13 @@ export default {
         //获取所有门店
         getStoreDate() {
             this.tableLoading = true
-            this.$http.get("/store/get/all").then(
+            this.$http.get("/store/get/all", {
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
                 (response) => {
+                    console.log(response)
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
                         return false
@@ -286,6 +297,7 @@ export default {
                     return true
                 },
                 (response) => {
+                    console.log(response)
                     //通过延长加载时间，体现服务器异常
                     setTimeout(() => {
                         this.tableLoading = false
@@ -297,8 +309,12 @@ export default {
             )
         },
         //获取营业区域选项
-        getOpenAreaOption(){
-            this.$http.get("/openarea/get/option").then(
+        getOpenAreaOption() {
+            this.$http.get("/openarea/get/option", {
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         return

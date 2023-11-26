@@ -67,6 +67,7 @@ const router = createRouter({
   ]
 })
 
+// 路由守卫 -> 用于判断是否登录
 /**
  * beforeEach:从一个页面跳转到另外一个页面时触发
  * to:要跳转的页面
@@ -75,10 +76,11 @@ const router = createRouter({
  */
 router.beforeEach((to, from, next) => {
   // 如果跳转的页面不存在，跳转到404页面
+  let token= sessionStorage.getItem("token")
   if (to.matched.length === 0) {
     next('/404')
   }
-  if (cookie.getCookie("token")) {
+  if (token) {
     next()
   } else {
     if (to.path === "/login") {

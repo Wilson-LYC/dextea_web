@@ -57,7 +57,11 @@ export default {
         },
         getCommodityData() {
             this.loading = true
-            this.$http.get("/commodity/get/samecate?cateId="+this.cateId).then(
+            this.$http.get("/commodity/get/samecate?cateId="+this.cateId,{
+                headers: {
+                    "Authorization": localStorage.getItem("token")
+                }
+            }).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)

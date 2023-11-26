@@ -147,7 +147,7 @@ export default {
   },
   methods: {
     forpass() {
-      ElMessage.error('请联系公司重置密码')
+      ElMessage.error('请联系其他职员或公司修改')
     },
     login() {
       this.loading = true
@@ -168,31 +168,27 @@ export default {
             (response) => {
               //500ms后
               setTimeout(() => {
-                console.log(response.data)
                 this.loading = false
                 if (response.data.code != 200) {
                   ElMessage.error(response.data.msg)
                   return
                 }
                 //获取数据
-                let role = response.data.data.staff.role
+                let staff = response.data.data.staff
                 let token = response.data.data.token
-                let storeId = response.data.data.staff.storeId
-                let username=response.data.data.staff.name
                 //存储数据到缓存
-                let cookieData = {
-                  token: token,
-                  storeId: storeId,
-                  username:username
-                }
-                this.$cookie.setCookie(cookieData,3)
-                ElMessage.success('欢迎您！'+username)
+                // sessionStorage.setItem("staff", JSON.stringify(staff))
+                sessionStorage.setItem("token", token)
+                sessionStorage.setItem("username", staff.name)
+                sessionStorage.setItem("role", staff.role)
+                sessionStorage.setItem("storeId", staff.storeId)
+                ElMessage.success('欢迎您！'+staff.name)
                 //根据role跳转
-                if (role == "0") {
+                if (staff.role == "0") {
                   this.$router.push('/company')
-                } else if (role == "1") {
+                } else if (staff.role == "1") {
                   this.$router.push('/company')
-                } else if (role == "2") {
+                } else if (staff.role == "2") {
                   this.$router.push('/store')
                 } else {
                   ElMessage.error('账号异常')

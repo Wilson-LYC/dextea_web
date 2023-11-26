@@ -77,7 +77,7 @@
                     </template>
                 </el-dropdown>
                 <el-avatar shape="square" :size="30"
-                    src="https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png" class="user-ava" />
+                    src="https://img.js.design/assets/img/6562db565dc1da7c500d3c5a.png#41ed5c470241419c764d2f814a5b7692" class="user-ava" style="background: #337ecc;"/>
             </el-col>
         </el-row>
     </div>
@@ -92,15 +92,16 @@ export default {
     },
     methods: {
         logout() {
-            this.$cookie.clearCookie('username')
-            this.$cookie.clearCookie('token')
-            this.$cookie.clearCookie('storeId')
+            sessionStorage.removeItem('username')
+            sessionStorage.removeItem('token')
+            sessionStorage.removeItem('role')
+            sessionStorage.removeItem('storeId')
             ElMessage.success('退出成功')
             this.$router.push('/login')
         }
     },
     mounted() {
-        this.username = this.$cookie.getCookie('username')
+        this.username = sessionStorage.getItem('username')
     }
 }
 </script>

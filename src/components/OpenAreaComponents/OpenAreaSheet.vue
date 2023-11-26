@@ -90,7 +90,8 @@ export default {
         data: newData
       }, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': sessionStorage.getItem('token')
         }
       }).then(
         (response) => {
@@ -111,7 +112,11 @@ export default {
     //从服务器获取营业区域
     getOpenAreaData() {
       this.loading = true
-      this.$http.get("/openarea/get/all").then(
+      this.$http.get("/openarea/get/all",{
+        headers: {
+          'Authorization': sessionStorage.getItem('token')
+        }
+      }).then(
         (response) => {
           if (response.data.code != 200) {
             ElMessage.error(response.data.msg)
