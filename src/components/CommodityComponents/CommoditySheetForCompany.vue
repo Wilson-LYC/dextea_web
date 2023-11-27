@@ -82,8 +82,8 @@
 </template>
 
 <script>
-import AddDialog from './AddCommodityDialog.vue'
-import EditDialog from './EditCommodityDialog.vue'
+import AddDialog from '@/components/CommodityComponents/AddCommodityDialog.vue'
+import EditDialog from '@/components/CommodityComponents/EditCommodityDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
@@ -259,7 +259,7 @@ export default {
             this.loading = true
             this.$http.get("/commodity/get/brief", {
                 headers: {
-                    "Authorization": localStorage.getItem("token")
+                    "Authorization": sessionStorage.getItem("token")
                 }
             }).then(
                 (response) => {
@@ -286,7 +286,7 @@ export default {
         getCategoryOptions() {
             this.$http.get("/category/get/option/select",{
                 headers: {
-                    "Authorization": localStorage.getItem("token")
+                    "Authorization": sessionStorage.getItem("token")
                 }
             }).then(
                 (response) => {

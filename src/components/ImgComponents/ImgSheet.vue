@@ -3,7 +3,7 @@
     <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
         <!-- 操作栏 -->
         <div class="btn-container" style="margin-bottom: 15px;">
-            <el-button type="primary" @click="add">新增</el-button>
+            <el-button type="primary" @click="add">上传</el-button>
             <el-button type="default" @click="refresh" :loading="refreshLoading">刷新</el-button>
         </div>
 
@@ -12,12 +12,18 @@
             @selection-change="handleSelectionChange" v-loading="tableLoading">
             <template #empty>无数据</template>
             <!-- 数据部分 -->
-            <el-table-column prop="name" label="品类" min-width="80" :show-overflow-tooltip="true" />
-            <el-table-column prop="num" label="商品数量" min-width="80" :show-overflow-tooltip="true" />
-            <!-- 行内操作栏 -->
-            <el-table-column fixed="right" label="操作" min-width="200" align="center">
+            <el-table-column type="selection" width="50" fixed="left" />
+            <el-table-column prop="id" label="图片ID" width="100" fixed="left" sortable />
+            <el-table-column label="图片">
                 <template #default="scope">
-                    <el-button type="primary" size="small" @click="detail(scope.row)">详情</el-button>
+                    <div style="display: flex; align-items: center">
+                        <el-image :src="scope.row.url" style="height: 80px;" @click="detail(scope.row)" />
+                    </div>
+                </template>
+            </el-table-column>
+            <!-- 行内操作栏 -->
+            <el-table-column fixed="right" label="操作" width="80" align="center">
+                <template #default="scope">
                     <el-popconfirm width="100" confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled"
                         icon-color="#626AEF" title="确定删除?" @confirm="del(scope.row, scope.$index)">
                         <template #reference>
@@ -30,33 +36,37 @@
 
         <!-- 对话框 -->
         <!-- 新增对话框 -->
-        <AddDialog v-model:visible="addDialogVisible" />
-        <EditDialog v-model:visible="editDialogVisible" :category="editSelect" />
+        <!-- <AddDialog v-model:visible="addDialogVisible" /> -->
+        <EditDialog v-model:visible="editDialogVisible" :url="cimg" />
     </div>
 </template>
 
 <script>
-import AddDialog from './AddCategoryDialog.vue'
-import EditDialog from './EditCategoryDialog.vue'
+// import AddDialog from './AddStaffDialog.vue'
+import EditDialog from '@/components/ImgComponents/EditImgDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
-        AddDialog,
+        // AddDialog,
         EditDialog
     },
     data() {
         return {
             //表格数据
             tabledata: [],
-            //表格加载动画
+            //加载动画
             tableLoading: false,
             //刷新按钮动画
             refreshLoading: false,
+            //搜索动画
+            searchLoading: false,
+            //被选中的行
+            multipleSelection: [],
             //“新增”对话框可见性
             addDialogVisible: false,
             //“编辑”对话框可见性
             editDialogVisible: false,
-            editSelect: {}
+            cimg: ""
         }
     },
     methods: {
@@ -66,32 +76,16 @@ export default {
         },
         //删除
         del(val, index) {
-            if(val.num>0){
-                ElMessage.error("该品类下有商品，无法删除")
-                return false
-            }
-            this.$http.get("/category/delete?id=" + val.id,{
-                headers: {
-                    "Authorization": sessionStorage.getItem("token")
-                }
-            }).then(
-                (response) => {
-                    if (response.data.code != 200) {
-                        ElMessage.error(response.data.msg)
-                        return false
-                    }
-                    this.getData()
-                    ElMessage.success("删除成功")
-                },
-                (response) => {
-                    ElMessage.error("服务器连接异常")
-                }
-            )
+            ElMessage.warning("暂不支持删除，如需删除请联系IT部门")
         },
         //详情
         detail(val) {
-            this.editSelect = val
+            this.cimg = val.url
             this.editDialogVisible = true
+        },
+        //多选
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
         },
         refresh() {
             this.refreshLoading = true
@@ -101,14 +95,13 @@ export default {
         },
         //从服务器获取数据
         getData() {
-            this.getCategoryData()
+            this.getImgData()
         },
-        //获取品类数据
-        getCategoryData() {
+        getImgData() {
             this.loading = true
-            this.$http.get("/category/get/all",{
+            this.$http.get("/img/get/all", {
                 headers: {
-                    "Authorization": sessionStorage.getItem("token")
+                    'Authorization': sessionStorage.getItem('token')
                 }
             }).then(
                 (response) => {
@@ -116,7 +109,7 @@ export default {
                         ElMessage.error(response.data.msg)
                         return false
                     }
-                    this.tabledata = response.data.data.category
+                    this.tabledata = response.data.data.img
                     this.tableLoading = false
                     this.refreshLoading = false
                     return true

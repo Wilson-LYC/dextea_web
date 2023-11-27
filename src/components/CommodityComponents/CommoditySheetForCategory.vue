@@ -59,7 +59,7 @@ export default {
             this.loading = true
             this.$http.get("/commodity/get/samecate?cateId="+this.cateId,{
                 headers: {
-                    "Authorization": localStorage.getItem("token")
+                    "Authorization": sessionStorage.getItem("token")
                 }
             }).then(
                 (response) => {

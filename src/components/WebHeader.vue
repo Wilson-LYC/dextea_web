@@ -77,7 +77,8 @@
                     </template>
                 </el-dropdown>
                 <el-avatar shape="square" :size="30"
-                    src="https://img.js.design/assets/img/6562db565dc1da7c500d3c5a.png#41ed5c470241419c764d2f814a5b7692" class="user-ava" style="background: #337ecc;"/>
+                    src="https://img.js.design/assets/img/6562db565dc1da7c500d3c5a.png#41ed5c470241419c764d2f814a5b7692"
+                    class="user-ava" style="background: #337ecc;" />
             </el-col>
         </el-row>
     </div>
@@ -92,6 +93,13 @@ export default {
     },
     methods: {
         logout() {
+            //清除sessionStorage
+            this.$http.get("/login/staffout", {
+                headers: {
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
+            )
             sessionStorage.removeItem('username')
             sessionStorage.removeItem('token')
             sessionStorage.removeItem('role')

@@ -279,7 +279,7 @@ export default {
         //获取所有门店
         getStoreDate() {
             this.tableLoading = true
-            this.$http.get("/store/get/all", {
+            this.$http.get("/store/get/all",{
                 headers: {
                     'Authorization': sessionStorage.getItem('token')
                 }

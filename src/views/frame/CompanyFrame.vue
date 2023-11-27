@@ -91,6 +91,12 @@ span {
                         <el-menu-item index="/company/data/order"><span>营业额</span></el-menu-item>
                         <el-menu-item index="/company/data/commodity"><span>商品销量</span></el-menu-item>
                     </el-sub-menu>
+                    <el-menu-item index="/company/img">
+                        <el-icon>
+                            <Picture />
+                        </el-icon>
+                        <span>图片库</span>
+                    </el-menu-item>
                     <el-menu-item index="/company/setting">
                         <el-icon>
                             <Setting />
@@ -148,9 +154,9 @@ export default {
     },
     mounted() {
         let role = sessionStorage.getItem('role')
-        if(role =='1' || role =='0'){
+        if (role == '1' || role == '0') {
             //允许0超级管理员和1公司账号访问
-        }else{
+        } else {
             if (role == '2') {
                 this.$router.push('/store')
             } else {

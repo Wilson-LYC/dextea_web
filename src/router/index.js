@@ -44,6 +44,10 @@ const router = createRouter({
                   component: () => import("@/views/company/commodity/CommodityView.vue"),
                 }
               ]
+            },
+            {
+              path: 'img',
+              component: () => import("@/views/company/img/ImgView.vue")
             }
           ]
         },

@@ -42,16 +42,29 @@
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="商品图片">
-                    <el-upload drag action="http://192.168.205.57:6688/img/upload" style="width: 100%;"
-                        :on-success="uploadSuccess" list-type="picture" v-model:file-list="imgList" :limit="1"
-                        :on-exceed="uploadExceed">
-                        <el-icon><upload-filled /></el-icon>
-                        <div>
-                            将文件拖到此处，或<em>点击上传</em>
-                        </div>
+                    <el-image :src="comm.img" style="width: 120px;" v-if="comm.img != null && comm.img != ''">
+                        <template #error>
+                            <div class="image-slot">
+                                <el-icon>
+                                    <icon-picture />
+                                </el-icon>
+                            </div>
+                        </template>
+                    </el-image>
+                    <div v-else>未上传图片</div>
+                </el-form-item>
+                <el-form-item label="上传图片">
+                    <el-upload ref="upload" class="upload-demo" action="" :limit="1" :on-exceed="uploadExceed"
+                        :auto-upload="false" list-type="picture" v-model:file-list="imgList">
+                        <template #trigger>
+                            <el-button type="primary">select file</el-button>
+                            <el-button type="success" @click="submitUpload">
+                                upload to server
+                            </el-button>
+                        </template>
                         <template #tip>
-                            <div class="el-upload__tip">
-                                仅支持jpg/png文件，且不超过500kb
+                            <div class="el-upload__tip text-red">
+                                limit 1 file, new file will cover the old file
                             </div>
                         </template>
                     </el-upload>
@@ -166,7 +179,7 @@ export default {
         },
         //获取商品数据
         getCommData() {
-            this.$http.get("/commodity/get/detail?id=" + this.commId,{
+            this.$http.get("/commodity/get/detail?id=" + this.commId, {
                 headers: {
                     'Authorization': sessionStorage.getItem('token')
                 }
@@ -185,7 +198,7 @@ export default {
         },
         //获取品类选项数据
         getCategoryOptions() {
-            this.$http.get("/category/get/option/multiple",{
+            this.$http.get("/category/get/option/multiple", {
                 headers: {
                     'Authorization': sessionStorage.getItem('token')
                 }
@@ -210,6 +223,8 @@ export default {
         //上传超出限制
         uploadExceed(files, uploadFiles) {
             ElMessage.warning("最多只能上传1张图片")
+            console.log(files)
+            console.log(uploadFiles)
         }
     },
     computed: {
