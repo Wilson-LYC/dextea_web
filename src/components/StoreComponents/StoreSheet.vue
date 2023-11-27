@@ -284,7 +284,6 @@ export default {
                 }
             }).then(
                 (response) => {
-                    console.log(response)
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
                         return false
@@ -296,7 +295,6 @@ export default {
                     return true
                 },
                 (response) => {
-                    console.log(response)
                     //通过延长加载时间，体现服务器异常
                     setTimeout(() => {
                         this.tableLoading = false
