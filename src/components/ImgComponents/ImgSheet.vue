@@ -36,18 +36,18 @@
 
         <!-- 对话框 -->
         <!-- 新增对话框 -->
-        <!-- <AddDialog v-model:visible="addDialogVisible" /> -->
+        <AddDialog v-model:visible="addDialogVisible" />
         <EditDialog v-model:visible="editDialogVisible" :url="cimg" />
     </div>
 </template>
 
 <script>
-// import AddDialog from './AddStaffDialog.vue'
+import AddDialog from '@/components/ImgComponents/AddImgDialog.vue'
 import EditDialog from '@/components/ImgComponents/EditImgDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
-        // AddDialog,
+        AddDialog,
         EditDialog
     },
     data() {

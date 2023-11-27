@@ -7,7 +7,7 @@ import 'element-plus/dist/index.css'
 import axios from 'axios';
 import md5 from 'js-md5';
 import cookie from './cookie/cookie.js';
-axios.defaults.baseURL = "http://192.168.205.57:6688"
+axios.defaults.baseURL = 'http://127.0.0.1:6688';
 const app = createApp(App)
 app.use(router)
 app.config.globalProperties.$http = axios;

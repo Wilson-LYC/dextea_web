@@ -173,7 +173,6 @@ export default {
                     }
                 }).then(
                     (response) => {
-                        console.log(response.data)
                         if (response.data.code != 200) {
                             ElMessage.error("查询失败")
                             return
