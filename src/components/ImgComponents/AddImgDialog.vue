@@ -13,7 +13,8 @@
             <el-form :model="form" ref="myform" :rules="rules" size="default" v-model:headers="myheaders">
                 <el-form-item>
                     <el-upload drag :action="uploadUrl" :auto-upload="false" list-type="picture" style="width: 100%;"
-                        ref="upload" :headers="myheaders" :before-upload="beforeUpload" :on-success="onSuccess">
+                        ref="upload" :headers="myheaders" :before-upload="beforeUpload" :on-success="onSuccess"
+                        :on-error="onError">
                         <el-icon><upload-filled /></el-icon>
                         <div>
                             拖拽文件到此处，或<em>点击上传</em>
@@ -49,7 +50,7 @@ export default {
         return {
             myheaders: {},
             //上传图片的地址
-            uploadUrl: 'http://127.0.0.1:6688/img/upload',
+            uploadUrl: 'http://192.168.205.57:6688/img/upload',
             loading: false
         }
     },
@@ -65,18 +66,22 @@ export default {
             }
         },
         onSubmit() {
-            this.loading=true
+            this.loading = true
             this.$refs.upload.submit()
         },
         onSuccess(response, file, fileList) {
             if (response.code == 200) {
                 ElMessage.success("上传成功")
-                this.loading=false
+                this.loading = false
                 //关闭窗口
                 this.see = false
             } else {
                 ElMessage.error(response.msg)
             }
+        },
+        onError() {
+            this.loading = false
+            ElMessage.error("上传失败")
         }
     },
     computed: {
