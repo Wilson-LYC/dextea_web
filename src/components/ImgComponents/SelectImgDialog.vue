@@ -120,6 +120,13 @@ export default {
                 this.$emit('update:visible', see)
             }
         }
+    },
+    watch: {
+        see(val) {
+            if (val == true) {
+                this.getData()
+            }
+        }
     }
 }
 </script>

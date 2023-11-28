@@ -76,7 +76,30 @@ export default {
         },
         //删除
         del(val, index) {
-            ElMessage.warning("暂不支持删除，如需删除请联系IT部门")
+            let sData = {
+                "url": val.url
+            }
+            this.$http.post("/img/delete", {
+                data: sData
+            }, {
+                headers: {
+                    "content-type": "application/json",
+                    'Authorization': sessionStorage.getItem('token')
+                }
+            }).then(
+                (response) => {
+                    if (response.data.code !== 200) {
+                        ElMessage.error(response.data.msg)
+                        return
+                    }
+                    //成功
+                    ElMessage.success("删除成功")
+                    this.getData()
+                },
+                (response) => {
+                    ElMessage.error("服务器连接失败")
+                }
+            )
         },
         //详情
         detail(val) {
