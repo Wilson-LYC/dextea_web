@@ -4,25 +4,14 @@
         <!-- 搜索栏 -->
         <div>
             <el-form :inline="true" :model="search.form" :rules="search.rules">
-                <el-form-item label="门店ID" prop="id">
+                <el-form-item label="订单ID" prop="id">
                     <el-input v-model="search.form.id" clearable style="width: 150px;" />
                 </el-form-item>
-                <el-form-item label="门店名称">
+                <el-form-item label="昵称">
                     <el-input v-model="search.form.name" clearable style="width: 150px;" />
                 </el-form-item>
                 <el-form-item label="联系方式">
                     <el-input v-model="search.form.phone" clearable style="width: 150px;" />
-                </el-form-item>
-                <el-form-item label="状态">
-                    <el-select v-model="search.form.openState" placeholder="请选择" clearable style="width: 150px;">
-                        <el-option v-for="(item, index) in openStateOptions" :key="index" :label="item.label"
-                            :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="所在区域">
-                    <el-cascader v-model="search.form.area" clearable style="width: 150px;" :options="areaOptions"
-                        placeholder="请选择">
-                    </el-cascader>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="searchSubmit" :loading="searchLoading">查询</el-button>
@@ -33,10 +22,6 @@
 
         <!-- 操作栏 -->
         <div class="btn-container" style="margin-bottom: 15px;">
-            <el-button type="primary" @click="add">新增</el-button>
-            <el-button type="success" @click="updateOpenState('1')">营业</el-button>
-            <el-button type="danger" @click="updateOpenState('2')">闭店</el-button>
-            <el-button type="info" @click="updateOpenState('0')">未开业</el-button>
             <el-button type="default" @click="refresh" :loading="refreshLoading">刷新</el-button>
         </div>
 
@@ -46,29 +31,35 @@
             <template #empty>无数据</template>
             <!-- 数据部分 -->
             <el-table-column type="selection" width="50" fixed="left" />
-            <el-table-column prop="id" label="门店ID" min-width="80" fixed="left" sortable />
-            <el-table-column prop="name" label="门店名称" min-width="200" :show-overflow-tooltip="true" />
+            <el-table-column prop="id" label="订单ID" width="100" fixed="left" sortable />
+            <el-table-column prop="commodity" label="商品列表" width="200" :show-overflow-tooltip="true" />
             <el-table-column label="状态" width="80" align="center">
                 <template #default="scope">
                     <el-tag type="success" effect="plain" round v-if="scope.row.openState === '1'">
-                        营业
+                        已下单
                     </el-tag>
                     <el-tag type="danger" effect="plain" round v-else-if="scope.row.openState === '2'">
-                        闭店
+                        制作中
+                    </el-tag>
+                    <el-tag type="info" effect="plain" round v-else-if="scope.row.openState === '3'">
+                        可取茶
+                    </el-tag>
+                    <el-tag type="info" effect="plain" round v-else-if="scope.row.openState === '4'">
+                        已完成
                     </el-tag>
                     <el-tag type="info" effect="plain" round v-else>
-                        未开业
+                        未知
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column prop="area" label="所在区域" min-width="100" :show-overflow-tooltip="true" />
-            <el-table-column prop="address" label="地址" min-width="300" :show-overflow-tooltip="true" />
-            <el-table-column prop="phone" label="联系方式" min-width="100" :show-overflow-tooltip="true" />
-            <el-table-column prop="openTime" label="营业时间" min-width="200" :show-overflow-tooltip="true" />
+            <el-table-column prop="totalPrice" label="总消费(元)" width="300" :show-overflow-tooltip="true" />
+            <el-table-column prop="totalNum" label="总数量" width="300" :show-overflow-tooltip="true" />
+            <el-table-column prop="custPhone" label="顾客联系方式" width="300" :show-overflow-tooltip="true" />
+            <el-table-column prop="orderTime" label="下单时间" width="300" :show-overflow-tooltip="true" />
             <!-- 行内操作栏 -->
-            <el-table-column fixed="right" label="操作" min-width="200" align="center">
+            <el-table-column fixed="right" label="操作" align="center">
                 <template #default="scope">
-                    <el-button type="primary" size="small" @click="detail(scope.row)">详情</el-button>
+                    <!-- <el-button type="primary" size="small" @click="detail(scope.row)">详情</el-button> -->
                     <el-popconfirm width="100" confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled"
                         icon-color="#626AEF" title="确定删除?" @confirm="del(scope.row, scope.$index)">
                         <template #reference>
@@ -81,24 +72,28 @@
 
         <!-- 对话框 -->
         <!-- 新增对话框 -->
-        <AddDialog v-model:visible="addDialogVisible" :openArea="areaOptions" />
-        <EditDialog v-model:visible="editDialogVisible" :store="sel" :openArea="areaOptions" />
+        <!-- <AddDialog v-model:visible="addDialogVisible" :openArea="areaOptions" />
+        <EditDialog v-model:visible="editDialogVisible" :store="sel" :openArea="areaOptions" /> -->
     </div>
 </template>
 
 <script>
-import AddDialog from '@/components/StoreComponents/AddStoreDialog.vue'
-import EditDialog from '@/components/StoreComponents/EditStoreDialog.vue'
+// import AddDialog from '@/components/StoreComponents/AddStoreDialog.vue'
+// import EditDialog from '@/components/StoreComponents/EditStoreDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
-        AddDialog,
-        EditDialog
+        // AddDialog,
+        // EditDialog
     },
     data() {
         return {
             //表格数据
-            tabledata: [],
+            tabledata: [{
+                "id":1,
+                "name":"wilson",
+                "phone":"123456"
+            }],
             //表格加载动画
             tableLoading: false,
             //刷新按钮加载动画
@@ -111,8 +106,6 @@ export default {
             addDialogVisible: false,
             //编辑对话框可见性
             editDialogVisible: false,
-            //选择的门店
-            sel: "",
             //搜索栏
             search: {
                 form: {
@@ -129,22 +122,7 @@ export default {
                         message: '请输入数字'
                     }],
                 },
-            },
-            //选项
-            areaOptions: [],
-            //营业状态
-            openStateOptions: [{
-                "value": "0",
-                "label": "未开业"
-            },
-            {
-                "value": "1",
-                "label": "营业中"
-            },
-            {
-                "value": "2",
-                "label": "休息中"
-            }],
+            }
         }
     },
     methods: {
@@ -333,7 +311,7 @@ export default {
         }
     },
     mounted() {
-        this.getData()
+        // this.getData()
     }
 }
 </script>

@@ -59,6 +59,12 @@ span {
                         <el-menu-item index="/company/commodity/category"><span>品类管理</span></el-menu-item>
                         <el-menu-item index="/company/commodity/all"><span>全部商品</span></el-menu-item>
                     </el-sub-menu>
+                    <el-menu-item index="/company/customer">
+                        <el-icon>
+                            <User />
+                        </el-icon>
+                        <span>顾客管理</span>
+                    </el-menu-item>
                     <el-menu-item index="/company/order">
                         <el-icon>
                             <Tickets />
@@ -75,12 +81,6 @@ span {
                         <el-menu-item index="/company/comment/order"><span>订单评价</span></el-menu-item>
                         <el-menu-item index="/company/comment/commodity"><span>商品评价</span></el-menu-item>
                     </el-sub-menu>
-                    <el-menu-item index="/company/customer">
-                        <el-icon>
-                            <User />
-                        </el-icon>
-                        <span>顾客管理</span>
-                    </el-menu-item>
                     <el-sub-menu index="/company/data">
                         <template #title>
                             <el-icon>

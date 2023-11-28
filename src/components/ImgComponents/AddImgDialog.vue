@@ -50,7 +50,7 @@ export default {
         return {
             myheaders: {},
             //上传图片的地址
-            uploadUrl: 'http://192.168.205.57:6688/img/upload',
+            uploadUrl: 'http://127.0.0.1:6688/img/upload',
             loading: false
         }
     },
@@ -82,6 +82,9 @@ export default {
         onError() {
             this.loading = false
             ElMessage.error("上传失败")
+        },
+        cancel(){
+            this.see = false
         }
     },
     computed: {

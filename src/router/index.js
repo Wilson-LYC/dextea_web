@@ -47,9 +47,27 @@ const router = createRouter({
             {
               path: 'img',
               component: () => import("@/views/company/img/ImgView.vue")
+            },
+            {
+              path:'customer',
+              component:()=>import("@/views/company/customer/CustomerView.vue")
+            },
+            {
+              path:'order',
+              component:()=>import("@/views/company/order/OrderView.vue")
             }
           ]
         },
+        {
+          path:'store',
+          component:()=>import("@/views/store/StoreView.vue"),
+          children:[
+            {
+              path:'service',
+              component:()=>import("@/views/store/StoreService.vue")
+            }
+          ]
+        }
       ],
     },
     {

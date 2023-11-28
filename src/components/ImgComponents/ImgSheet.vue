@@ -129,6 +129,8 @@ export default {
             }).then(
                 (response) => {
                     if (response.data.code != 200) {
+                        this.tableLoading = false
+                        this.refreshLoading = false
                         ElMessage.error(response.data.msg)
                         return false
                     }

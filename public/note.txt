@@ -1,0 +1,1 @@
+需要改ip的文件：main.js 两个addimgdialog.vue
