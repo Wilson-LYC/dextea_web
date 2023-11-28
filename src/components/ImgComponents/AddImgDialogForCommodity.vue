@@ -14,7 +14,7 @@
                 <el-form-item>
                     <el-upload drag :action="uploadUrl" :auto-upload="false" list-type="picture" style="width: 100%;"
                         ref="upload" :headers="myheaders" :before-upload="beforeUpload" :on-success="onSuccess"
-                        :on-error="onError" multiple>
+                        :on-error="onError" :limit="1" :on-exceed="onExceed">
                         <el-icon><upload-filled /></el-icon>
                         <div>
                             拖拽文件到此处，或<em>点击上传</em>
@@ -43,9 +43,10 @@
 import { ElMessage } from 'element-plus'
 export default {
     props: {
-        visible: Boolean
+        visible: Boolean,
+        url:String
     },
-    emits: ['update:visible'],
+    emits: ['update:visible','update:url'],
     data() {
         return {
             myheaders: {},
@@ -72,6 +73,7 @@ export default {
         onSuccess(response, file, fileList) {
             if (response.code == 200) {
                 ElMessage.success("上传成功")
+                this.$emit('update:url', response.data.url)
                 this.loading = false
                 //关闭窗口
                 this.see = false
@@ -82,7 +84,10 @@ export default {
         onError() {
             this.loading = false
             ElMessage.error("上传失败")
-        }
+        },
+        onExceed(){
+            ElMessage.error("只能上传1张图片")
+        },
     },
     computed: {
         see: {

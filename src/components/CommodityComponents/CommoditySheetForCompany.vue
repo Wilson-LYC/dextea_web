@@ -70,6 +70,7 @@
                             <el-button type="danger" size="small">删除</el-button>
                         </template>
                     </el-popconfirm>
+                    
                 </template>
             </el-table-column>
         </el-table>

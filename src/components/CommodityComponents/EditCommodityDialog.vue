@@ -42,6 +42,10 @@
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="商品图片">
+                    <el-button size="small" @click="selPic">图库中选择</el-button>
+                    <el-button size="small" @click="upPic">上传图片</el-button>
+                </el-form-item>
+                <el-form-item label="">
                     <el-image :src="comm.img" style="width: 120px;" v-if="comm.img != null && comm.img != ''">
                         <template #error>
                             <div class="image-slot">
@@ -51,23 +55,7 @@
                             </div>
                         </template>
                     </el-image>
-                    <div v-else>未上传图片</div>
-                </el-form-item>
-                <el-form-item label="上传图片">
-                    <el-upload ref="upload" class="upload-demo" action="" :limit="1" :on-exceed="uploadExceed"
-                        :auto-upload="false" list-type="picture" v-model:file-list="imgList">
-                        <template #trigger>
-                            <el-button type="primary">select file</el-button>
-                            <el-button type="success" @click="submitUpload">
-                                upload to server
-                            </el-button>
-                        </template>
-                        <template #tip>
-                            <div class="el-upload__tip text-red">
-                                limit 1 file, new file will cover the old file
-                            </div>
-                        </template>
-                    </el-upload>
+                    <div v-else>未选择图片</div>
                 </el-form-item>
             </el-form>
             <div class="mytitle">个性化定制</div>
@@ -81,15 +69,20 @@
             </span>
         </template>
     </el-dialog>
+    <SeleceImg v-model:visible="selImgVisible" v-model:url="comm.img"/>
+    <UploadImg v-model:visible="upImgVisible" v-model:url="comm.img"/>
 </template>
 
 <script>
 import { ElMessage } from 'element-plus'
 import CustomEditor from '@/components/CommodityComponents/CustomEditor.vue'
-import { UploadFilled } from '@element-plus/icons-vue'
+import SeleceImg from '@/components/ImgComponents/SelectImgDialog.vue'
+import UploadImg from '@/components/ImgComponents/AddImgDialogForCommodity.vue'
 export default {
     components: {
-        CustomEditor
+        CustomEditor,
+        SeleceImg,
+        UploadImg
     },
     props: {
         visible: Boolean,
@@ -119,7 +112,9 @@ export default {
                 "label": "可售"
             }],
             categoryOptions: [],
-            imgList: [],
+            cimg: [],
+            selImgVisible:false,
+            upImgVisible:false
         }
     },
     methods: {
@@ -141,6 +136,7 @@ export default {
                 if (valid) {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.comm))
+                    console.log(sData)
                     this.$http.post("/commodity/update", {
                         data: sData
                     }, {
@@ -215,16 +211,12 @@ export default {
                 }
             )
         },
-        //上传成功
-        uploadSuccess(response, file, fileList) {
-            console.log(response)
-            console.log(this.imgList)
+        //选择图片
+        selPic(){
+            this.selImgVisible=true;
         },
-        //上传超出限制
-        uploadExceed(files, uploadFiles) {
-            ElMessage.warning("最多只能上传1张图片")
-            console.log(files)
-            console.log(uploadFiles)
+        upPic(){
+            this.upImgVisible=true;
         }
     },
     computed: {

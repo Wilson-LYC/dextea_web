@@ -4,7 +4,7 @@
 <template>
     <el-dialog title="图片" v-model="see" :draggable="true" :destroy-on-close="true" width="800px">
         <div style="text-align: center;">
-            <el-image :src="url" style="height: 500px;margin: auto;"/>
+            <el-image :src="url" style="height: 500px;margin: auto;" fit="scale-down" />
         </div>
         <!-- 操作按钮 -->
         <template #footer>
@@ -18,8 +18,7 @@
 <script>
 export default {
     props: {
-        visible: Boolean,
-        url: String
+        visible: Boolean
     },
     emits: ['update:visible'],
     methods: {
