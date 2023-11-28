@@ -18,7 +18,8 @@
 <script>
 export default {
     props: {
-        visible: Boolean
+        visible: Boolean,
+        url:String
     },
     emits: ['update:visible'],
     methods: {
