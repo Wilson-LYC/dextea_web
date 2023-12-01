@@ -64,7 +64,8 @@
                     </span>
                     <template #dropdown>
                         <el-dropdown-menu :hide-on-click="false">
-                            <!-- <el-dropdown-item>个人设置</el-dropdown-item> -->
+                            <el-dropdown-item v-if="role=='2'" @click="toSetting()">门店设置</el-dropdown-item>
+                            <el-dropdown-item v-if="role=='2'" @click="toService()">前台服务</el-dropdown-item>
                             <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
                             <!-- <el-dropdown-item>
                                 <el-popconfirm title="确定退出登录?">
@@ -88,7 +89,8 @@ import { ElMessage } from 'element-plus'
 export default {
     data() {
         return {
-            username: "admin"
+            username: "admin",
+            role:""
         }
     },
     methods: {
@@ -100,15 +102,19 @@ export default {
                 }
             }).then(
             )
-            sessionStorage.removeItem('username')
-            sessionStorage.removeItem('token')
-            sessionStorage.removeItem('role')
-            sessionStorage.removeItem('storeId')
+            sessionStorage.clear()
             ElMessage.success('退出成功')
             this.$router.push('/login')
+        },
+        toService() {
+            this.$router.push('/store/service')
+        },
+        toSetting() {
+            this.$router.push('/store/setting')
         }
     },
     mounted() {
+        this.role = sessionStorage.getItem('role')
         this.username = sessionStorage.getItem('username')
     }
 }

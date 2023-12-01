@@ -6,6 +6,7 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import axios from 'axios';
 import md5 from 'js-md5';
+import VueNativeSock from "vue-native-websocket-vue3";
 import { ElMessage } from 'element-plus'
 axios.defaults.baseURL = 'http://127.0.0.1:6688';
 
@@ -42,6 +43,11 @@ axios.interceptors.response.use(
 
 const app = createApp(App)
 app.use(router)
+app.use(VueNativeSock,"ws://localhost:6688/ws",{
+    reconnection: true, //断线重连
+    reconnectionAttempts: 5, // 重连次数
+    reconnectionDelay: 3000, // 重连间隔时间
+});//目的是为了在全局使用$socket
 app.config.globalProperties.$http = axios;
 app.config.globalProperties.$md5 = md5;
 app.use(ElementPlus)

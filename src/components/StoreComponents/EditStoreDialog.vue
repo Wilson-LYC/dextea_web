@@ -40,7 +40,9 @@
                 </el-form-item>
             </el-form>
             <el-tabs type="card">
-                <el-tab-pane label="商品管理">商品管理</el-tab-pane>
+                <el-tab-pane label="商品管理">
+                    <CommoditySheet :sid="form.id"/>
+                </el-tab-pane>
                 <el-tab-pane label="员工管理">
                     <StaffSheet :sid="form.id"/>
                 </el-tab-pane>
@@ -60,9 +62,11 @@
 <script>
 import { ElMessage } from 'element-plus'
 import StaffSheet from '@/components/StaffComponents/StaffSheetForStore.vue'
+import CommoditySheet from '@/components/CommodityComponents/CommoditySheetForStore_C.vue'
 export default {
     components: {
-        StaffSheet
+        StaffSheet,
+        CommoditySheet
     },
     props: {
         visible: Boolean,

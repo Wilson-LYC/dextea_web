@@ -5,6 +5,7 @@
     background: #ffffff;
     margin: 10px;
     border-radius: 8px;
+    padding: 10px;
 }
 .main{
   background: #ffffff;
@@ -26,13 +27,13 @@
       </el-aside>
       <el-main class="main">
         <el-scrollbar class="main-container">
-
+          <router-view />
         </el-scrollbar>
       </el-main>
     </el-container>
 </template>
 <script>
-import OrderNav from '@/components/StoreServiceComponents/OrderNavComponents.vue'
+import OrderNav from '@/components/StoreServiceComponents/OrderNav.vue'
 export default{
   components:{
     OrderNav

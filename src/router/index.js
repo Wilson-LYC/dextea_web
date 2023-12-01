@@ -49,22 +49,44 @@ const router = createRouter({
               component: () => import("@/views/company/img/ImgView.vue")
             },
             {
-              path:'customer',
-              component:()=>import("@/views/company/customer/CustomerView.vue")
+              path: 'customer',
+              component: () => import("@/views/company/customer/CustomerView.vue")
             },
             {
-              path:'order',
-              component:()=>import("@/views/company/order/OrderView.vue")
+              path: 'order',
+              component: () => import("@/views/company/order/OrderView.vue")
             }
           ]
         },
         {
-          path:'store',
-          component:()=>import("@/views/store/StoreView.vue"),
-          children:[
+          path: 'store',
+          component: () => import("@/views/store/StoreView.vue"),
+          redirect: '/store/service',
+          children: [
             {
-              path:'service',
-              component:()=>import("@/views/store/StoreService.vue")
+              path: 'setting',
+              component: () => import("@/views/frame/StoreSettingFrame.vue"),
+              children: [
+                {
+                  path: 'staff',
+                  component: () => import("@/components/StoreSettingComponents/StoreSettingIndex.vue")
+                }
+              ]
+            },
+            {
+              path: 'service',
+              component: () => import("@/views/store/StoreService.vue"),
+              redirect: '/store/service/index',
+              children: [
+                {
+                  path: 'index',
+                  component: () => import("@/components/StoreServiceComponents/ServiceIndex.vue")
+                },
+                {
+                  path: 'order/:id',
+                  component: () => import("@/components/StoreServiceComponents/OrderDetail.vue")
+                },
+              ]
             }
           ]
         }
@@ -78,7 +100,8 @@ const router = createRouter({
     {
       //页面不存在时跳转到404页面
       path: "/:path(.*)",
-      redirect: "/404"
+      // redirect: "/404"
+      component: () => import("@/views/result/NotFound.vue"),
     },
     {
       path: '/404',
@@ -97,7 +120,7 @@ const router = createRouter({
  */
 router.beforeEach((to, from, next) => {
   // 如果跳转的页面不存在，跳转到404页面
-  let token= sessionStorage.getItem("token")
+  let token = sessionStorage.getItem("token")
   if (to.matched.length === 0) {
     next('/404')
   }
