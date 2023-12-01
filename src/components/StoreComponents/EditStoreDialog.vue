@@ -9,7 +9,7 @@
                 <span> {{ form.name }}</span>
             </div>
         </template>
-        <el-scrollbar height="500px">
+        <el-scrollbar :height="height">
             <!-- 表单 -->
             <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
                 <el-form-item label="门店ID" prop="id">
@@ -19,8 +19,8 @@
                     <el-input v-model="form.name" type="text" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="所在区域" prop="area">
-                    <el-cascader v-model="form.area" class="full-width-input" :options="areaOptions" clearable
-                        placeholder="请选择" style="width: 100%;">
+                    <el-cascader v-model="form.area" :options="areaOptions" clearable placeholder="请选择"
+                        style="width: 100%;">
                     </el-cascader>
                 </el-form-item>
                 <el-form-item label="详细地址" prop="address">
@@ -33,18 +33,19 @@
                     <el-input v-model="form.openTime" type="text" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="营业状态" prop="openState">
-                    <el-select v-model="form.openState" class="full-width-input" placeholder="请选择" style="width: 100%;">
+                    <el-select v-model="form.openState" placeholder="请选择" style="width: 100%;">
                         <el-option v-for="(item, index) in openStateOptions" :key="index" :label="item.label"
                             :value="item.value" :disabled="item.disabled"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
-            <el-tabs type="card">
+            <!-- 细致管理 -->
+            <el-tabs type="card" v-if="tabsVisible">
                 <el-tab-pane label="商品管理">
-                    <CommoditySheet :sid="form.id"/>
+                    <CommoditySheet :sid="form.id" />
                 </el-tab-pane>
                 <el-tab-pane label="员工管理">
-                    <StaffSheet :sid="form.id"/>
+                    <StaffSheet :sid="form.id" />
                 </el-tab-pane>
             </el-tabs>
         </el-scrollbar>
@@ -71,7 +72,15 @@ export default {
     props: {
         visible: Boolean,
         store: Object,
-        openArea: Object
+        openArea: Object,
+        tabsVisible: {
+            type: Boolean,
+            default: true
+        },
+        height: {
+            type: String,
+            default: "500px"
+        }
     },
     emits: ['update:visible'],
     data() {
@@ -140,14 +149,13 @@ export default {
             this.$refs["myform"].validate(valid => {
                 if (valid) {
                     //表单验证通过
-                    let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
+                    let sData = this.form
                     //提交数据
-                    this.$http.post("/store/update", {
+                    this.$http.post("/v1/manage/store/update/info", {
                         data: sData
                     }, {
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': sessionStorage.getItem('token')
                         }
                     }).then(
                         (response) => {
@@ -155,18 +163,13 @@ export default {
                                 ElMessage.error(response.data.msg)
                                 return
                             }
-                            //成功
                             ElMessage.success("修改成功")
-                            //关闭窗口
                             this.closeDialog()
-                        },
-                        (response) => {
-                            ElMessage.error("服务器连接失败")
                         }
                     )
                 } else {
                     //表单验证不通过
-                    ElMessage.error("未按要求填写")
+                    ElMessage.error("请按要求填写")
                 }
             });
         },
