@@ -95,6 +95,7 @@
             <el-button type="primary">制作完成</el-button>
             <el-button type="success">已取餐</el-button>
             <el-button type="danger">退单</el-button>
+            <el-button @click="refresh" :loading="refreshLoading">刷新</el-button>
         </div>
     </div>
     <el-table :data="order.commodity" border class="mytable" table-layout="auto" v-loading="tableLoading">
@@ -107,17 +108,19 @@
 </template>
 <script>
 import { ElMessage } from 'element-plus'
+import { setTransitionHooks } from 'vue'
 export default {
     data() {
         return {
-            order: {}
+            order: {},
+            refreshLoading: false,
         }
     },
-    methods:{
-        getOrder(){
+    methods: {
+        getOrder() {
             let id = this.$route.params.id
             //get请求
-            this.$http.get("/order/detail?id="+id, {
+            this.$http.get("/order/detail?id=" + id, {
                 headers: {
                     'Authorization': sessionStorage.getItem('token')
                 }
@@ -133,16 +136,24 @@ export default {
                         return
                     }
                     this.order = response.data.data.order
+                    this.refreshLoading = false
                 },
                 (response) => {
                 }
             )
         },
-        getData(){
+        getData() {
             this.getOrder()
+        },
+        refresh() {
+            this.refreshLoading = true
+            setTimeout(() => {
+                this.getData()
+            }, 500)
+
         }
     },
-    mounted(){
+    mounted() {
         this.getData()
     },
     watch: {
