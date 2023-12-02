@@ -42,10 +42,10 @@
             <!-- 细致管理 -->
             <el-tabs type="card" v-if="tabsVisible">
                 <el-tab-pane label="商品管理">
-                    <CommoditySheet :sid="form.id" />
+                    <CommoditySheet :sid="form.id" size="small"/>
                 </el-tab-pane>
                 <el-tab-pane label="员工管理">
-                    <StaffSheet :sid="form.id" />
+                    <StaffSheet :sid="form.id" size="small"/>
                 </el-tab-pane>
             </el-tabs>
         </el-scrollbar>
@@ -62,8 +62,8 @@
 
 <script>
 import { ElMessage } from 'element-plus'
-import StaffSheet from '@/components/StaffComponents/StaffSheetForStore.vue'
-import CommoditySheet from '@/components/CommodityComponents/CommoditySheetForStore_C.vue'
+import StaffSheet from '@/components/StaffComponents/StaffSheetForEditStoreDialog.vue'
+import CommoditySheet from '@/components/CommodityComponents/CommoditySheetForEditStoreDialog.vue'
 export default {
     components: {
         StaffSheet,

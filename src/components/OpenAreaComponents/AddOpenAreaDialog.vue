@@ -1,5 +1,6 @@
 <template>
-    <el-dialog title="新增营业区域" width="500px" v-model="see" :draggable="true" :before-close="closeDialog" :destroy-on-close="true">
+    <el-dialog title="新增营业区域" width="500px" v-model="see" :draggable="true" :before-close="closeDialog"
+        :destroy-on-close="true">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
             <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
@@ -10,7 +11,8 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="上级区域" prop="superior" class="required" v-if="form.type == 2">
-                    <el-select v-model="form.superior" class="full-width-input" clearable placeholder="请选择" style="width: 100%;">
+                    <el-select v-model="form.superior" class="full-width-input" clearable placeholder="请选择"
+                        style="width: 100%;">
                         <el-option v-for="(item, index) in openArea" :label="item.value" :value="index"></el-option>
                     </el-select>
                 </el-form-item>
@@ -109,12 +111,11 @@ export default {
                         })
                     }
                     //提交数据
-                    this.$http.post("/openarea/update", {
+                    this.$http.post("/v1/manage/openarea/update", {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': sessionStorage.getItem('token')
+                            'Content-Type': 'application/json'
                         }
                     }).then(
                         (response) => {
@@ -126,14 +127,11 @@ export default {
                             ElMessage.success("添加成功")
                             //关闭窗口
                             this.closeDialog()
-                        },
-                        (response) => {
-                            ElMessage.error("服务器连接失败")
                         }
                     )
                 } else {
                     //表单验证不通过
-                    ElMessage.error("未按要求填写")
+                    ElMessage.error("请按要求填写")
                 }
             });
         },

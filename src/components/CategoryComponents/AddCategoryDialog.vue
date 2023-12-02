@@ -67,12 +67,11 @@ export default {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
                     //提交数据
-                    this.$http.post("/category/add", {
+                    this.$http.post("/v1/manage/category/add", {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': sessionStorage.getItem('token')
+                            'Content-Type': 'application/json'
                         }
                     }).then(
                         (response) => {

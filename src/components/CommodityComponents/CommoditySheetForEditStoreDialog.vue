@@ -1,16 +1,16 @@
 <style scoped></style>
 <template>
-    <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
+    <div style="background: #ffffff;">
         <!-- 操作栏 -->
         <div class="btn-container" style="margin-bottom: 15px;">
-            <el-button type="success" @click="onsale()">在售</el-button>
-            <el-button type="danger" @click="offsale()">售罄</el-button>
-            <el-button type="default" @click="refresh" :loading="refreshLoading">刷新</el-button>
+            <el-button :size="size" type="success" @click="onsale()">在售</el-button>
+            <el-button :size="size" type="danger" @click="offsale()">售罄</el-button>
+            <el-button :size="size" type="default" @click="refresh" :loading="refreshLoading">刷新</el-button>
         </div>
 
         <!-- 表格主体 -->
         <el-table :data="tabledata" style="width: 100%" border height="550px" table-layout="auto"
-            @selection-change="handleSelectionChange" v-loading="tableLoading">
+            @selection-change="handleSelectionChange" v-loading="tableLoading" :size="size">
             <template #empty>无数据</template>
             <!-- 数据部分 -->
             <el-table-column type="selection" width="50" fixed="left" />
@@ -39,7 +39,11 @@
 import { ElMessage } from 'element-plus'
 export default {
     props:{
-        sid:Number
+        sid:Number,
+        size:{
+            type:String,
+            default:'default'
+        }
     },
     data() {
         return {
@@ -74,8 +78,7 @@ export default {
             {
                 "value": "1",
                 "label": "售罄"
-            }],
-            cateOptions: []
+            }]
         }
     },
     methods: {
@@ -87,11 +90,12 @@ export default {
         onsale() {
             let sData
             if (this.multipleSelection.length == 0) {
-                ElMessage.error("请至少选择一项")
+                ElMessage.warning("至少选择一件商品")
                 return
             }
             let cid = []
             this.multipleSelection.forEach(element => {
+                //排除已经在售的商品
                 if(element.state == '0')
                     cid.push(element.id)
             });
@@ -99,12 +103,11 @@ export default {
                 "cid": cid,
                 "sid": this.sid,
             }
-            this.$http.post("/commodity/store/onsale", {
+            this.$http.post("/v1/manage/menu/onsale", {
                 data: sData
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': sessionStorage.getItem('token')
+                    'Content-Type': 'application/json'
                 }
             }).then(
                 (response) => {
@@ -113,19 +116,16 @@ export default {
                         return
                     }
                     //成功
-                    ElMessage.success("修改成功")
+                    ElMessage.success("操作成功")
                     //刷新
                     this.getData()
-                },
-                (response) => {
-                    ElMessage.error("服务器连接失败")
                 }
             )
         },
         offsale() {
             let sData
             if (this.multipleSelection.length == 0) {
-                ElMessage.error("请至少选择一项")
+                ElMessage.warning("至少选择一件商品")
                 return
             }
             let cid = []
@@ -138,12 +138,11 @@ export default {
                 "sid": this.sid,
             }
             console.log(sData)
-            this.$http.post("/commodity/store/offsale", {
+            this.$http.post("/v1/manage/menu/offsale", {
                 data: sData
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': sessionStorage.getItem('token')
+                    'Content-Type': 'application/json'
                 }
             }).then(
                 (response) => {
@@ -152,12 +151,9 @@ export default {
                         return
                     }
                     //成功
-                    ElMessage.success("修改成功")
+                    ElMessage.success("操作成功")
                     //刷新
                     this.getData()
-                },
-                (response) => {
-                    ElMessage.error("服务器连接失败")
                 }
             )
         },
@@ -170,48 +166,23 @@ export default {
         },
         //从服务器获取数据
         getData() {
-            this.getCommodityData()
-            this.getCategoryOptions()
+            this.tableLoading = true
+            this.getCommodity()
         },
-        getCommodityData() {
-            this.loading = true
-            this.$http.get("/commodity/store?id="+this.sid, {
-                headers: {
-                    "Authorization": sessionStorage.getItem("token")
-                }
-            }).then(
+        getCommodity() {
+            this.$http.get("/v1/manage/menu/get?id="+this.sid).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
-                        return false
+                        this.tableLoading = false
+                        this.refreshLoading = false
+                        return
                     }
                     this.tabledata = response.data.data.commodity
                     this.tableLoading = false
+                    if (this.refreshLoading)
+                        ElMessage.success("刷新成功")
                     this.refreshLoading = false
-                    return true
-
-                },
-                (response) => {
-                    setTimeout(() => {
-                        this.tableLoading = false
-                        this.refreshLoading = false
-                        ElMessage.error("服务器连接异常")
-                        return false
-                    }, 1000)
-                }
-            )
-        },
-        getCategoryOptions() {
-            this.$http.get("/category/get/option/select",{
-                headers: {
-                    "Authorization": sessionStorage.getItem("token")
-                }
-            }).then(
-                (response) => {
-                    if (response.data.code != 200) {
-                        return
-                    }
-                    this.cateOptions = response.data.data.category
                 }
             )
         }

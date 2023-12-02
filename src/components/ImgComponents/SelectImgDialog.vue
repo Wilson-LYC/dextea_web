@@ -29,7 +29,6 @@
 </template>
 
 <script>
-/**/
 import { ElMessage } from 'element-plus'
 import EditDialog from '@/components/ImgComponents/EditImgDialog.vue'
 export default {
@@ -68,33 +67,24 @@ export default {
         },
         //从服务器获取数据
         getData() {
+            this.tableLoading = true
             this.getImgData()
         },
+        //从服务器获取图片数据
         getImgData() {
-            this.loading = true
-            this.$http.get("/img/get/all", {
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
+            this.$http.get("/v1/manage/img/list").then(
                 (response) => {
                     if (response.data.code != 200) {
+                        this.tableLoading = false
+                        this.refreshLoading = false
                         ElMessage.error(response.data.msg)
-                        return false
+                        return
                     }
                     this.tabledata = response.data.data.img
                     this.tableLoading = false
+                    if (this.refreshLoading)
+                        ElMessage.success("刷新成功")
                     this.refreshLoading = false
-                    return true
-
-                },
-                (response) => {
-                    setTimeout(() => {
-                        this.tableLoading = false
-                        this.refreshLoading = false
-                        ElMessage.error("服务器连接异常")
-                        return false
-                    }, 1000)
                 }
             )
         },
@@ -103,6 +93,7 @@ export default {
             //关闭窗口
             this.see = false
         },
+        //选择
         sel(val) {
             this.$emit('update:url', val.url)
             this.colse()

@@ -10,17 +10,15 @@ import { ElMessage } from 'element-plus'
 //axios配置
 axios.defaults.baseURL = 'http://127.0.0.1:6688';
 axios.interceptors.request.use(
-    res => {
-        let token=sessionStorage.getItem("token");
-        if(token){
-            res.headers.Authorization=token;
-        }else{
-            res.headers.Authorization=null;
-        }
-        return res;
-    },
-    err => {
+  res => {
+    let token = sessionStorage.getItem("token");
+    if (token) {
+      res.headers.Authorization = token;
     }
+    return res;
+  },
+  err => {
+  }
 )
 axios.interceptors.response.use(
   res => {
@@ -31,7 +29,7 @@ axios.interceptors.response.use(
     return res;
   },
   err => {
-    ElMessage.error("服务器异常: "+err);
+    ElMessage.error("服务器异常: " + err);
   }
 )
 

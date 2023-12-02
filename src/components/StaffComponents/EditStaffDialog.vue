@@ -110,12 +110,11 @@ export default {
                         sData.password = this.$md5(sData.password)
                     console.log(sData)
                     //提交数据
-                    this.$http.post("/staff/update", {
+                    this.$http.post("/v1/manage/staff/update", {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': sessionStorage.getItem('token')
+                            'Content-Type': 'application/json'
                         }
                     }).then(
                         (response) => {
@@ -127,14 +126,11 @@ export default {
                             ElMessage.success("修改成功，下次登录时生效")
                             //关闭窗口
                             this.closeDialog()
-                        },
-                        (response) => {
-                            ElMessage.error("服务器连接失败")
                         }
                     )
                 } else {
                     //填写不符合要求
-                    ElMessage.error("填写不符合要求")
+                    ElMessage.error("请按要求填写")
                 }
             });
         },

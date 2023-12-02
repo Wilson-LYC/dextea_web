@@ -60,7 +60,7 @@ const router = createRouter({
         },
         {
           path: 'store',
-          component: () => import("@/views/store/StoreView.vue"),
+          component: () => import("@/views/frame/StoreView.vue"),
           redirect: '/store/service',
           children: [
             {

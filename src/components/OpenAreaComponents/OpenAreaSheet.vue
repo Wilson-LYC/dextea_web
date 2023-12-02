@@ -18,9 +18,9 @@
       <el-table-column fixed="right" label="操作" width="100" align="center">
         <template #default="scope">
           <!-- 没有子节点且区域内无门店才能删除 -->
-          <el-popconfirm v-if="(scope.row.children == null || scope.row.children.length < 1) && (scope.row.num<1)" width="220"
-            confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled" icon-color="#626AEF" title="确定删除?"
-            @confirm="del(scope.row)">
+          <el-popconfirm v-if="(scope.row.children == null || scope.row.children.length < 1) && (scope.row.num < 1)"
+            width="220" confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled" icon-color="#626AEF"
+            title="确定删除?" @confirm="del(scope.row)">
             <template #reference>
               <el-button type="danger" size="small">删除</el-button>
             </template>
@@ -86,12 +86,11 @@ export default {
         }
       }
       //提交数据
-      this.$http.post("/openarea/update", {
+      this.$http.post("/v1/manage/openarea/update", {
         data: newData
       }, {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': sessionStorage.getItem('token')
+          'Content-Type': 'application/json'
         }
       }).then(
         (response) => {
@@ -102,37 +101,26 @@ export default {
           //成功
           ElMessage.success("删除成功")
           //刷新数据
-          this.getOpenAreaData()
-        },
-        (response) => {
-          ElMessage.error("服务器连接失败")
+          this.getOpenArea()
         }
       )
     },
     //从服务器获取营业区域
-    getOpenAreaData() {
-      this.loading = true
-      this.$http.get("/openarea/get/all",{
-        headers: {
-          'Authorization': sessionStorage.getItem('token')
-        }
-      }).then(
+    getOpenArea() {
+      this.tableLoading = true
+      this.$http.get("/v1/manage/openarea/all").then(
         (response) => {
           if (response.data.code != 200) {
             ElMessage.error(response.data.msg)
-            return false
+            this.tableLoading = false
+            this.refreshLoading = false
+            return
           }
           this.tabledata = response.data.data.openArea
-          this.loading = false
+          this.tableLoading = false
+          if (this.refreshLoading)
+            ElMessage.success("刷新成功")
           this.refreshLoading = false
-          return true
-        },
-        (response) => {
-          setTimeout(() => {
-            this.loading = false
-            ElMessage.error("服务器连接异常")
-            return false
-          }, 1000)
         }
       )
     },
@@ -140,18 +128,18 @@ export default {
     refresh() {
       this.refreshLoading = true
       setTimeout(() => {
-        this.getOpenAreaData()
+        this.getOpenArea()
       }, 500)
-    }
+    },
   },
   watch: {
     addDialogVisible(val) {
       if (val == false)
-        this.getOpenAreaData()
+        this.getOpenArea()
     }
   },
   mounted() {
-    this.getOpenAreaData()
+    this.getOpenArea()
   }
 }
 </script>

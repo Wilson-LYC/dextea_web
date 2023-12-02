@@ -50,7 +50,7 @@ export default {
         return {
             myheaders: {},
             //上传图片的地址
-            uploadUrl: 'http://127.0.0.1:6688/img/upload',
+            uploadUrl: 'http://127.0.0.1:6688/v1/manage/img/upload',
             loading: false
         }
     },

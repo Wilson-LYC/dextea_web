@@ -1,4 +1,3 @@
-<style scoped></style>
 <template>
     <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
         <!-- 搜索栏 -->
@@ -43,9 +42,9 @@
             <template #empty>无数据</template>
             <!-- 数据部分 -->
             <el-table-column type="selection" width="50" fixed="left" />
-            <el-table-column prop="id" label="商品ID" min-width="80" fixed="left" sortable />
-            <el-table-column prop="name" label="名称" min-width="80" :show-overflow-tooltip="true" />
-            <el-table-column label="销售状态" min-width="80" align="center">
+            <el-table-column prop="id" label="商品ID" width="100" fixed="left" sortable />
+            <el-table-column prop="name" label="名称" :show-overflow-tooltip="true" />
+            <el-table-column label="销售状态" width="100" align="center">
                 <template #default="scope">
                     <el-tag type="danger" effect="light" round v-if="scope.row.state == '0'">
                         不可售
@@ -58,10 +57,10 @@
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column prop="price" label="基础售价(元)" min-width="80" :show-overflow-tooltip="true" />
-            <el-table-column prop="category" label="品类" min-width="80" :show-overflow-tooltip="true" />
+            <el-table-column prop="price" label="基础售价(元)" width="120" :show-overflow-tooltip="true" />
+            <el-table-column prop="category" label="品类" width="300" :show-overflow-tooltip="true" />
             <!-- 行内操作栏 -->
-            <el-table-column fixed="right" label="操作" min-width="200" align="center">
+            <el-table-column fixed="right" label="操作" width="200" align="center">
                 <template #default="scope">
                     <el-button type="primary" size="small" @click="detail(scope.row)">详情</el-button>
                     <el-popconfirm width="100" confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled"
@@ -70,7 +69,7 @@
                             <el-button type="danger" size="small">删除</el-button>
                         </template>
                     </el-popconfirm>
-                    
+
                 </template>
             </el-table-column>
         </el-table>
@@ -105,6 +104,7 @@ export default {
             addDialogVisible: false,
             //“编辑”对话框可见性
             editDialogVisible: false,
+            //被选中的查看详情的行
             sel: "",
             //搜索栏
             search: {
@@ -147,15 +147,14 @@ export default {
         },
         //搜索
         searchSubmit() {
+            console.log(this.search.data)
             let sData = JSON.parse(JSON.stringify(this.search.data))
-            this.$http.post("/commodity/search", {
+            this.$http.post("/v1/manage/commodity/search", {
                 data: sData
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': sessionStorage.getItem('token')
+                    'Content-Type': 'application/json'
                 }
-
             }).then(
                 (response) => {
                     if (response.data.code != 200) {
@@ -164,9 +163,6 @@ export default {
                     }
                     this.tabledata = response.data.data.commodity
                     ElMessage.success("查询成功")
-                },
-                (response) => {
-                    ElMessage.error("服务器连接失败")
                 }
             )
         },
@@ -175,13 +171,9 @@ export default {
             this.addDialogVisible = true
         },
         //删除
-        del(val, index) {
+        del(val) {
             //get请求
-            this.$http.get("/commodity/delete?id=" + val.id, {
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
+            this.$http.get("/v1/manage/commodity/delete?id=" + val.id).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -191,9 +183,6 @@ export default {
                     ElMessage.success("删除成功")
                     //刷新
                     this.getData()
-                },
-                (response) => {
-                    ElMessage.error("服务器连接失败")
                 }
             )
         },
@@ -210,7 +199,7 @@ export default {
         updateSellState(state) {
             let sData
             if (this.multipleSelection.length == 0) {
-                ElMessage.error("请至少选择一项")
+                ElMessage.error("至少选择一个商品")
                 return
             }
             let idList = []
@@ -218,15 +207,14 @@ export default {
                 idList.push(element.id)
             });
             sData = {
-                "idList": idList,
+                "id": idList,
                 "state": state
             }
-            this.$http.post("/commodity/update/state", {
+            this.$http.post("/v1/manage/commodity/update/state", {
                 data: sData
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': sessionStorage.getItem('token')
+                    'Content-Type': 'application/json'
                 }
             }).then(
                 (response) => {
@@ -238,9 +226,6 @@ export default {
                     ElMessage.success("修改成功")
                     //刷新
                     this.getData()
-                },
-                (response) => {
-                    ElMessage.error("服务器连接失败")
                 }
             )
         },
@@ -253,43 +238,31 @@ export default {
         },
         //从服务器获取数据
         getData() {
-            this.getCommodityData()
+            this.tableLoading = true
+            this.getCommodity()
             this.getCategoryOptions()
         },
-        getCommodityData() {
-            this.loading = true
-            this.$http.get("/commodity/get/brief", {
-                headers: {
-                    "Authorization": sessionStorage.getItem("token")
-                }
-            }).then(
+        //获取商品数据
+        getCommodity() {
+            this.$http.get("/v1/manage/commodity/all").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
-                        return false
+                        this.tableLoading = false
+                        this.refreshLoading = false
+                        return
                     }
                     this.tabledata = response.data.data.commodity
                     this.tableLoading = false
+                    if (this.refreshLoading)
+                        ElMessage.success("刷新成功")
                     this.refreshLoading = false
-                    return true
-
-                },
-                (response) => {
-                    setTimeout(() => {
-                        this.tableLoading = false
-                        this.refreshLoading = false
-                        ElMessage.error("服务器连接异常")
-                        return false
-                    }, 1000)
                 }
             )
         },
+        //获取品类下拉框选项
         getCategoryOptions() {
-            this.$http.get("/category/get/option/select",{
-                headers: {
-                    "Authorization": sessionStorage.getItem("token")
-                }
-            }).then(
+            this.$http.get("/v1/manage/category/option/select").then(
                 (response) => {
                     if (response.data.code != 200) {
                         return

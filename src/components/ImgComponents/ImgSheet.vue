@@ -75,16 +75,15 @@ export default {
             this.addDialogVisible = true
         },
         //删除
-        del(val, index) {
+        del(val) {
             let sData = {
                 "url": val.url
             }
-            this.$http.post("/img/delete", {
+            this.$http.post("/v1/manage/img/delete", {
                 data: sData
             }, {
                 headers: {
-                    "content-type": "application/json",
-                    'Authorization': sessionStorage.getItem('token')
+                    "content-type": "application/json"
                 }
             }).then(
                 (response) => {
@@ -92,12 +91,8 @@ export default {
                         ElMessage.error(response.data.msg)
                         return
                     }
-                    //成功
                     ElMessage.success("删除成功")
                     this.getData()
-                },
-                (response) => {
-                    ElMessage.error("服务器连接失败")
                 }
             )
         },
@@ -118,35 +113,23 @@ export default {
         },
         //从服务器获取数据
         getData() {
+            this.tableLoading = true
             this.getImgData()
         },
         getImgData() {
-            this.loading = true
-            this.$http.get("/img/get/all", {
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
+            this.$http.get("/v1/manage/img/list").then(
                 (response) => {
                     if (response.data.code != 200) {
                         this.tableLoading = false
                         this.refreshLoading = false
                         ElMessage.error(response.data.msg)
-                        return false
+                        return
                     }
                     this.tabledata = response.data.data.img
                     this.tableLoading = false
+                    if (this.refreshLoading)
+                        ElMessage.success("刷新成功")
                     this.refreshLoading = false
-                    return true
-
-                },
-                (response) => {
-                    setTimeout(() => {
-                        this.tableLoading = false
-                        this.refreshLoading = false
-                        ElMessage.error("服务器连接异常")
-                        return false
-                    }, 1000)
                 }
             )
         }

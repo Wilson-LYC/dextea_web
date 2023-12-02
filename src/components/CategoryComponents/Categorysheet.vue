@@ -36,8 +36,8 @@
 </template>
 
 <script>
-import AddDialog from './AddCategoryDialog.vue'
-import EditDialog from './EditCategoryDialog.vue'
+import AddDialog from '@/components/CategoryComponents/AddCategoryDialog.vue'
+import EditDialog from '@/components/CategoryComponents/EditCategoryDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
@@ -66,25 +66,18 @@ export default {
         },
         //删除
         del(val, index) {
-            if(val.num>0){
+            if (val.num > 0) {
                 ElMessage.error("该品类下有商品，无法删除")
                 return false
             }
-            this.$http.get("/category/delete?id=" + val.id,{
-                headers: {
-                    "Authorization": sessionStorage.getItem("token")
-                }
-            }).then(
+            this.$http.get("/v1/manage/category/delete?id=" + val.id).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
-                        return false
+                        return
                     }
                     this.getData()
                     ElMessage.success("删除成功")
-                },
-                (response) => {
-                    ElMessage.error("服务器连接异常")
                 }
             )
         },
@@ -101,34 +94,22 @@ export default {
         },
         //从服务器获取数据
         getData() {
+            this.tableLoading = true
             this.getCategoryData()
         },
         //获取品类数据
         getCategoryData() {
-            this.loading = true
-            this.$http.get("/category/get/all",{
-                headers: {
-                    "Authorization": sessionStorage.getItem("token")
-                }
-            }).then(
+            this.$http.get("/v1/manage/category/all").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
-                        return false
+                        return
                     }
                     this.tabledata = response.data.data.category
                     this.tableLoading = false
+                    if (this.refreshLoading)
+                        ElMessage.success("刷新成功")
                     this.refreshLoading = false
-                    return true
-
-                },
-                (response) => {
-                    setTimeout(() => {
-                        this.tableLoading = false
-                        this.refreshLoading = false
-                        ElMessage.error("服务器连接异常")
-                        return false
-                    }, 1000)
                 }
             )
         }

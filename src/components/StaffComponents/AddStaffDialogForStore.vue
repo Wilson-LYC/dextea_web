@@ -7,7 +7,8 @@
 </style>
 
 <template>
-    <el-dialog title="新增员工" v-model="see" :before-close="closeDialog" width="500px" :draggable="true" :destroy-on-close="true">
+    <el-dialog title="新增员工" v-model="see" :before-close="closeDialog" width="500px" :draggable="true"
+        :destroy-on-close="true">
         <el-scrollbar max-height="400px">
             <!-- 表单 -->
             <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
@@ -26,12 +27,6 @@
                             :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <!-- <el-form-item label="门店ID" prop="storeId" v-if="form.role == '2'">
-                    <el-input v-model="form.storeId" type="text" disabled></el-input>
-                </el-form-item> -->
-                <!-- <el-form-item label="门店名称" prop="storeName" v-if="form.role == '2'">
-                    <el-input v-model="form.storeName" type="text" disabled></el-input>
-                </el-form-item> -->
             </el-form>
         </el-scrollbar>
 
@@ -75,23 +70,17 @@ export default {
                         //账号不能重复
                         asyncValidator: (rule, value) => {
                             return new Promise((resolve, reject) => {
-                                this.$http.get("/staff/account/exist?account=" + value,{
-                                    headers: {
-                                        'Authorization': sessionStorage.getItem('token')
-                                    }
-                                }).then(
-                                    (response) => {
-                                        if (response.data.code == 200) {
-                                            resolve()
-                                        } else {
-                                            reject("账号已存在，请重新输入")
+                                if (value != "") {
+                                    this.$http.get("/v1/manage/staff/account?account=" + value).then(
+                                        (response) => {
+                                            if (response.data.code == 200) {
+                                                resolve()
+                                            } else {
+                                                reject("账号已存在，请重新输入")
+                                            }
                                         }
-                                    },
-                                    (response) => {
-                                        ElMessage.error("服务器连接失败")
-                                        reject("服务器连接失败")
-                                    }
-                                )
+                                    )
+                                }
                             });
                         }
                     }
@@ -148,11 +137,11 @@ export default {
             this.$refs["myform"].validate(valid => {
                 if (valid) {
                     //填写符合要求
-                    let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
+                    let sData = this.form
                     //密码加密
                     sData.password = this.$md5(sData.password)
                     //提交数据
-                    this.$http.post("/staff/add", {
+                    this.$http.post("/v1/manage/staff/add", {
                         data: sData
                     }, {
                         headers: {
@@ -169,14 +158,11 @@ export default {
                             ElMessage.success("添加成功")
                             //关闭窗口
                             this.closeDialog()
-                        },
-                        (response) => {
-                            ElMessage.error("服务器连接失败")
                         }
                     )
                 } else {
                     //填写不符合要求
-                    ElMessage.error("填写不符合要求")
+                    ElMessage.error("请按照要求填写")
                 }
             });
         },
@@ -196,12 +182,8 @@ export default {
             }
         }
     },
-    watch: {
-        see(val) {
-            if (val == true) {
-                this.form.storeId = this.sid
-            }
-        }
+    mounted() {
+        this.form.storeId = this.sid
     }
 }
 </script>

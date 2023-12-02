@@ -142,12 +142,11 @@ export default {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
                     //提交数据
-                    this.$http.post("/commodity/add", {
+                    this.$http.post("/v1/manage/commodity/add", {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': sessionStorage.getItem('token')
+                            'Content-Type': 'application/json'
                         }
                     }).then(
                         (response) => {
@@ -159,14 +158,11 @@ export default {
                             ElMessage.success("添加成功")
                             //关闭窗口
                             this.closeDialog()
-                        },
-                        (response) => {
-                            ElMessage.error("服务器连接失败")
                         }
                     )
                 } else {
                     //填写不符合要求
-                    ElMessage.error("填写不符合要求")
+                    ElMessage.error("请按要求填写")
                 }
             });
         },

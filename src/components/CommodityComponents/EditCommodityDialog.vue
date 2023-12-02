@@ -77,7 +77,7 @@
 import { ElMessage } from 'element-plus'
 import CustomEditor from '@/components/CommodityComponents/CustomEditor.vue'
 import SeleceImg from '@/components/ImgComponents/SelectImgDialog.vue'
-import UploadImg from '@/components/ImgComponents/AddImgDialogForCommodity.vue'
+import UploadImg from '@/components/ImgComponents/AddImgDialogForEditCommodityDialog.vue'
 export default {
     components: {
         CustomEditor,
@@ -136,13 +136,11 @@ export default {
                 if (valid) {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.comm))
-                    console.log(sData)
-                    this.$http.post("/commodity/update", {
+                    this.$http.post("/v1/manage/commodity/update/info", {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': sessionStorage.getItem('token')
+                            'Content-Type': 'application/json'
                         }
                     }).then(
                         (response) => {
@@ -152,14 +150,11 @@ export default {
                             }
                             ElMessage.success("修改成功")
                             this.closeDialog()
-                        },
-                        (response) => {
-                            ElMessage.error("服务器连接失败")
                         }
                     )
                 } else {
                     //填写不符合要求
-                    ElMessage.error("填写不符合要求")
+                    ElMessage.error("请按要求填写")
                 }
             });
         },
@@ -170,16 +165,12 @@ export default {
         },
         //获取数据
         getData() {
-            this.getCommData()
+            this.getComm()
             this.getCategoryOptions()
         },
         //获取商品数据
-        getCommData() {
-            this.$http.get("/commodity/get/detail?id=" + this.commId, {
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
+        getComm() {
+            this.$http.get("/v1/manage/commodity/detail?id=" + this.commId).then(
                 (response) => {
                     if (response.data.code !== 200) {
                         ElMessage.error(response.data.msg)
@@ -194,7 +185,7 @@ export default {
         },
         //获取品类选项数据
         getCategoryOptions() {
-            this.$http.get("/category/get/option/multiple", {
+            this.$http.get("/v1/manage/category/option/checkbox", {
                 headers: {
                     'Authorization': sessionStorage.getItem('token')
                 }

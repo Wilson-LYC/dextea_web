@@ -21,7 +21,7 @@
             </el-form-item>
         </el-form>
         <div style="margin-bottom: 10px;font-weight: bold;">商品列表</div>
-        <CommoditySheet v-model:cateId="sel"/>
+        <CommoditySheet v-model:cateId="sel" size="small"/>
         <!-- 操作按钮 -->
         <template #footer>
             <span class="dialog-footer">
@@ -79,12 +79,11 @@ export default {
                     //填写符合要求
                     let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
                     //提交数据
-                    this.$http.post("/company/category/update", {
+                    this.$http.post("/v1/manage/category/update", {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': sessionStorage.getItem('token')
+                            'Content-Type': 'application/json'
                         }
                     }).then(
                         (response) => {

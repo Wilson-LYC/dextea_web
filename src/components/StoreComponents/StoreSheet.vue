@@ -319,7 +319,7 @@ export default {
         },
         //获取营业区域选项
         getOpenAreaOption() {
-            this.$http.get("/openarea/get/option")
+            this.$http.get("/v1/manage/openarea/option")
                 .then(
                     (response) => {
                         if (response.data.code != 200) {

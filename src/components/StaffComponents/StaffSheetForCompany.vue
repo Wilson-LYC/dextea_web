@@ -86,8 +86,8 @@
 </template>
 
 <script>
-import AddDialog from './AddStaffDialog.vue'
-import EditDialog from './EditStaffDialog.vue'
+import AddDialog from '@/components/StaffComponents/AddStaffDialog.vue'
+import EditDialog from '@/components/StaffComponents/EditStaffDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
@@ -164,12 +164,11 @@ export default {
         searchSubmit() {
             this.searchLoading = true
             setTimeout(() => {
-                this.$http.post("/staff/search", {
+                this.$http.post("/v1/manage/staff/search", {
                     data: this.search.data
                 }, {
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': sessionStorage.getItem('token')
+                        'Content-Type': 'application/json'
                     }
                 }).then(
                     (response) => {
@@ -179,9 +178,6 @@ export default {
                         }
                         this.tabledata = response.data.data.staff
                         ElMessage.success("查询成功")
-                    },
-                    (response) => {
-                        ElMessage.error("服务器连接失败")
                     }
                 )
                 this.searchLoading = false
@@ -192,13 +188,9 @@ export default {
             this.addDialogVisible = true
         },
         //删除
-        del(val, index) {
+        del(val) {
             //get请求
-            this.$http.get("/staff/delete?id=" + val.id,{
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
+            this.$http.get("/v1/manage/staff/delete?id=" + val.id).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -208,9 +200,6 @@ export default {
                     ElMessage.success("删除成功")
                     //刷新
                     this.getStaffData()
-                },
-                (response) => {
-                    ElMessage.error("服务器连接失败")
                 }
             )
         },
@@ -232,52 +221,36 @@ export default {
         },
         //从服务器获取数据
         getData() {
+            this.tableLoading = true
             this.getStaffData()
             this.getStoreOption()
         },
         getStaffData() {
-            this.loading = true
-            this.$http.get("/staff/get/all",{
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
+            this.$http.get("/v1/manage/staff/all").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
-                        return false
+                        this.tableLoading = false
+                        this.refreshLoading = false
+                        return
                     }
                     this.tabledata = response.data.data.staff
                     this.tableLoading = false
+                    if (this.refreshLoading)
+                        ElMessage.success("刷新成功")
                     this.refreshLoading = false
-                    return true
-
-                },
-                (response) => {
-                    setTimeout(() => {
-                        this.tableLoading = false
-                        this.refreshLoading = false
-                        ElMessage.error("服务器连接异常")
-                        return false
-                    }, 1000)
                 }
             )
         },
         getStoreOption() {
             //get请求
-            this.$http.get("/store/get/option/select",{
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
+            this.$http.get("/v1/manage/store/option/select").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
                         return
                     }
                     this.storeOptions = response.data.data.stores
-                },
-                (response) => {
                 }
             )
         }

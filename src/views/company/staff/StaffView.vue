@@ -2,7 +2,7 @@
     <StaffSheet />
 </template>
 <script>
-import StaffSheet from '@/components/StaffComponents/StaffSheet.vue'
+import StaffSheet from '@/components/StaffComponents/StaffSheetForCompany.vue'
 export default{
     components:{
         StaffSheet
