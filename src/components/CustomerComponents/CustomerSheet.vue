@@ -10,7 +10,7 @@
                 <el-form-item label="昵称">
                     <el-input v-model="search.form.name" clearable style="width: 150px;" />
                 </el-form-item>
-                <el-form-item label="联系方式">
+                <el-form-item label="电话">
                     <el-input v-model="search.form.phone" clearable style="width: 150px;" />
                 </el-form-item>
                 <el-form-item>
@@ -32,16 +32,17 @@
             <!-- 数据部分 -->
             <el-table-column type="selection" width="50" fixed="left" />
             <el-table-column prop="id" label="顾客ID" width="100" fixed="left" sortable />
-            <el-table-column prop="name" label="顾客昵称" width="200" :show-overflow-tooltip="true" />
-            <el-table-column prop="phone" label="联系方式" width="300" :show-overflow-tooltip="true" />
+            <el-table-column prop="name" label="昵称" :show-overflow-tooltip="true" />
+            <el-table-column prop="phone" label="电话" :show-overflow-tooltip="true" />
+            <el-table-column prop="createtime" label="注册时间" :show-overflow-tooltip="true" sortable width="300"/>
             <!-- 行内操作栏 -->
-            <el-table-column fixed="right" label="操作" align="center">
+            <el-table-column fixed="right" label="操作" align="center" width="200">
                 <template #default="scope">
-                    <!-- <el-button type="primary" size="small" @click="detail(scope.row)">详情</el-button> -->
+                    <el-button type="primary" size="small" @click="detail(scope.row)">详情</el-button>
                     <el-popconfirm width="100" confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled"
                         icon-color="#626AEF" title="确定删除?" @confirm="del(scope.row, scope.$index)">
                         <template #reference>
-                            <el-button type="danger" size="small">删除</el-button>
+                            <el-button type="danger" size="small">注销</el-button>
                         </template>
                     </el-popconfirm>
                 </template>
@@ -49,29 +50,21 @@
         </el-table>
 
         <!-- 对话框 -->
-        <!-- 新增对话框 -->
-        <!-- <AddDialog v-model:visible="addDialogVisible" :openArea="areaOptions" />
-        <EditDialog v-model:visible="editDialogVisible" :store="sel" :openArea="areaOptions" /> -->
+        <EditDialog v-model:visible="editDialogVisible" :customer="sel" />
     </div>
 </template>
 
 <script>
-// import AddDialog from '@/components/StoreComponents/AddStoreDialog.vue'
-// import EditDialog from '@/components/StoreComponents/EditStoreDialog.vue'
+import EditDialog from '@/components/CustomerComponents/EditCustomerDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: {
-        // AddDialog,
-        // EditDialog
+        EditDialog
     },
     data() {
         return {
             //表格数据
-            tabledata: [{
-                "id":1,
-                "name":"wilson",
-                "phone":"123456"
-            }],
+            tabledata: [],
             //表格加载动画
             tableLoading: false,
             //刷新按钮加载动画
@@ -90,8 +83,6 @@ export default {
                     "id": "",
                     "name": "",
                     "phone": "",
-                    "openState": "",
-                    "area": [],
                 },
                 rules: {
                     id: [{
@@ -110,9 +101,7 @@ export default {
             this.search.form = {
                 "id": "",
                 "name": "",
-                "phone": "",
-                "openState": "",
-                "area": []
+                "phone": ""
             }
             this.getData()
         },
@@ -120,12 +109,11 @@ export default {
         searchSubmit() {
             this.searchLoading = true
             setTimeout(() => {
-                this.$http.post("/store/search", {
+                this.$http.post("/v1/manage/customer/search", {
                     data: this.search.form
                 }, {
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': sessionStorage.getItem('token')
+                        'Content-Type': 'application/json'
                     }
                 }).then(
                     (response) => {
@@ -135,9 +123,6 @@ export default {
                         }
                         this.tabledata = response.data.data.stores
                         ElMessage.success("查询成功")
-                    },
-                    (response) => {
-                        ElMessage.error("服务器连接失败")
                     }
                 )
                 this.searchLoading = false
@@ -149,25 +134,16 @@ export default {
             this.addDialogVisible = true
         },
         //删除
-        del(store, index) {
+        del(val) {
             //get请求
-            this.$http.get("/store/delete?id=" + store.id, {
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
+            this.$http.get("/v1/manage/customer/delete?id=" + val.id).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
                         return
                     }
-                    //成功
                     ElMessage.success("删除成功")
-                    //刷新
                     this.getData()
-                },
-                (response) => {
-                    ElMessage.error("服务器连接失败")
                 }
             )
         },
@@ -228,52 +204,23 @@ export default {
         },
         //从服务器获取数据
         getData() {
-            this.getStoreDate()
-            this.getOpenAreaOption()
+            this.getCustomer()
         },
         //获取所有门店
-        getStoreDate() {
-            this.tableLoading = true
-            this.$http.get("/store/get/all",{
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
+        getCustomer() {
+            this.$http.get("/v1/manage/customer/list").then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
-                        return false
-                    }
-                    this.tabledata = response.data.data.stores
-                    this.tableLoading = false
-                    this.refreshLoading = false
-                    return true
-                },
-                (response) => {
-                    //通过延长加载时间，体现服务器异常
-                    setTimeout(() => {
                         this.tableLoading = false
                         this.refreshLoading = false
-                        ElMessage.error("服务器连接异常")
-                        return false
-                    }, 1000)
-                }
-            )
-        },
-        //获取营业区域选项
-        getOpenAreaOption() {
-            this.$http.get("/openarea/get/option", {
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
-                (response) => {
-                    if (response.data.code != 200) {
                         return
                     }
-                    this.areaOptions = response.data.data.openArea
-                },
-                (response) => {
+                    this.tabledata = response.data.data.customers
+                    this.tableLoading = false
+                    if (this.refreshLoading)
+                        ElMessage.success("刷新成功")
+                    this.refreshLoading = false
                 }
             )
         }
@@ -289,7 +236,7 @@ export default {
         }
     },
     mounted() {
-        // this.getData()
+        this.getData()
     }
 }
 </script>
