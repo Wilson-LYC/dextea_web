@@ -6,45 +6,64 @@
     <el-dialog v-model="see" :before-close="closeDialog" width="800px" :draggable="true" :destroy-on-close="true">
         <template #header>
             <div class="my-header">
-                <span> {{ form.name }}</span>
+                <span> 订单详情 </span>
             </div>
         </template>
         <el-scrollbar height="500px">
             <!-- 表单 -->
             <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
-                <el-form-item label="门店ID" prop="id">
+                <el-form-item label="订单ID" prop="id">
                     <el-input v-model="form.id" type="text" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="门店名称" prop="name">
-                    <el-input v-model="form.name" type="text" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="所在区域" prop="area">
-                    <el-cascader v-model="form.area" class="full-width-input" :options="areaOptions" clearable
-                        placeholder="请选择" style="width: 100%;">
-                    </el-cascader>
-                </el-form-item>
-                <el-form-item label="详细地址" prop="address">
-                    <el-input v-model="form.address" type="text" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="电话" prop="phone">
-                    <el-input v-model="form.phone" type="text" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="营业时间" prop="openTime">
-                    <el-input v-model="form.openTime" type="text" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="营业状态" prop="openState">
-                    <el-select v-model="form.openState" class="full-width-input" placeholder="请选择" style="width: 100%;">
-                        <el-option v-for="(item, index) in openStateOptions" :key="index" :label="item.label"
-                            :value="item.value" :disabled="item.disabled"></el-option>
+                <el-form-item label="订单进度" prop="state">
+                    <el-select v-model="form.state" class="full-width-input" placeholder="请选择" style="width: 100%;">
+                        <el-option v-for="(item, index) in orderStateOptions" :key="index" :label="item.label"
+                            :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="门店" prop="storeName">
+                    <el-input v-model="form.storeName" type="text" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="顾客昵称" prop="custName">
+                    <el-input v-model="form.custName" type="text" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="联系电话" prop="phone">
+                    <el-input v-model="form.phone" type="text"></el-input>
+                </el-form-item>
+                <el-form-item label="总消费" prop="price">
+                    <el-input v-model="form.price" type="text" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="总数量" prop="num">
+                    <el-input v-model="form.num" type="text" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="订单备注" prop="num">
+                    <el-input v-model="form.note" type="textarea" :autosize="{ minRows: 3, maxRows: 3 }"></el-input>
+                </el-form-item>
+                <el-form-item label="下单时间" prop="phone">
+                    <el-input v-model="form.createtime" type="text" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="更新时间" prop="phone">
+                    <el-input v-model="form.updatetime" type="text" disabled></el-input>
+                </el-form-item>
             </el-form>
-            <el-tabs type="card">
-                <el-tab-pane label="商品管理">商品管理</el-tab-pane>
-                <el-tab-pane label="员工管理">
-                    <StaffSheet :sid="form.id"/>
-                </el-tab-pane>
-            </el-tabs>
+            <!-- 商品详情 -->
+            <div style="font-weight: bold;margin-bottom: 10px;">商品详情</div>
+            <el-table :data="form.commodity" style="width: 100%" border>
+                <el-table-column prop="name" label="商品" width="150" />
+                <el-table-column prop="num" label="数量" width="80" />
+                <el-table-column label="定制">
+                    <template #default="scope">
+                        <div v-for="item in scope.row.custom">
+                            {{ item.item }}：{{ item.value }}
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="price" label="价格" width="100">
+                    <template #default="scope">
+                        ￥{{ scope.row.price }}
+                    </template>
+                </el-table-column>
+            </el-table>
         </el-scrollbar>
 
         <!-- 操作按钮 -->
@@ -59,63 +78,43 @@
 
 <script>
 import { ElMessage } from 'element-plus'
-import StaffSheet from '@/components/StaffComponents/StaffSheetForStore.vue'
 export default {
-    components: {
-        StaffSheet
-    },
     props: {
         visible: Boolean,
-        store: Object,
-        openArea: Object
+        order: Object
     },
     emits: ['update:visible'],
     data() {
         return {
             form: {},
             rules: {
-                name: [{
+                state: [{
                     required: true,
-                    message: "请输入门店名称",
-                    trigger: "blur"
+                    message: '请选择订单状态',
+                    trigger: 'change'
                 }],
-                area: [{
-                    required: true,
-                    message: "请选择所在区域",
-                    trigger: "change"
-                }],
-                address: [{
-                    required: true,
-                    message: "请输入详细地址",
-                    trigger: "blur"
-                }],
-                phone: [{
-                    required: true,
-                    message: "请输入电话",
-                    trigger: "blur"
-                }],
-                openTime: [{
-                    required: true,
-                    message: "请输入营业时间",
-                    trigger: "blur"
-                }],
-                openState: [{
-                    required: true,
-                    message: "请选择营业状态",
-                    trigger: "change"
-                }]
+                phone: [
+                    { required: true, message: '请输入联系电话', trigger: 'blur' },
+                    { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
+                ]
             },
-            openStateOptions: [{
-                "value": "0",
-                "label": "未开业 "
+            //订单状态选项
+            orderStateOptions: [{
+                value: "1",
+                label: "已下单"
             }, {
-                "value": "1",
-                "label": "营业"
+                value: "2",
+                label: "制作中"
             }, {
-                "value": "2",
-                "label": "闭店"
-            }],
-            areaOptions: [],
+                value: "3",
+                label: "待取茶"
+            }, {
+                value: "4",
+                label: "已完成"
+            }, {
+                value: "0",
+                label: "退单"
+            }]
         }
     },
     methods: {
@@ -125,9 +124,7 @@ export default {
         },
         //关闭窗口
         closeDialog(done) {
-            //关闭窗口
             this.see = false
-            // ElMessage("窗口关闭")
             done()
         },
         //确认
@@ -136,14 +133,13 @@ export default {
             this.$refs["myform"].validate(valid => {
                 if (valid) {
                     //表单验证通过
-                    let sData = JSON.parse(JSON.stringify(this.form))//浅拷贝
+                    let sData = this.form
                     //提交数据
-                    this.$http.post("/store/update", {
+                    this.$http.post("/v1/manage/order/update", {
                         data: sData
                     }, {
                         headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': sessionStorage.getItem('token')
+                            'Content-Type': 'application/json'
                         }
                     }).then(
                         (response) => {
@@ -151,18 +147,13 @@ export default {
                                 ElMessage.error(response.data.msg)
                                 return
                             }
-                            //成功
                             ElMessage.success("修改成功")
-                            //关闭窗口
                             this.closeDialog()
-                        },
-                        (response) => {
-                            ElMessage.error("服务器连接失败")
                         }
                     )
                 } else {
                     //表单验证不通过
-                    ElMessage.error("未按要求填写")
+                    ElMessage.error("请按要求填写")
                 }
             });
         },
@@ -173,16 +164,11 @@ export default {
         },
         //获取数据
         getData() {
-            this.getStoreData()
-            this.getAreaOptions()
+            this.getOrder()
         },
-        //获取门店信息
-        getStoreData() {
-            this.form = JSON.parse(JSON.stringify(this.store))
-        },
-        //获取营业区域选项
-        getAreaOptions() {
-            this.areaOptions = this.openArea
+        //获取订单信息
+        getOrder() {
+            this.form = JSON.parse(JSON.stringify(this.order))
         }
     },
     computed: {
@@ -201,6 +187,6 @@ export default {
                 this.getData()
             }
         }
-    }
+    },
 }
 </script>

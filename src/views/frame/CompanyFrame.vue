@@ -71,7 +71,7 @@ span {
                         </el-icon>
                         <span>订单</span>
                     </el-menu-item>
-                    <el-sub-menu index="/company/comment">
+                    <!-- <el-sub-menu index="/company/comment">
                         <template #title>
                             <el-icon>
                                 <ChatLineSquare />
@@ -90,19 +90,19 @@ span {
                         </template>
                         <el-menu-item index="/company/data/order"><span>营业额</span></el-menu-item>
                         <el-menu-item index="/company/data/commodity"><span>商品销量</span></el-menu-item>
-                    </el-sub-menu>
+                    </el-sub-menu> -->
                     <el-menu-item index="/company/img">
                         <el-icon>
                             <Picture />
                         </el-icon>
                         <span>图片库</span>
                     </el-menu-item>
-                    <el-menu-item index="/company/setting">
+                    <!-- <el-menu-item index="/company/setting">
                         <el-icon>
                             <Setting />
                         </el-icon>
                         <span>系统设置</span>
-                    </el-menu-item>
+                    </el-menu-item> -->
                 </el-menu>
             </el-scrollbar>
         </el-aside>
