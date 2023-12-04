@@ -1,0 +1,53 @@
+.window {
+  background: #eeeeee;
+  width: 100vw;
+  height: calc(100vh - 60px);
+  display: inline-flex;
+}
+
+.olist {
+  width: 350px;
+  height: calc(100% - 40px);
+  margin: 10px 0;
+  margin-left: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.odetail {
+  width: 500px;
+  height: calc(100% - 40px);
+  margin: 10px 0;
+  margin-left: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.otable {
+  width: calc(100% - 950px);
+  height: calc(100% - 40px);
+  margin: 10px 0;
+  margin-left: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.olist-scrollbar {
+  height: calc(100vh - 160px);
+}
+
+.oitem {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 5px;
+}
+
+.oitem:hover {
+  cursor: pointer;
+}
+.mytable{
+  height:100%;
+}

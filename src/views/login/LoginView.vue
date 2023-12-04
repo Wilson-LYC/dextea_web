@@ -102,7 +102,7 @@ a {
             </el-form-item>
             <el-form-item label="密码" prop="password" class="required label-right-align">
               <el-input v-model="loginData.password" type="password" :show-password="true" clearable
-                prefix-icon="Lock"></el-input>
+                prefix-icon="Lock" @keydown.enter="login"></el-input>
             </el-form-item>
           </el-form>
           <el-button color="#B8701B" style="width: 100%;margin-top: 10px;font-size: 18px;" size="large" @click="login"

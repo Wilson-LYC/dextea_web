@@ -12,7 +12,9 @@
     "bcryptjs": "^2.4.3",
     "element-plus": "^2.4.1",
     "js-md5": "^0.8.3",
+    "nodejs-websocket": "^1.7.2",
     "vue": "^3.3.4",
+    "vue-native-websocket": "^2.0.15",
     "vue-native-websocket-vue3": "^3.1.7",
     "vue-router": "^4.2.5"
   },

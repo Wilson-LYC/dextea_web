@@ -182,8 +182,12 @@ export default {
             }
         }
     },
-    mounted() {
-        this.form.storeId = this.sid
+    watch:{
+        see(val){
+            if(val){
+                this.form.storeId = this.sid
+            }
+        }
     }
 }
 </script>

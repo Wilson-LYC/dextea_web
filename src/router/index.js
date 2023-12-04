@@ -11,7 +11,7 @@ const router = createRouter({
       children: [
         {
           path: 'company',
-          component: () => import("@/views/frame/CompanyFrame.vue"),
+          component: () => import("@/views/company/CompanyFrame.vue"),
           redirect: '/company/store/all',
           children: [
             {
@@ -60,33 +60,26 @@ const router = createRouter({
         },
         {
           path: 'store',
-          component: () => import("@/views/frame/StoreView.vue"),
+          component: () => import("@/views/store/StoreView.vue"),
           redirect: '/store/service',
           children: [
             {
               path: 'setting',
-              component: () => import("@/views/frame/StoreSettingFrame.vue"),
+              component: () => import("@/views/store/StoreSettingFrame.vue"),
               children: [
                 {
+                  path: 'commodity',
+                  component: () => import("@/views/store/setting/commodity/CommodityView.vue"),
+                },
+                {
                   path: 'staff',
-                  component: () => import("@/components/StoreSettingComponents/StoreSettingIndex.vue")
+                  component: () => import("@/views/store/setting/staff/StaffView.vue"),
                 }
               ]
             },
             {
               path: 'service',
-              component: () => import("@/views/store/StoreService.vue"),
-              redirect: '/store/service/index',
-              children: [
-                {
-                  path: 'index',
-                  component: () => import("@/components/StoreServiceComponents/ServiceIndex.vue")
-                },
-                {
-                  path: 'order/:id',
-                  component: () => import("@/components/StoreServiceComponents/OrderDetail.vue")
-                },
-              ]
+              component: () => import("@/views/store/service/StoreService.vue"),
             }
           ]
         }

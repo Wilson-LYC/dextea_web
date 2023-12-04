@@ -1,15 +1,15 @@
 <style scoped></style>
 <template>
-    <div style="background: #ffffff;border-radius: 8px;">
+    <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
         <!-- 操作栏 -->
         <div class="btn-container" style="margin-bottom: 15px;">
-            <el-button type="primary" @click="add" size="small">新增</el-button>
-            <el-button type="default" @click="refresh" :loading="refreshLoading" size="small">刷新</el-button>
+            <el-button :size="size" type="primary" @click="add">新增</el-button>
+            <el-button :size="size" type="default" @click="refresh" :loading="refreshLoading">刷新</el-button>
         </div>
 
         <!-- 表格主体 -->
-        <el-table :data="tabledata" style="width: 100%" border height="300px" table-layout="auto"
-            @selection-change="handleSelectionChange" v-loading="tableLoading" size="small">
+        <el-table :data="tabledata" style="width: 100%" border height="550px" table-layout="auto"
+            @selection-change="handleSelectionChange" v-loading="tableLoading" :size="size">
             <template #empty>无数据</template>
             <!-- 数据部分 -->
             <el-table-column type="selection" width="50" fixed="left" />
@@ -38,12 +38,15 @@
 </template>
 
 <script>
-import AddDialog from '@/components/StaffComponents/AddStaffDialog.vue'
+import AddDialog from '@/components/StaffComponents/AddStaffDialogForStore.vue'
 import EditDialog from '@/components/StaffComponents/EditStaffDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     props: {
-        sid: Number
+        size:{
+            type:String,
+            default:'default'
+        }
     },
     components: {
         AddDialog,
@@ -89,21 +92,19 @@ export default {
                 "value": "2",
                 "label": "门店账号"
             }],
+            sid:""
         }
     },
     methods: {
         //添加
         add() {
+            this.sid=sessionStorage.getItem("storeId")
             this.addDialogVisible = true
         },
         //删除
         del(val, index) {
             //get请求
-            this.$http.get("/staff/delete?id=" + val.id, {
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
+            this.$http.get("/v1/manage/staff/delete?id=" + val.id).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -113,9 +114,6 @@ export default {
                     ElMessage.success("删除成功")
                     //刷新
                     this.getStaffData()
-                },
-                (response) => {
-                    ElMessage.error("服务器连接失败")
                 }
             )
         },
@@ -162,10 +160,16 @@ export default {
         addDialogVisible(val) {
             if (val == false)
                 this.getStaffData()
-        }
+        },
+        editDialogVisible(val) {
+            if (val == false)
+                this.getStaffData()
+        },
     },
     mounted() {
+        this.sid=sessionStorage.getItem("storeId")
         this.getStaffData()
+        console.log(this.sid)
     }
 }
 </script>

@@ -7,8 +7,9 @@ import 'element-plus/dist/index.css'
 import axios from 'axios';
 import md5 from 'js-md5';
 import { ElMessage } from 'element-plus'
+import websocket from 'vue-native-websocket';
 //axios配置
-axios.defaults.baseURL = 'http://127.0.0.1:6688';
+axios.defaults.baseURL = 'http://192.168.205.57:6688';
 axios.interceptors.request.use(
   res => {
     let token = sessionStorage.getItem("token");
@@ -35,6 +36,13 @@ axios.interceptors.response.use(
 
 const app = createApp(App)
 app.use(router)
+/*app.use(websocket, '', {
+    connectManually: true, // 手动连接
+    format: 'json', // json格式
+    reconnection: true, // 是否自动重连
+    reconnectionAttempts: 5, // 自动重连次数
+    reconnectionDelay: 2000, // 重连间隔时间
+});*/
 app.config.globalProperties.$http = axios;
 app.config.globalProperties.$md5 = md5;
 app.use(ElementPlus)

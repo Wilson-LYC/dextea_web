@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import AddDialog from '@/components/StaffComponents/AddStaffDialog.vue'
+import AddDialog from '@/components/StaffComponents/AddStaffDialogForStore.vue'
 import EditDialog from '@/components/StaffComponents/EditStaffDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
