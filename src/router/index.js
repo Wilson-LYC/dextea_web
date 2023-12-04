@@ -84,6 +84,10 @@ const router = createRouter({
             {
               path: 'service',
               component: () => import("@/views/store/service/StoreService.vue"),
+            },
+            {
+              path: 'board',
+              component: () => import("@/views/store/board/BoardViwe.vue"),
             }
           ]
         }

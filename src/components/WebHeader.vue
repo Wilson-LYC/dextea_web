@@ -66,6 +66,7 @@
                         <el-dropdown-menu :hide-on-click="false">
                             <el-dropdown-item v-if="role=='2'" @click="toSetting()">门店设置</el-dropdown-item>
                             <el-dropdown-item v-if="role=='2'" @click="toService()">前台服务</el-dropdown-item>
+                            <el-dropdown-item v-if="role=='2'" @click="toBoard()">叫号大屏</el-dropdown-item>
                             <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
                             <!-- <el-dropdown-item>
                                 <el-popconfirm title="确定退出登录?">
@@ -111,6 +112,9 @@ export default {
         },
         toSetting() {
             this.$router.push('/store/setting')
+        },
+        toBoard() {
+            this.$router.push('/store/board')
         }
     },
     mounted() {

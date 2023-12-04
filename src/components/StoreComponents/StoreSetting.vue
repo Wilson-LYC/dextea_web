@@ -18,7 +18,8 @@
                 <el-input v-model="store.name" type="text" clearable></el-input>
             </el-form-item>
             <el-form-item label="详细地址" prop="address">
-                <el-input v-model="store.address" type="textarea" clearable :autosize="{ minRows: 3, maxRows: 3 }"></el-input>
+                <el-input v-model="store.address" type="textarea" clearable
+                    :autosize="{ minRows: 3, maxRows: 3 }"></el-input>
             </el-form-item>
             <el-form-item label="电话" prop="phone">
                 <el-input v-model="store.phone" type="text" clearable></el-input>
@@ -61,15 +62,15 @@ export default {
                 ]
             },
             openStateOptions: [{
-                    "value": "0",
-                    "label": "未开业 "
-                }, {
-                    "value": "1",
-                    "label": "营业"
-                }, {
-                    "value": "2",
-                    "label": "闭店"
-                }]
+                "value": "0",
+                "label": "未开业 "
+            }, {
+                "value": "1",
+                "label": "营业"
+            }, {
+                "value": "2",
+                "label": "闭店"
+            }]
         };
     },
     methods: {
@@ -89,7 +90,7 @@ export default {
                 this.store = response.data.data.store;
             });
         },
-        onSubmit(){
+        onSubmit() {
             this.$refs.myform.validate((valid) => {
                 if (valid) {
                     this.$http.post("/v1/manage/store/update/info", {

@@ -28,6 +28,10 @@
                             :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="时间">
+                    <el-date-picker v-model="search.form.time" type="daterange" range-separator="To" start-placeholder="Start date"
+                        end-placeholder="End date" :size="size" />
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="searchSubmit" :loading="searchLoading">查询</el-button>
                     <el-button type="default" @click="searchReset">重置</el-button>
@@ -181,7 +185,8 @@ export default {
                 "custName": "",
                 "code": "",
                 "state": "",
-                "phone": ""
+                "phone": "",
+                "time":""
             }
             this.getData()
         },

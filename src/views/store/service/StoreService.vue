@@ -287,7 +287,7 @@ export default {
     //websocket相关
     //初始化
     init: function () {
-      let url="ws://"+window.location.hostname+":6688/ws/service/";
+      let url = "ws://" + window.location.hostname + ":6688/ws/service/";
       let sid = sessionStorage.getItem('storeId')
       if (typeof (WebSocket) === "undefined") {
         ElMessage.error("您的浏览器不支持socket服务")
