@@ -8,8 +8,9 @@ import axios from 'axios';
 import md5 from 'js-md5';
 import { ElMessage } from 'element-plus'
 import websocket from 'vue-native-websocket';
+let url="http://"+window.location.hostname+":6688";
 //axios配置
-axios.defaults.baseURL = 'http://192.168.205.57:6688';
+axios.defaults.baseURL = url;
 axios.interceptors.request.use(
   res => {
     let token = sessionStorage.getItem("token");

@@ -44,14 +44,14 @@ import { ElMessage } from 'element-plus'
 export default {
     props: {
         visible: Boolean,
-        url:String
+        url: String
     },
-    emits: ['update:visible','update:url'],
+    emits: ['update:visible', 'update:url'],
     data() {
         return {
             myheaders: {},
             //上传图片的地址
-            uploadUrl: 'http://192.168.205.57:6688/v1/manage/img/upload',
+            uploadUrl: '',
             loading: false
         }
     },
@@ -85,7 +85,7 @@ export default {
             this.loading = false
             ElMessage.error("上传失败")
         },
-        onExceed(){
+        onExceed() {
             ElMessage.error("只能上传1张图片")
         },
     },
@@ -99,9 +99,14 @@ export default {
             }
         }
     },
-    mounted() {
-        this.myheaders = {
-            'Authorization': sessionStorage.getItem('token')
+    watch: {
+        see(val) {
+            if (val) {
+                this.headers = {
+                    Authorization: localStorage.getItem('token')
+                }
+                this.baseurl = "http://" + window.location.hostname + ":6688/v1/manage/img/upload"
+            }
         }
     }
 }

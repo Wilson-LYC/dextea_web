@@ -74,6 +74,10 @@ const router = createRouter({
                 {
                   path: 'staff',
                   component: () => import("@/views/store/setting/staff/StaffView.vue"),
+                },
+                {
+                  path:'store',
+                  component:()=>import("@/views/store/setting/store/StoreView.vue")
                 }
               ]
             },

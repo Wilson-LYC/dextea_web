@@ -17,6 +17,11 @@
 span {
     font-size: 16px;
 }
+.mymain{
+    height: calc(100% - 20px);
+    width: calc(100% - 20px);
+    padding: 10px;
+}
 </style>
 
 <template>
@@ -61,16 +66,9 @@ span {
             </el-scrollbar>
         </el-aside>
         <el-container style="background:  #eeeeee;">
-            <el-scrollbar class="main-container">
-                <!-- 正文 -->
-                <el-main>
-                    <router-view />
-                </el-main>
-                <!-- 页脚 -->
-                <el-footer style="margin: 0;height: 0;padding: 0;">
-                    <WebFoo />
-                </el-footer>
-            </el-scrollbar>
+            <div class="mymain">
+                <router-view />
+            </div>
         </el-container>
     </el-container>
 </template>
@@ -95,7 +93,12 @@ export default {
             if (this.isCollapse) {
                 this.asideWidth = 'auto';
             } else {
-                this.asideWidth = '200px';
+                //缓慢增加到200px
+                for (let i = 64; i < 200; i++) {
+                    setTimeout(() => {
+                        this.asideWidth = i + 'px';
+                    }, i * 1.5);
+                }
             }
         }
     },

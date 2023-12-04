@@ -50,7 +50,7 @@ export default {
         return {
             myheaders: {},
             //上传图片的地址
-            uploadUrl: 'http://192.168.205.57:6688/v1/manage/img/upload',
+            uploadUrl: '',
             loading: false
         }
     },
@@ -97,9 +97,14 @@ export default {
             }
         }
     },
-    mounted() {
-        this.myheaders = {
-            'Authorization': sessionStorage.getItem('token')
+    watch: {
+        see(val) {
+            if (val) {
+                this.headers = {
+                    Authorization: localStorage.getItem('token')
+                }
+                this.baseurl = "http://"+window.location.hostname+":6688/v1/manage/img/upload"
+            }
         }
     }
 }

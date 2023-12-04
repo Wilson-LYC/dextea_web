@@ -1,8 +1,18 @@
-<style scoped></style>
+<style scoped>
+.container {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.mytable {
+    height: calc(100% - 100px);
+}
+</style>
 <template>
-    <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
+    <div class="container">
         <!-- 搜索栏 -->
-        <div v-if="searchVisible">
+        <div v-if="searchVisible" style="min-height: 50px;">
             <el-form :inline="true" :model="search.form" :rules="search.rules" :size="size">
                 <el-form-item label="门店ID" prop="id">
                     <el-input v-model="search.form.id" clearable style="width: 150px;" />
@@ -32,7 +42,7 @@
         </div>
 
         <!-- 操作栏 -->
-        <div class="btn-container" style="margin-bottom: 15px;" v-if="btnVisible">
+        <div class="btn-container" style="height: 50px;" v-if="btnVisible">
             <el-button :size="size" type="primary" @click="add">新增</el-button>
             <el-button :size="size" type="success" @click="updateOpenState('1')">营业</el-button>
             <el-button :size="size" type="danger" @click="updateOpenState('2')">闭店</el-button>
@@ -82,7 +92,7 @@
         <!-- 对话框 -->
         <!-- 新增对话框 -->
         <AddDialog v-model:visible="addDialogVisible" :openArea="areaOptions" />
-        <EditDialog v-model:visible="editDialogVisible" :store="sel" :openArea="areaOptions"/>
+        <EditDialog v-model:visible="editDialogVisible" :store="sel" :openArea="areaOptions" />
     </div>
 </template>
 

@@ -287,15 +287,13 @@ export default {
     //websocket相关
     //初始化
     init: function () {
-      // if(this.socket != ''){
-      //   return
-      // }
+      let url="ws://"+window.location.hostname+":6688/ws/service/";
       let sid = sessionStorage.getItem('storeId')
       if (typeof (WebSocket) === "undefined") {
         ElMessage.error("您的浏览器不支持socket服务")
       } else {
         // 实例化socket
-        this.socket = new WebSocket("ws://192.168.205.57:6688/ws/service/" + sid)
+        this.socket = new WebSocket(url + sid)
         // 监听socket连接
         this.socket.onopen = this.open
         // 监听socket错误信息

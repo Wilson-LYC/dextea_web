@@ -1,15 +1,26 @@
-<style scoped></style>
+<style scoped>
+.container {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  height: calc(100% - 40px);
+}
+
+.mytable {
+  height: calc(100% - 50px);
+}
+</style>
 <template>
-  <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
+  <div class="container">
     <!-- 操作栏 -->
-    <div class="btn-container" style="margin-bottom: 15px;">
+    <div class="btn-container" style="height: 50px;">
       <el-button type="primary" @click="add">新增</el-button>
       <el-button type="default" @click="refresh" :loading="refreshLoading">刷新</el-button>
     </div>
 
     <!-- 表格主体 -->
-    <el-table :data="tabledata" style="width: 100%" border height="600px" table-layout="auto" row-key="value"
-      v-loading="tableLoading">
+    <el-table :data="tabledata" style="width: 100%" border table-layout="auto" row-key="value"
+      v-loading="tableLoading" class="mytable">
       <template #empty>无数据</template>
       <!-- 数据部分 -->
       <el-table-column prop="value" label="区域" width="300" />

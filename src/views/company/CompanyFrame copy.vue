@@ -17,11 +17,6 @@
 span {
     font-size: 16px;
 }
-.mymain{
-    height: calc(100% - 20px);
-    width: calc(100% - 20px);
-    padding: 10px;
-}
 </style>
 
 <template>
@@ -76,25 +71,59 @@ span {
                         </el-icon>
                         <span>订单</span>
                     </el-menu-item>
+                    <!-- <el-sub-menu index="/company/comment">
+                        <template #title>
+                            <el-icon>
+                                <ChatLineSquare />
+                            </el-icon>
+                            <span>评论管理</span>
+                        </template>
+                        <el-menu-item index="/company/comment/order"><span>订单评价</span></el-menu-item>
+                        <el-menu-item index="/company/comment/commodity"><span>商品评价</span></el-menu-item>
+                    </el-sub-menu>
+                    <el-sub-menu index="/company/data">
+                        <template #title>
+                            <el-icon>
+                                <PieChart />
+                            </el-icon>
+                            <span>数据统计</span>
+                        </template>
+                        <el-menu-item index="/company/data/order"><span>营业额</span></el-menu-item>
+                        <el-menu-item index="/company/data/commodity"><span>商品销量</span></el-menu-item>
+                    </el-sub-menu> -->
                     <el-menu-item index="/company/img">
                         <el-icon>
                             <Picture />
                         </el-icon>
                         <span>图片库</span>
                     </el-menu-item>
+                    <!-- <el-menu-item index="/company/setting">
+                        <el-icon>
+                            <Setting />
+                        </el-icon>
+                        <span>系统设置</span>
+                    </el-menu-item> -->
                 </el-menu>
             </el-scrollbar>
         </el-aside>
         <el-container style="background:  #eeeeee;">
-            <div class="mymain">
-                <router-view />
-            </div>
+            <el-scrollbar class="main-container">
+                <!-- 正文 -->
+                <el-main>
+                    <router-view />
+                </el-main>
+                <!-- 页脚 -->
+                <el-footer style="margin: 0;height: 0;padding: 0;">
+                    <WebFoo />
+                </el-footer>
+            </el-scrollbar>
         </el-container>
     </el-container>
 </template>
 <script>
 import WebFoo from '@/components/WebFooter.vue'
 import { ElMessage } from 'element-plus'
+import { ElNotification } from 'element-plus'
 export default {
     data() {
         return {

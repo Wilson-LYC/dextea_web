@@ -1,15 +1,24 @@
-<style scoped></style>
+<style scoped>
+.container {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    height:calc(100% - 40px);
+}
+.mytable{
+    height: calc(100% - 50px);
+}
+</style>
 <template>
-    <div style="background: #ffffff;border-radius: 8px; padding: 20px;">
+    <div class="container">
         <!-- 操作栏 -->
-        <div class="btn-container" style="margin-bottom: 15px;">
+        <div class="btn-container" style="height: 50px;">
             <el-button :size="size" type="primary" @click="add">新增</el-button>
             <el-button :size="size" type="default" @click="refresh" :loading="refreshLoading">刷新</el-button>
         </div>
-
         <!-- 表格主体 -->
-        <el-table :data="tabledata" style="width: 100%" border height="550px" table-layout="auto"
-            @selection-change="handleSelectionChange" v-loading="tableLoading" :size="size">
+        <el-table :data="tabledata" style="width: 100%" border table-layout="auto"
+            @selection-change="handleSelectionChange" v-loading="tableLoading" :size="size" class="mytable">
             <template #empty>无数据</template>
             <!-- 数据部分 -->
             <el-table-column type="selection" width="50" fixed="left" />
@@ -43,9 +52,9 @@ import EditDialog from '@/components/StaffComponents/EditStaffDialog.vue'
 import { ElMessage } from 'element-plus'
 export default {
     props: {
-        size:{
-            type:String,
-            default:'default'
+        size: {
+            type: String,
+            default: 'default'
         }
     },
     components: {
@@ -92,13 +101,13 @@ export default {
                 "value": "2",
                 "label": "门店账号"
             }],
-            sid:""
+            sid: ""
         }
     },
     methods: {
         //添加
         add() {
-            this.sid=sessionStorage.getItem("storeId")
+            this.sid = sessionStorage.getItem("storeId")
             this.addDialogVisible = true
         },
         //删除
@@ -167,7 +176,7 @@ export default {
         },
     },
     mounted() {
-        this.sid=sessionStorage.getItem("storeId")
+        this.sid = sessionStorage.getItem("storeId")
         this.getStaffData()
         console.log(this.sid)
     }
