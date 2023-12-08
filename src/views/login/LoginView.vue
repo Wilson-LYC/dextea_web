@@ -101,8 +101,8 @@ a {
               <el-input v-model="loginData.account" type="text" clearable prefix-icon="UserFilled"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password" class="required label-right-align">
-              <el-input v-model="loginData.password" type="password" :show-password="true" clearable
-                prefix-icon="Lock" @keydown.enter="login"></el-input>
+              <el-input v-model="loginData.password" type="password" :show-password="true" clearable prefix-icon="Lock"
+                @keydown.enter="login"></el-input>
             </el-form-item>
           </el-form>
           <el-button color="#B8701B" style="width: 100%;margin-top: 10px;font-size: 18px;" size="large" @click="login"
@@ -166,34 +166,31 @@ export default {
             }
           }).then(
             (response) => {
-              //500ms后
-              setTimeout(() => {
-                this.loading = false
-                if (response.data.code != 200) {
-                  ElMessage.error(response.data.msg)
-                  return
-                }
-                //获取数据
-                let staff = response.data.data.staff
-                let token = response.data.data.token
-                //存储数据到缓存
-                // sessionStorage.setItem("staff", JSON.stringify(staff))
-                sessionStorage.setItem("token", token)
-                sessionStorage.setItem("username", staff.name)
-                sessionStorage.setItem("role", staff.role)
-                sessionStorage.setItem("storeId", staff.storeId)
-                ElMessage.success('欢迎您！'+staff.name)
-                //根据role跳转
-                if (staff.role == "0") {
-                  this.$router.push('/company')
-                } else if (staff.role == "1") {
-                  this.$router.push('/company')
-                } else if (staff.role == "2") {
-                  this.$router.push('/store')
-                } else {
-                  ElMessage.error('账号异常')
-                }
-              }, 500)
+              this.loading = false
+              if (response.data.code != 200) {
+                ElMessage.error(response.data.msg)
+                return
+              }
+              //获取数据
+              let staff = response.data.data.staff
+              let token = response.data.data.token
+              //存储数据到缓存
+              // sessionStorage.setItem("staff", JSON.stringify(staff))
+              sessionStorage.setItem("token", token)
+              sessionStorage.setItem("username", staff.name)
+              sessionStorage.setItem("role", staff.role)
+              sessionStorage.setItem("storeId", staff.storeId)
+              ElMessage.success('欢迎您！' + staff.name)
+              //根据role跳转
+              if (staff.role == "0") {
+                this.$router.push('/company')
+              } else if (staff.role == "1") {
+                this.$router.push('/company')
+              } else if (staff.role == "2") {
+                this.$router.push('/store')
+              } else {
+                ElMessage.error('账号异常')
+              }
             },
             (response) => {
               ElMessage.error("服务器连接失败")

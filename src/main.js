@@ -8,6 +8,7 @@ import axios from 'axios';
 import md5 from 'js-md5';
 import { ElMessage } from 'element-plus'
 import websocket from 'vue-native-websocket';
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 let url="http://"+window.location.hostname+":6688";
 //axios配置
 axios.defaults.baseURL = url;
@@ -37,16 +38,11 @@ axios.interceptors.response.use(
 
 const app = createApp(App)
 app.use(router)
-/*app.use(websocket, '', {
-    connectManually: true, // 手动连接
-    format: 'json', // json格式
-    reconnection: true, // 是否自动重连
-    reconnectionAttempts: 5, // 自动重连次数
-    reconnectionDelay: 2000, // 重连间隔时间
-});*/
 app.config.globalProperties.$http = axios;
 app.config.globalProperties.$md5 = md5;
-app.use(ElementPlus)
+app.use(ElementPlus, {
+  locale: zhCn,
+})
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
 }

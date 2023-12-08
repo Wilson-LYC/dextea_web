@@ -7,12 +7,6 @@
                 <el-form-item label="订单ID" prop="id">
                     <el-input v-model="search.form.id" clearable style="width: 150px;" />
                 </el-form-item>
-                <el-form-item label="门店">
-                    <el-select v-model="search.form.storeId" placeholder="请选择" clearable style="width: 150px;">
-                        <el-option v-for="(item, index) in storeOptions" :key="index" :label="item.label"
-                            :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
                 <el-form-item label="顾客">
                     <el-input v-model="search.form.custName" clearable style="width: 150px;" />
                 </el-form-item>
@@ -30,7 +24,7 @@
                 </el-form-item>
                 <el-form-item label="下单时间">
                     <el-date-picker v-model="search.form.time" type="daterange" range-separator="至" start-placeholder="开始日期"
-                        end-placeholder="结束日期" :size="size" format="YYYY/MM/DD" value-format="YYYY-MM-DD"/>
+                        end-placeholder="结束日期" :size="size" format="YYYY/MM/DD" value-format="YYYY-MM-DD" />
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="searchSubmit" :loading="searchLoading">查询</el-button>
@@ -86,10 +80,10 @@
                     </el-scrollbar>
                 </template>
             </el-table-column>
-            <el-table-column prop="price" label="总消费" width="100" :show-overflow-tooltip="true" sortable/>
-            <el-table-column prop="num" label="总数量" width="100" :show-overflow-tooltip="true" sortable/>
+            <el-table-column prop="price" label="总消费" width="100" :show-overflow-tooltip="true" sortable />
+            <el-table-column prop="num" label="总数量" width="100" :show-overflow-tooltip="true" sortable />
             <el-table-column prop="phone" label="联系方式" width="250" :show-overflow-tooltip="true" />
-            <el-table-column prop="createtime" label="下单时间" width="250" :show-overflow-tooltip="true" sortable/>
+            <el-table-column prop="createtime" label="下单时间" width="250" :show-overflow-tooltip="true" sortable />
             <!-- 行内操作栏 -->
             <el-table-column fixed="right" label="操作" align="center" width="200">
                 <template #default="scope">
@@ -111,7 +105,7 @@
 
 <script>
 import EditDialog from '@/components/OrderComponents/EditOrderDialog.vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, switchEmits } from 'element-plus'
 export default {
     components: {
         EditDialog
@@ -119,11 +113,7 @@ export default {
     data() {
         return {
             //表格数据
-            tabledata: [{
-                "id": 1,
-                "name": "wilson",
-                "phone": "123456"
-            }],
+            tabledata: [],
             //表格加载动画
             tableLoading: false,
             //刷新按钮加载动画
@@ -140,7 +130,6 @@ export default {
             search: {
                 form: {
                     "id": "",
-                    "storeId": "",
                     "custName": "",
                     "code": "",
                     "state": "",
@@ -154,8 +143,6 @@ export default {
                     }],
                 },
             },
-            //门店
-            storeOptions: [],
             //订单状态选项
             orderStateOptions: [{
                 value: "1",
@@ -181,17 +168,17 @@ export default {
         searchReset() {
             this.search.form = {
                 "id": "",
-                "storeId": "",
                 "custName": "",
                 "code": "",
                 "state": "",
                 "phone": "",
-                "time":""
+                "time": ""
             }
             this.getData()
         },
         //搜索
         searchSubmit() {
+            this.search.form['storeId']=sessionStorage.getItem("storeId")
             this.searchLoading = true
             setTimeout(() => {
                 this.$http.post("/v1/manage/order/search", {
@@ -263,11 +250,11 @@ export default {
         getData() {
             this.tableLoading = true
             this.getOrder()
-            this.getStoreOption()
         },
         //获取所有订单
         getOrder() {
-            this.$http.get("/v1/manage/order/list").then(
+            let sid=sessionStorage.getItem("storeId")
+            this.$http.get("/v1/manage/order/store?id="+sid).then(
                 (response) => {
                     if (response.data.code != 200) {
                         ElMessage.error(response.data.msg)
@@ -280,18 +267,6 @@ export default {
                     if (this.refreshLoading)
                         ElMessage.success("刷新成功")
                     this.refreshLoading = false
-                }
-            )
-        },
-        getStoreOption() {
-            //get请求
-            this.$http.get("/v1/manage/store/option/select").then(
-                (response) => {
-                    if (response.data.code != 200) {
-                        ElMessage.error(response.data.msg)
-                        return
-                    }
-                    this.storeOptions = response.data.data.stores
                 }
             )
         }

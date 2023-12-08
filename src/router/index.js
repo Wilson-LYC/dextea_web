@@ -66,6 +66,7 @@ const router = createRouter({
             {
               path: 'setting',
               component: () => import("@/views/store/StoreSettingFrame.vue"),
+              redirect: '/store/setting/store',
               children: [
                 {
                   path: 'commodity',
@@ -78,6 +79,10 @@ const router = createRouter({
                 {
                   path:'store',
                   component:()=>import("@/views/store/setting/store/StoreView.vue")
+                },
+                {
+                  path:'order',
+                  component:()=>import("@/views/store/setting/order/OrderView.vue")
                 }
               ]
             },
