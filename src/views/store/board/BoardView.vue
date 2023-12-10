@@ -50,7 +50,6 @@ export default {
     },
     unmounted() {
         this.socket.close()
-        ElMessage.warning("已与服务器断开连接")
     },
     mounted() {
         this.init();
@@ -59,7 +58,7 @@ export default {
         //websocket相关
         //初始化
         init: function () {
-            let url = "ws://" + window.location.hostname + ":6688/ws/audio/";
+            let url = this.$wsurl+"/ws/service/";
             let sid = sessionStorage.getItem('storeId')
             if (typeof (WebSocket) === "undefined") {
                 ElMessage.error("您的浏览器不支持socket服务")
@@ -75,7 +74,7 @@ export default {
             }
         },
         open: function () {
-            ElMessage.success("服务器连接成功")
+            ElMessage.success("语音叫号服务器已连接")
         },
         error: function () {
             ElMessage.error("服务器连接异常")
@@ -96,7 +95,6 @@ export default {
             this.socket.send(this.parms);
         },
         close: function () {
-            ElMessage.success("服务器连接已关闭")
         },
         notify(type, title, message) {
             ElNotification({

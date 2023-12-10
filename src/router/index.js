@@ -92,7 +92,7 @@ const router = createRouter({
             },
             {
               path: 'board',
-              component: () => import("@/views/store/board/BoardViwe.vue"),
+              component: () => import("@/views/store/board/BoardView.vue"),
             }
           ]
         }

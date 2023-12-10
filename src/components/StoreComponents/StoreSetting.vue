@@ -81,7 +81,6 @@ export default {
         //获取门店信息
         getStore() {
             let sid = sessionStorage.getItem("storeId");
-            console.log(sid);
             this.$http.get("/v1/manage/store/detail?id=" + sid).then((response) => {
                 if (response.data.code !== 200) {
                     ElMessage.error(response.data.msg);

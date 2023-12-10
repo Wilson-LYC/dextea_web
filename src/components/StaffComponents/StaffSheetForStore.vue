@@ -178,7 +178,6 @@ export default {
     mounted() {
         this.sid = sessionStorage.getItem("storeId")
         this.getStaffData()
-        console.log(this.sid)
     }
 }
 </script>

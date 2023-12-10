@@ -220,27 +220,9 @@ export default {
             this.addDialogVisible = true
         },
         //删除
-        del(store) {
+        del(val) {
             //get请求
-            this.$http.get("/store/delete?id=" + store.id, {
-                headers: {
-                    'Authorization': sessionStorage.getItem('token')
-                }
-            }).then(
-                (response) => {
-                    if (response.data.code != 200) {
-                        ElMessage.error(response.data.msg)
-                        return
-                    }
-                    //成功
-                    ElMessage.success("删除成功")
-                    //刷新
-                    this.getData()
-                },
-                (response) => {
-                    ElMessage.error("服务器连接失败")
-                }
-            )
+            ElMessage.warning("暂不支持删除")
         },
         //详情
         detail(data) {

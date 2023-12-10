@@ -79,9 +79,10 @@ export default {
                 ElMessage.error(response.msg)
             }
         },
-        onError() {
+        onError: function(Error,UploadFile,UploadFiles) {
             this.loading = false
             ElMessage.error("上传失败")
+            console.log(Error)
         },
         cancel(){
             this.see = false
@@ -100,10 +101,12 @@ export default {
     watch: {
         see(val) {
             if (val) {
-                this.headers = {
-                    Authorization: localStorage.getItem('token')
+                this.myheaders = {
+                    "Authorization":sessionStorage.getItem('token')
                 }
-                this.baseurl = "http://"+window.location.hostname+":6688/v1/manage/img/upload"
+                let httpurl=this.$httpurl
+                this.uploadUrl = httpurl+"/v1/manage/img/upload"
+                console.log(this.baseurl)
             }
         }
     }
