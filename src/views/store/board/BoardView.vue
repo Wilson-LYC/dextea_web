@@ -58,7 +58,7 @@ export default {
         //websocket相关
         //初始化
         init: function () {
-            let url = this.$wsurl+"/ws/service/";
+            let url = this.$wsurl+"/ws/audio/";
             let sid = sessionStorage.getItem('storeId')
             if (typeof (WebSocket) === "undefined") {
                 ElMessage.error("您的浏览器不支持socket服务")
