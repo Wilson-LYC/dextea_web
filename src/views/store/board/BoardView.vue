@@ -20,7 +20,8 @@
     transform: translateY(-50%);
     width: 100%;
 }
-.cnum{
+
+.cnum {
     font-size: 100px;
     font-weight: bold;
 }
@@ -58,7 +59,7 @@ export default {
         //websocket相关
         //初始化
         init: function () {
-            let url = this.$wsurl+"/ws/audio/";
+            let url = this.$wsurl + "/ws/audio/";
             let sid = sessionStorage.getItem('storeId')
             if (typeof (WebSocket) === "undefined") {
                 ElMessage.error("您的浏览器不支持socket服务")
@@ -71,6 +72,10 @@ export default {
                 this.socket.onerror = this.error
                 // 监听socket消息
                 this.socket.onmessage = this.getMessage
+                //每隔50秒发送一次ping
+                setInterval(() => {
+                    this.socket.send("ping")
+                }, 50000)
             }
         },
         open: function () {
@@ -81,6 +86,9 @@ export default {
         },
         //接收服务器发来的消息
         getMessage: function (e) {
+            if (e.data == "pong") {
+                return
+            }
             let data = JSON.parse(e.data)
             if (data.type == 'audio' && this.isOpen) {
                 let code = data.content.code

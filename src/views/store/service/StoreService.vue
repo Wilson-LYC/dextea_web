@@ -286,7 +286,7 @@ export default {
     //websocket相关
     //初始化
     init: function () {
-      let url = this.$wsurl+"/ws/service/";
+      let url = this.$wsurl + "/ws/service/";
       let sid = sessionStorage.getItem('storeId')
       if (typeof (WebSocket) === "undefined") {
         ElMessage.error("您的浏览器不支持socket服务")
@@ -299,6 +299,10 @@ export default {
         this.socket.onerror = this.error
         // 监听socket消息
         this.socket.onmessage = this.getMessage
+        //每隔50秒发送一次ping
+        setInterval(() => {
+          this.socket.send("ping")
+        }, 50000)
       }
     },
     open: function () {
@@ -309,6 +313,9 @@ export default {
     },
     //接收服务器发来的消息
     getMessage: function (e) {
+      if (e.data == "pong") {
+        return
+      }
       let data = JSON.parse(e.data)
       if (data.type == 'message') {
         let content = data.content
@@ -325,12 +332,6 @@ export default {
         console.log(data)
         ElMessage.error("收到消息但未知类型，请前往控制台查看")
       }
-    },
-    //给服务器发消息的方法
-    send: function () {
-      this.socket.send(this.parms);
-    },
-    close: function () {
     },
     //业务相关
     clickItem(val) {
