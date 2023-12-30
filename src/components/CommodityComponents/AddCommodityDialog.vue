@@ -1,7 +1,8 @@
 <style scoped></style>
 
 <template>
-    <el-dialog title="新增商品" v-model="see" :before-close="closeDialog" width="500px" :draggable="true" :destroy-on-close="true">
+    <el-dialog title="新增商品" v-model="see" :before-close="closeDialog" width="500px" :draggable="true"
+        :destroy-on-close="true">
         <!-- 表单 -->
         <el-form :model="form" ref="myform" :rules="rules" label-position="right" label-width="80px" size="default">
             <el-form-item label="商品名称" prop="name">
@@ -41,7 +42,56 @@ export default {
                 "price": "",
                 "name": "",
                 "state": "0",
-                "custom":[]
+                "custom": [
+                    {
+                        "title": "冰量",
+                        "option": [
+                            {
+                                "text": "推荐",
+                                "cost": 0
+                            },
+                            {
+                                "text": "少冰",
+                                "cost": 0
+                            },
+                            {
+                                "text": "少少冰",
+                                "cost": 0
+                            },
+                            {
+                                "text": "去冰(不推荐)",
+                                "cost": 0
+                            }
+                        ],
+                        "opt": 0
+                    },
+                    {
+                        "title": "甜度",
+                        "option": [
+                            {
+                                "text": "推荐甜度(少甜)",
+                                "cost": 0
+                            },
+                            {
+                                "text": "少少甜",
+                                "cost": 0
+                            },
+                            {
+                                "text": "少少少甜",
+                                "cost": 0
+                            },
+                            {
+                                "text": "不另外加糖(不推荐)",
+                                "cost": 0
+                            },
+                            {
+                                "text": "多甜",
+                                "cost": 0
+                            }
+                        ],
+                        "opt": 0
+                    }
+                ]
             },
             rules: {
                 name: [
