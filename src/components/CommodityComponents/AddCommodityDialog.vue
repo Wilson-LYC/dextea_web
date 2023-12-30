@@ -40,7 +40,8 @@ export default {
             form: {
                 "price": "",
                 "name": "",
-                "state": "0"
+                "state": "0",
+                "custom":[]
             },
             rules: {
                 name: [

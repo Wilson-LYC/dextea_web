@@ -16,6 +16,7 @@ app.use(router)
 app.config.globalProperties.$md5 = md5;
 
 /* 访问域名 */
+// let hostname="dexapi.ycwisdom.cn";//域名地址
 let hostname="127.0.0.1:6688";//域名地址
 let httpurl="http://"+hostname;//http请求
 let wsurl="ws://"+hostname;//websocket请求
