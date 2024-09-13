@@ -1,7 +1,3 @@
-<style scoped>
-.my-header {}
-</style>
-
 <template>
     <el-dialog v-model="see" :before-close="closeDialog" width="800px" :draggable="true" :destroy-on-close="true">
         <template #header>
@@ -39,10 +35,10 @@
                 <el-form-item label="订单备注" prop="num">
                     <el-input v-model="form.note" type="textarea" :autosize="{ minRows: 3, maxRows: 3 }"></el-input>
                 </el-form-item>
-                <el-form-item label="下单时间" prop="phone">
+                <el-form-item label="下单时间" prop="ordertime">
                     <el-input v-model="form.createtime" type="text" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="更新时间" prop="phone">
+                <el-form-item label="更新时间" prop="updatetime">
                     <el-input v-model="form.updatetime" type="text" disabled></el-input>
                 </el-form-item>
             </el-form>
